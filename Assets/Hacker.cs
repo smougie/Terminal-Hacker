@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Hacker : MonoBehaviour
 {
+    
     // Game configuration data
     string[] locations = { "Local shop", "CrossFit gym", "Hogwarts"};
     string[] locationsPL = { "Sklep żabka", "Rebel Nature Gym", "Hogwart"};
@@ -18,22 +20,24 @@ public class Hacker : MonoBehaviour
     enum Screen { MainMenu, Password, Win};
     Screen currentScreen;
     string password;
+    int money = 0;
 
 
     // Strings
     string mainMenuScreen = "What would you like to hack into?\nPress 1 for {0}\nPress 2 for {1}\nPress 3 for {2}";
     string mainMenuScreenPL = "Do czego chcesz się włamać?\nNaciśnij 1 dla sklepu żabka\nNaciśnij 2 dla Rebel Nature Gym\nNaciśnij 3 dla Hogwartu";
+    string menuHint = "You may type 'menu' any time";
+    string menuHintPL = "Możesz wpisąć 'menu' kiedy chcesz";
     string passwordScreen;
     string passwordScreenPL;
     string tryAgainMessage = "Password incorrect, please try again.";
     string tryAgainMessagePL = "Błędne hasło, spróbuj ponownie.";
 
-
     void Start()
     {
         ShowMainMenu();
-        passwordScreen = "{0}\nPlease enter a password:";
-        passwordScreenPL = "{0}\nWprowadź hasło:";
+        passwordScreen = "{0}\n*hint: {1}\nPlease enter a password:";
+        passwordScreenPL = "{0}\n*podpowiedź: {1}Wprowadź hasło:";
     }
 
     // Display main menu
@@ -82,15 +86,18 @@ public class Hacker : MonoBehaviour
         else
         {
             Terminal.WriteLine("Please choose a valid level");
+            Terminal.WriteLine(menuHint);
         }
     }
 
+    // Method setting random password
     void AskForPassword()
     {
         currentScreen = Screen.Password;
-        Terminal.ClearScreen();
         SetRandomPassword();
-        Terminal.WriteLine(string.Format(passwordScreen, locations[level - 1]));
+        Terminal.ClearScreen();
+        Terminal.WriteLine(menuHint);
+        Terminal.WriteLine(string.Format(passwordScreen, locations[level - 1], password.Anagram()));
     }
 
     void SetRandomPassword()
@@ -120,7 +127,7 @@ public class Hacker : MonoBehaviour
         }
         else
         {
-            Terminal.WriteLine(tryAgainMessage);
+            AskForPassword();
         }
     }
 
@@ -157,6 +164,7 @@ public class Hacker : MonoBehaviour
         switch (level)
         {
             case 1:
+                // TODO pick one of 5 rewards -> sort them from worst to best, each of them should give different money value -> show reward, random money value, add money od add money to sell for reward
                 Terminal.WriteLine(icecream);
                 break;
             case 2:
