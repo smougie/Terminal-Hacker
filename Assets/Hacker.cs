@@ -1,9 +1,14 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class Hacker : MonoBehaviour
 {
-    private string mainMenuScreen = "What would you like to hack into?\nPress 1 for local shop\nPress 2 for CrossFit gym\nPress 3 for Hogwarts";
-    private string mainMenuScreenPL = "Do czego chcesz się włamać?\nNaciśnij 1 dla sklepu żabka\nNaciśnij 2 dla Rebel Nature Gym\nNaciśnij 3 dla Hogwartu";
+    // Game State
+    int level;  // member variable storing current level
+    
+    // Strings
+    string mainMenuScreen = "What would you like to hack into?\nPress 1 for local shop\nPress 2 for CrossFit gym\nPress 3 for Hogwarts";
+    string mainMenuScreenPL = "Do czego chcesz się włamać?\nNaciśnij 1 dla sklepu żabka\nNaciśnij 2 dla Rebel Nature Gym\nNaciśnij 3 dla Hogwartu";
 
     void Start()
     {
@@ -21,11 +26,26 @@ public class Hacker : MonoBehaviour
         Terminal.WriteLine(mainMenuScreen);
     }
 
-    private void OnUserInput(string input)
+    void OnUserInput(string input)
     {
         if (input == "menu")
         {
             ShowMainMenu();
+        }
+        else if (input == "1")
+        {
+            level = 1;
+            StartGame();
+        }
+        else if (input == "2")
+        {
+            level = 2;
+            StartGame();
+        }
+        else if (input == "3")
+        {
+            level = 3;
+            StartGame();
         }
         else if (input == "007")
         {
@@ -35,13 +55,14 @@ public class Hacker : MonoBehaviour
         {
             Terminal.WriteLine("† ]:-> †");
         }
-        else if (input == "1")
-        {
-            Terminal.WriteLine("You successfully hacked into local shop");
-        }
         else
         {
             Terminal.WriteLine("Please choose a valid level");
         }
+    }
+
+    void StartGame()
+    {
+        Terminal.WriteLine("You have chosen level " + level);
     }
 }
