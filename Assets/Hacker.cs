@@ -1,51 +1,75 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Hacker : MonoBehaviour
 {
+    // Game configuration data
+    string[] locations = { "Local shop", "CrossFit gym", "Hogwarts"};
+    string[] locationsPL = { "Sklep żabka", "Rebel Nature Gym", "Hogwart"};
+    string[] level1Passwords = { "beer", "icecream", "drink", "fruits", "food"};
+    string[] level2Passwords = { "functional", "backsquat", "barbell", "dumbbell", "exercise"};
+    string[] level3Passwords = { "quidditch", "blackmagic", "slytherin", "sectumsempra", "buckbeak"};
+    string[] level1PasswordsPL = { "piwo", "lody", "napój", "owoce", "jedzenie"};
+    string[] level2PasswordsPL = { "funkcjonalny", "przysiad", "sztanga", "sztangielka", "ćwiczenie"};
+    string[] level3PasswordsPL = { "quidditch", "czarnoksięstwo", "slytherin", "sectumsempra", "hardodziob"};
+
+
     // Game State
     int level;  // member variable storing current level
-    
+    enum Screen { MainMenu, Password, Win};
+    Screen currentScreen;
+    string password;
+
+
     // Strings
-    string mainMenuScreen = "What would you like to hack into?\nPress 1 for local shop\nPress 2 for CrossFit gym\nPress 3 for Hogwarts";
+    string mainMenuScreen = "What would you like to hack into?\nPress 1 for {0}\nPress 2 for {1}\nPress 3 for {2}";
     string mainMenuScreenPL = "Do czego chcesz się włamać?\nNaciśnij 1 dla sklepu żabka\nNaciśnij 2 dla Rebel Nature Gym\nNaciśnij 3 dla Hogwartu";
+    string passwordScreen;
+    string passwordScreenPL;
+    string tryAgainMessage = "Password incorrect, please try again.";
+    string tryAgainMessagePL = "Błędne hasło, spróbuj ponownie.";
+
 
     void Start()
     {
         ShowMainMenu();
+        passwordScreen = "{0}\nPlease enter a password:";
+        passwordScreenPL = "{0}\nWprowadź hasło:";
     }
 
-    void Update()
-    {
-
-    }
-
+    // Display main menu
     private void ShowMainMenu()
     {
         Terminal.ClearScreen();
-        Terminal.WriteLine(mainMenuScreen);
+        currentScreen = Screen.MainMenu;
+        Terminal.WriteLine(string.Format(mainMenuScreen, locations[0], locations[1], locations[2]));
     }
 
+    // Method deciding how to handle user input
     void OnUserInput(string input)
     {
+        // Player can always go to main menu
         if (input == "menu")
         {
             ShowMainMenu();
         }
-        else if (input == "1")
+        else if (currentScreen == Screen.MainMenu)
         {
-            level = 1;
-            StartGame();
+            RunMainMenu(input);
         }
-        else if (input == "2")
+        else if (currentScreen == Screen.Password)
         {
-            level = 2;
-            StartGame();
+            CheckPassword(input);
         }
-        else if (input == "3")
+    }
+
+    // Method handling player main menu choices
+    void RunMainMenu(string input)
+    {
+        var isValidLevel = (input == "1" || input == "2" || input == "3");
+        if (isValidLevel)
         {
-            level = 3;
-            StartGame();
+            level = int.Parse(input);
+            AskForPassword();
         }
         else if (input == "007")
         {
@@ -61,8 +85,90 @@ public class Hacker : MonoBehaviour
         }
     }
 
-    void StartGame()
+    void AskForPassword()
     {
-        Terminal.WriteLine("You have chosen level " + level);
+        currentScreen = Screen.Password;
+        Terminal.ClearScreen();
+        SetRandomPassword();
+        Terminal.WriteLine(string.Format(passwordScreen, locations[level - 1]));
+    }
+
+    void SetRandomPassword()
+    {
+        switch (level)
+        {
+            case 1:
+                password = level1Passwords[Random.Range(0, level1Passwords.Length)];
+                break;
+            case 2:
+                password = level2Passwords[Random.Range(0, level2Passwords.Length)];
+                break;
+            case 3:
+                password = level3Passwords[Random.Range(0, level3Passwords.Length)];
+                break;
+            default:
+                Debug.LogError("Invalid level number.");
+                break;
+        }
+    }
+
+    void CheckPassword(string input)
+    {
+        if (input == password)
+        {
+            DisplayWinScreen();
+        }
+        else
+        {
+            Terminal.WriteLine(tryAgainMessage);
+        }
+    }
+
+    void DisplayWinScreen()
+    {
+        currentScreen = Screen.Win;
+        Terminal.ClearScreen();
+        ShowLevelReward();
+    }
+
+    void ShowLevelReward()
+    {
+        string icecream = @"You got the icecream!
+        _.-.
+     ,'  /  \
+    /// //  /)
+   /// // ///
+  (`: // ///
+   `;`: ///
+   / /:`:/
+  (_/  
+        ";
+        string db = @"You got the dumbbell!
+
+❚█══█❚
+        ";
+        string book = @"You got the book!
+    _______
+   /      /,
+  /      //
+ /______//
+(______(/
+        ";
+        switch (level)
+        {
+            case 1:
+                Terminal.WriteLine(icecream);
+                break;
+            case 2:
+                Terminal.WriteLine(db);
+                break;
+            case 3:
+                Terminal.WriteLine(book);
+                break;
+            default:
+                Debug.LogError("Invalid level number for reward.");
+                break;
+        }
+
     }
 }
