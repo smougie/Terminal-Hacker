@@ -5,6 +5,7 @@ public class Hacker : MonoBehaviour
 {
     
     // Game configuration data
+    // Passwords
     string[] locations = { "Local shop", "CrossFit gym", "Hogwarts"};
     string[] locationsPL = { "Sklep żabka", "Rebel Nature Gym", "Hogwart"};
     string[] level1Passwords = { "beer", "icecream", "drink", "fruits", "food"};
@@ -14,15 +15,40 @@ public class Hacker : MonoBehaviour
     string[] level2PasswordsPL = { "funkcjonalny", "przysiad", "sztanga", "sztangielka", "ćwiczenie"};
     string[] level3PasswordsPL = { "quidditch", "czarnoksięstwo", "slytherin", "sectumsempra", "hardodziob"};
 
+    // Level rewards
+    //string[] level1rewards = { "book", "icecream"};
+    Dictionary<string, string> level1rewards = new Dictionary<string, string>
+    {
+        { "book", @"You got the book!
+    _______
+   /      /,
+  /      //
+ /______//
+(______(/
+        "},
+        {
+            "icecream", @"You got the icecream!
+        _.-.
+     ,'  /  \
+    /// //  /)
+   /// // ///
+  (`: // ///
+   `;`: ///
+   / /:`:/
+  (_/  
+        "}
+    };
 
     // Game State
     int level;  // member variable storing current level
     enum Screen { MainMenu, Password, Win};
     Screen currentScreen;
     string password;
+
     int money = 0;
-
-
+    Dictionary<string, int> inventory = new Dictionary<string, int>();
+    Dictionary<string, int> inventoryCounter = new Dictionary<string, int>();
+ 
     // Strings
     string mainMenuScreen = "What would you like to hack into?\nPress 1 for {0}\nPress 2 for {1}\nPress 3 for {2}";
     string mainMenuScreenPL = "Do czego chcesz się włamać?\nNaciśnij 1 dla sklepu żabka\nNaciśnij 2 dla Rebel Nature Gym\nNaciśnij 3 dla Hogwartu";
@@ -48,6 +74,15 @@ public class Hacker : MonoBehaviour
         Terminal.WriteLine(string.Format(mainMenuScreen, locations[0], locations[1], locations[2]));
     }
 
+    private void Update()
+    {
+        print("contains: " + inventory.ContainsKey("book"));
+        if (inventory.ContainsKey("book"));
+        {
+            print("books value: " + inventory["book"]);
+            print("books count: " + inventoryCounter["book"]);
+        }
+    }
     // Method deciding how to handle user input
     void OnUserInput(string input)
     {
@@ -166,6 +201,21 @@ public class Hacker : MonoBehaviour
             case 1:
                 // TODO pick one of 5 rewards -> sort them from worst to best, each of them should give different money value -> show reward, random money value, add money od add money to sell for reward
                 Terminal.WriteLine(icecream);
+                if (inventory.ContainsKey("book"))
+                {
+                    var rnd = Random.Range(1, 51);
+                    print("book value" + rnd);
+                    inventory["book"] += rnd;
+                    inventoryCounter["book"] += 1;
+                }
+                else
+                {
+                    var rnd = Random.Range(1, 51);
+                    print("book value" + rnd);
+                    inventory.Add("book", rnd);
+                    inventoryCounter.Add("book", 1);
+                }
+
                 break;
             case 2:
                 Terminal.WriteLine(db);
