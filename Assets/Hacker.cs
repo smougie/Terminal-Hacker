@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class Hacker : MonoBehaviour
 {
-    
     // Game configuration data
     // Passwords
     string[] locations = { "Local shop", "CrossFit gym", "Hogwarts"};
@@ -15,29 +14,143 @@ public class Hacker : MonoBehaviour
     string[] level2PasswordsPL = { "funkcjonalny", "przysiad", "sztanga", "sztangielka", "ćwiczenie"};
     string[] level3PasswordsPL = { "quidditch", "czarnoksięstwo", "slytherin", "sectumsempra", "hardodziob"};
 
-    // Level rewards
-    //string[] level1rewards = { "book", "icecream"};
-    Dictionary<string, string> level1rewards = new Dictionary<string, string>
+    // Level rewards names
+    string[] level1RewardsNames = { "icecream", "laptop", "revenue", "tape", "vodka"};
+    string[] level2RewardsNames = { "dumbbell"};
+    string[] level3RewardsNames = { "broom", "book", "map", "key", "wand"};
+
+    // Level rewards "objects"
+    #region Level 1 Rewards
+    Dictionary<string, string> level1Rewards = new Dictionary<string, string>
     {
-        { "book", @"You got the book!
-    _______
-   /      /,
-  /      //
- /______//
-(______(/
-        "},
         {
-            "icecream", @"You got the icecream!
+            "icecream", @"You received icecream!
         _.-.
      ,'  /  \
     /// //  /)
-   /// // ///
+   /// // /// Value: {0}$
   (`: // ///
    `;`: ///
    / /:`:/
   (_/  
-        "}
+"
+        },
+        {
+            "vodka", @"You received vodka!
+      _
+     ]=[
+  .-'(P)'-.
+  |absolut|
+  | ~~~~~ |
+  | ~~~~~ | Value: {0}$
+  | ~~~~~ |
+  '_______'
+"
+        },
+        {
+            "tape", @"You received monitoring tape!
+ _________
+|   ___   |
+|  o___o  | Value: {0}$
+|__/___\__| 
+"
+        },
+        {
+            "laptop", @"
+ ______________
+||            ||
+||            ||
+||            ||
+||            ||
+||____________||
+|______________| Value: {0}$
+ \\############\\
+  \\############\\
+   \      ____    \   
+    \_____\___\____\
+You received shop owner's laptop!
+"
+        },
+        {
+            "revenue", @"You received daily revenue!
+          \`\/\/\/`/
+           )======(
+         .'        '. Value: {0}$
+        /    _||__   \
+       /    (_||_     \
+      |     __||_)     |
+      |       ||       |
+      '.              .'
+        '------------'
+"
+        }
     };
+    #endregion
+
+    #region Level 2 Rewards
+    Dictionary<string, string> level2Rewards = new Dictionary<string, string>
+    {
+        {
+            "dumbbell", @"
+You received the dumbbell!
+
+❚█══█❚ Value: {0}$
+"
+        },
+    };
+    #endregion
+
+    #region Level 3 Rewards
+    Dictionary<string, string> level3Rewards = new Dictionary<string, string>
+    {
+        {
+            "broom", @"You received firebolt!
+  |
+  |
+  | Value: {0}
+  | 
+ /X\
+//X\\
+"
+        },
+        {
+            "book", @"You received book!
+    _______
+   /      /,
+  /      // Value: {0}
+ /______//
+(______(/
+'This Book is the Property 
+of the Half-Blood Prince'
+"
+        },
+        {
+            "map", @"You received Marauder's Map!
+_________
+\ x  |  o\
+ \   | x  \ Value: {0}
+  \.,..,.,.\
+"
+        },
+        {
+            "key", @"You received key to Gringott's vault!
+
+ ,o.          8 8
+d   bzzzzzzzza8o8b 
+ `o'
+Value: {0}
+"
+        },
+        {
+            "wand", @"You received Blackwand!
+( ͡° ͜ʖ ͡°)⊃―━━☆⌒*・。.
+'Avada Kedavra!'
+
+Value: {0}
+"
+        },
+    };
+    #endregion
 
     // Game State
     int level;  // member variable storing current level
@@ -52,8 +165,12 @@ public class Hacker : MonoBehaviour
     // Strings
     string mainMenuScreen = "What would you like to hack into?\nPress 1 for {0}\nPress 2 for {1}\nPress 3 for {2}";
     string mainMenuScreenPL = "Do czego chcesz się włamać?\nNaciśnij 1 dla sklepu żabka\nNaciśnij 2 dla Rebel Nature Gym\nNaciśnij 3 dla Hogwartu";
-    string menuHint = "You may type 'menu' any time";
-    string menuHintPL = "Możesz wpisąć 'menu' kiedy chcesz";
+    string menuHint = "You may type 'menu' anytime";
+    string menuHintPL = "Możesz wpisać 'menu' kiedy chcesz";
+    string winScreenHint = "Type 'menu' for menu";
+    string winScreenHintPL = "Wpisz 'menu' aby wrócić do menu";
+    string mainMenuHint = "Please choose a valid level";
+    string mainMenuHintPL = "Wybierz odpowiedni poziom";
     string passwordScreen;
     string passwordScreenPL;
     string tryAgainMessage = "Password incorrect, please try again.";
@@ -64,6 +181,13 @@ public class Hacker : MonoBehaviour
         ShowMainMenu();
         passwordScreen = "{0}\n*hint: {1}\nPlease enter a password:";
         passwordScreenPL = "{0}\n*podpowiedź: {1}Wprowadź hasło:";
+        //print(level1RewardsNames.Length);
+        //print(level1RewardsNames[Random.Range(0, level1RewardsNames.Length)]);
+    }
+
+    private void Update()
+    {
+
     }
 
     // Display main menu
@@ -74,15 +198,6 @@ public class Hacker : MonoBehaviour
         Terminal.WriteLine(string.Format(mainMenuScreen, locations[0], locations[1], locations[2]));
     }
 
-    private void Update()
-    {
-        print("contains: " + inventory.ContainsKey("book"));
-        if (inventory.ContainsKey("book"));
-        {
-            print("books value: " + inventory["book"]);
-            print("books count: " + inventoryCounter["book"]);
-        }
-    }
     // Method deciding how to handle user input
     void OnUserInput(string input)
     {
@@ -98,6 +213,10 @@ public class Hacker : MonoBehaviour
         else if (currentScreen == Screen.Password)
         {
             CheckPassword(input);
+        }
+        else if (currentScreen == Screen.Win)
+        {
+            Terminal.WriteLine(menuHint);
         }
     }
 
@@ -120,7 +239,7 @@ public class Hacker : MonoBehaviour
         }
         else
         {
-            Terminal.WriteLine("Please choose a valid level");
+            Terminal.WriteLine(mainMenuHint);
             Terminal.WriteLine(menuHint);
         }
     }
@@ -170,63 +289,112 @@ public class Hacker : MonoBehaviour
     {
         currentScreen = Screen.Win;
         Terminal.ClearScreen();
-        ShowLevelReward();
+        ManageLevelReward();
     }
 
-    void ShowLevelReward()
+    void ManageLevelReward()
     {
-        string icecream = @"You got the icecream!
-        _.-.
-     ,'  /  \
-    /// //  /)
-   /// // ///
-  (`: // ///
-   `;`: ///
-   / /:`:/
-  (_/  
-        ";
-        string db = @"You got the dumbbell!
-
-❚█══█❚
-        ";
-        string book = @"You got the book!
-    _______
-   /      /,
-  /      //
- /______//
-(______(/
-        ";
+        string selectedReward;
+        int selectedRewardValue;
         switch (level)
         {
             case 1:
-                // TODO pick one of 5 rewards -> sort them from worst to best, each of them should give different money value -> show reward, random money value, add money od add money to sell for reward
-                Terminal.WriteLine(icecream);
-                if (inventory.ContainsKey("book"))
-                {
-                    var rnd = Random.Range(1, 51);
-                    print("book value" + rnd);
-                    inventory["book"] += rnd;
-                    inventoryCounter["book"] += 1;
-                }
-                else
-                {
-                    var rnd = Random.Range(1, 51);
-                    print("book value" + rnd);
-                    inventory.Add("book", rnd);
-                    inventoryCounter.Add("book", 1);
-                }
-
+                selectedReward = DrawReward(level1RewardsNames);  // picking random reward from level rewards
+                selectedRewardValue = SetRewardValue(selectedReward);  // setting random value of reward based on reward name
+                InventoryAddReward(selectedReward, selectedRewardValue);  // adding reward with value to inventory and increasing item count value
+                DisplayReward(selectedReward, selectedRewardValue, level1Rewards);  // showing reward ASCII art, name, value
                 break;
             case 2:
-                Terminal.WriteLine(db);
                 break;
             case 3:
-                Terminal.WriteLine(book);
+                selectedReward = DrawReward(level3RewardsNames);
+                selectedRewardValue = SetRewardValue(selectedReward);
+                InventoryAddReward(selectedReward, selectedRewardValue);
+                DisplayReward(selectedReward, selectedRewardValue, level3Rewards);
                 break;
             default:
                 Debug.LogError("Invalid level number for reward.");
                 break;
         }
+    }
 
+    private int SetRewardValue(string selectedReward)
+    {
+        print(selectedReward);
+        int selectedRewardValue = 0;
+
+        // Reward value configuration
+        switch (selectedReward)
+        {
+            #region configuration
+            case "icecream":
+                selectedRewardValue = SetItemValue(1, 10);
+                break;
+            case "vodka":
+                selectedRewardValue = SetItemValue(10, 50);
+                break;
+            case "tape":
+                selectedRewardValue = SetItemValue(50, 100);
+                break;
+            case "laptop":
+                selectedRewardValue = SetItemValue(100, 500);
+                break;
+            case "revenue":
+                selectedRewardValue = SetItemValue(500, 1000);
+                break;
+            case "broom":
+                selectedRewardValue = SetItemValue(1000, 1500);
+                break;
+            case "book":
+                selectedRewardValue = SetItemValue(1500, 2000);
+                break;
+            case "map":
+                selectedRewardValue = SetItemValue(2000, 2500);
+                break;
+            case "key":
+                selectedRewardValue = SetItemValue(2500, 3500);
+                break;
+            case "wand":
+                selectedRewardValue = SetItemValue(3500, 5000);
+                break;
+            default:
+                Debug.LogError("Select Reward switch Error.");
+                break;
+            #endregion
+        }
+
+        return selectedRewardValue;
+    }
+
+    private void DisplayReward(string selectedReward, int selectedRewardValue,Dictionary<string, string> levelRewards)
+    {
+        Terminal.WriteLine(string.Format(levelRewards[selectedReward], selectedRewardValue));
+    }
+
+    string DrawReward(string[] rewardsList)
+    {
+        int randomIndex = Random.Range(0, rewardsList.Length);
+        string reward = rewardsList[randomIndex];
+        return reward;
+    }
+
+    int SetItemValue(int minValue, int maxValue)
+    {
+        int value = Random.Range(minValue, maxValue + 1);
+        return value;
+    }
+
+    private void InventoryAddReward(string selectedReward, int selectedRewardValue)
+    {
+        if (inventory.ContainsKey(selectedReward))
+        {
+            inventory[selectedReward] += selectedRewardValue;
+            inventoryCounter[selectedReward] += 1;
+        }
+        else
+        {
+            inventory.Add(selectedReward, selectedRewardValue);
+            inventoryCounter.Add(selectedReward, 1);
+        }
     }
 }
