@@ -8,7 +8,7 @@ public class Hacker : MonoBehaviour
     string[] locations = { "Local shop", "CrossFit gym", "Hogwarts"};
     string[] locationsPL = { "Sklep żabka", "Rebel Nature Gym", "Hogwart"};
     string[] level1Passwords = { "beer", "icecream", "drink", "fruits", "food"};
-    string[] level2Passwords = { "functional", "backsquat", "barbell", "dumbbell", "exercise"};
+    string[] level2Passwords = { "functional", "backsquat", "barbell", "dumbbell", "exercise", "aabb"};
     string[] level3Passwords = { "quidditch", "blackmagic", "slytherin", "sectumsempra", "buckbeak"};
     string[] level1PasswordsPL = { "piwo", "lody", "napój", "owoce", "jedzenie"};
     string[] level2PasswordsPL = { "funkcjonalny", "przysiad", "sztanga", "sztangielka", "ćwiczenie"};
@@ -16,7 +16,7 @@ public class Hacker : MonoBehaviour
 
     // Level rewards names
     string[] level1RewardsNames = { "icecream", "laptop", "revenue", "tape", "vodka"};
-    string[] level2RewardsNames = { "dumbbell"};
+    string[] level2RewardsNames = { "dumbbell", "plate", "barbell", "picture", "cashRegister"};
     string[] level3RewardsNames = { "broom", "book", "map", "key", "wand"};
 
     // Level rewards "objects"
@@ -97,6 +97,44 @@ You received the dumbbell!
 ❚█══█❚ Value: {0}$
 "
         },
+        {
+            "plate", @"You received the 25kg plate!
+          .-"" -.
+         / 25kg \  
+        ;  { }   ; Value: {0}$
+         \      /
+          '-..-'
+"
+        },
+        {
+            "barbell", @"
+You received the barbell!
+
+❚██════════════██❚ Value: {0}$
+"
+        },
+        {
+            "picture", @"You received the owner's
+ __________nude picture!
+|  _______ |
+| |       ||
+| |    _O || Value: {0}$
+| |______\||
+|__________|
+"
+        },
+        {
+            "cashRegister", @"You received the cash register!
+   _____
+  | ___ |
+  ||   ||
+  ||___||
+  |   _ | Value: {0}$
+  |_____|
+ /_/_|_\_\
+/_/__|__\_\
+"
+        }
     };
     #endregion
 
@@ -148,7 +186,7 @@ Value: {0}
 
 Value: {0}
 "
-        },
+        }
     };
     #endregion
 
@@ -183,6 +221,7 @@ Value: {0}
         passwordScreenPL = "{0}\n*podpowiedź: {1}Wprowadź hasło:";
         //print(level1RewardsNames.Length);
         //print(level1RewardsNames[Random.Range(0, level1RewardsNames.Length)]);
+        //Terminal.WriteLine(level2Rewards["cashRegister"]);
     }
 
     private void Update()
@@ -305,6 +344,10 @@ Value: {0}
                 DisplayReward(selectedReward, selectedRewardValue, level1Rewards);  // showing reward ASCII art, name, value
                 break;
             case 2:
+                selectedReward = DrawReward(level2RewardsNames);
+                selectedRewardValue = SetRewardValue(selectedReward);
+                InventoryAddReward(selectedReward, selectedRewardValue);
+                DisplayReward(selectedReward, selectedRewardValue, level2Rewards);
                 break;
             case 3:
                 selectedReward = DrawReward(level3RewardsNames);
@@ -327,6 +370,7 @@ Value: {0}
         switch (selectedReward)
         {
             #region configuration
+            // Level 1 rewards
             case "icecream":
                 selectedRewardValue = SetItemValue(1, 10);
                 break;
@@ -342,20 +386,37 @@ Value: {0}
             case "revenue":
                 selectedRewardValue = SetItemValue(500, 1000);
                 break;
+            // Level 2 rewards
+            case "dumbbell":
+                selectedRewardValue = SetItemValue(100, 250);
+                break;
+            case "plate":
+                selectedRewardValue = SetItemValue(250, 350);
+                break;
+            case "barbell":
+                selectedRewardValue = SetItemValue(350, 1100);
+                break;
+            case "picture":
+                selectedRewardValue = SetItemValue(500, 2000);
+                break;
+            case "cashRegister":
+                selectedRewardValue = SetItemValue(1000, 2500);
+                break;
+            // Level 3 rewards
             case "broom":
-                selectedRewardValue = SetItemValue(1000, 1500);
+                selectedRewardValue = SetItemValue(2500, 5000);
                 break;
             case "book":
-                selectedRewardValue = SetItemValue(1500, 2000);
+                selectedRewardValue = SetItemValue(3500, 6000);
                 break;
             case "map":
-                selectedRewardValue = SetItemValue(2000, 2500);
+                selectedRewardValue = SetItemValue(4500, 7000);
                 break;
             case "key":
-                selectedRewardValue = SetItemValue(2500, 3500);
+                selectedRewardValue = SetItemValue(7000, 15000);
                 break;
             case "wand":
-                selectedRewardValue = SetItemValue(3500, 5000);
+                selectedRewardValue = SetItemValue(15000, 20000);
                 break;
             default:
                 Debug.LogError("Select Reward switch Error.");
