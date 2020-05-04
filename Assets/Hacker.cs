@@ -192,7 +192,7 @@ Value: {0}
 
     // Game State
     int level;  // member variable storing current level
-    enum Screen { MainMenu, Password, Win, Inventory, Shop, Buy, Sell };
+    enum Screen { MainMenu, Password, Win, Inventory, Shop, Buy, Sell, Back };
     Screen currentScreen;
     string password;
 
@@ -203,10 +203,8 @@ Value: {0}
     // Strings
     string mainMenuScreen = "Press 'd' for DarkWeb shop\nPress 'i' for inventory\n\nWhat would you like to hack into?\nPress 1 for {0}\nPress 2 for {1}\nPress 3 for {2}";
     string mainMenuScreenPL = "Do czego chcesz się włamać?\nNaciśnij 1 dla sklepu żabka\nNaciśnij 2 dla Rebel Nature Gym\nNaciśnij 3 dla Hogwartu";
-    string menuHint = "You may type 'menu' anytime";
-    string menuHintPL = "Możesz wpisać 'menu' kiedy chcesz";
-    string winScreenHint = "Type 'menu' for menu";
-    string winScreenHintPL = "Wpisz 'menu' aby wrócić do menu";
+    string menuHint = "Type 'menu' for menu";
+    string menuHintPL = "Wpisz 'menu' aby wrócić do menu";
     string validLevelHint = "Please choose a valid level";
     string validLevelHintPL = "Wybierz odpowiedni poziom";
     string validOptionHint = "Please choose a valid option\nor type 'menu' for menu";
@@ -216,7 +214,7 @@ Value: {0}
     string tryAgainMessage = "Password incorrect, please try again.";
     string tryAgainMessagePL = "Błędne hasło, spróbuj ponownie.";
     string shopMenu = "Welcome to the DarkWeb store!\nPress 'b' for Buy\nPress 's' for Sell";
-    string sellItemQuestion = "Would you like to sell your items?\nPress 'y' for YES or 'n' for NO";
+    string sellItemQuestion = "Would you like to sell all your items?\nPress y/Yes or n/NO";
 
     void Start()
     {
@@ -273,6 +271,12 @@ Value: {0}
                     // TODO call method which will sell items and print items/value/count if "yes" and write Bye if "no"
                     SellItemsMenu(input);
                     break;
+                case Screen.Back:
+                    Terminal.WriteLine(menuHint);
+                    break;
+                default:
+                    Debug.LogError("OnUserInput currentScreen switch statement Error.");
+                    break;
             }
     }
 
@@ -311,9 +315,10 @@ Value: {0}
     {
         currentScreen = Screen.Inventory;
         Terminal.ClearScreen();
+        string plural = "";
         var itemsValue = 0;
         var itemsAmount = 0;
-        string inventoryString = "Money: {0}$\nYou've got {1} {2} worth {3}$.";
+        string inventoryString = "Money: {0}$\nYou've got {1} item{2} worth {3}$.";
 
         foreach (KeyValuePair<string, int> item in inventory)
         {
@@ -327,11 +332,11 @@ Value: {0}
         }
         else if (itemsAmount == 1)
         {
-            Terminal.WriteLine(string.Format(inventoryString, money, itemsAmount, "item", itemsValue));
+            Terminal.WriteLine(string.Format(inventoryString, money, itemsAmount, plural, itemsValue));
         }
         else
         {
-            Terminal.WriteLine(string.Format(inventoryString, money,itemsAmount, "item's", itemsValue));
+            Terminal.WriteLine(string.Format(inventoryString, money,itemsAmount, plural = "s", itemsValue));
         }
     }
 
@@ -390,40 +395,49 @@ Value: {0}
         var isValidNo = (input == "n" || input == "no" || input == "No" || input == "NO");
         if (isValidYes)
         {
-            int itemsNumber = 0;
-            int sellValue = 0;
-            foreach (KeyValuePair<string, int> item in inventory)
-            {
-                sellValue += item.Value;
-                itemsNumber += inventoryCounter[item.Key];
-            }
-            inventory.Clear();
-            inventoryCounter.Clear();
-            money += sellValue;
-
-            if (itemsNumber == 1)
-            {
-                Terminal.WriteLine($"You sold {itemsNumber} item for {sellValue}$.");
-            }
-            else if (itemsNumber > 1)
-            {
-                Terminal.WriteLine($"You sold {itemsNumber} items for {sellValue}$.");
-            }
-            else
-            {
-                Debug.LogError("SellItemsMenu() Terminal.WriteLine() Error.");
-            }
+            SellItems();
+            RemoveInventory();
+            currentScreen = Screen.Back;
         }
         else if (isValidNo)
         {
             Terminal.ClearScreen();
             Terminal.WriteLine("As you wish, Bye!");
+            currentScreen = Screen.Back;
             Invoke("ShowMainMenu", 2);
         }
         else
         {
             Terminal.WriteLine(validOptionHint);
         }
+    }
+
+    void SellItems()
+    {
+        int itemsNumber = 0;
+        int sellValue = 0;
+        string plural = "";
+
+        foreach (KeyValuePair<string, int> item in inventory)
+        {
+            sellValue += item.Value;
+            itemsNumber += inventoryCounter[item.Key];
+        }
+
+        money += sellValue;
+
+        if (itemsNumber > 1)
+        {
+            plural = "s";
+        }
+        Terminal.ClearScreen();
+        Terminal.WriteLine($"You sold {itemsNumber} item{plural} for {sellValue}$.");
+    }
+
+    void RemoveInventory()
+    {
+        inventory.Clear();
+        inventoryCounter.Clear();
     }
 
     // Method setting random password
