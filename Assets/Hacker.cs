@@ -192,7 +192,7 @@ Value: {0}
 
     // Game State
     int level;  // member variable storing current level
-    enum Screen { MainMenu, Password, Win};
+    enum Screen { MainMenu, Password, Win, Inventory };
     Screen currentScreen;
     string password;
 
@@ -207,8 +207,8 @@ Value: {0}
     string menuHintPL = "Możesz wpisać 'menu' kiedy chcesz";
     string winScreenHint = "Type 'menu' for menu";
     string winScreenHintPL = "Wpisz 'menu' aby wrócić do menu";
-    string mainMenuHint = "Please choose a valid level";
-    string mainMenuHintPL = "Wybierz odpowiedni poziom";
+    string validLevelHint = "Please choose a valid level";
+    string validLevelHintPL = "Wybierz odpowiedni poziom";
     string passwordScreen;
     string passwordScreenPL;
     string tryAgainMessage = "Password incorrect, please try again.";
@@ -257,6 +257,10 @@ Value: {0}
         {
             Terminal.WriteLine(menuHint);
         }
+        else if (currentScreen == Screen.Inventory)
+        {
+            Terminal.WriteLine(menuHint);
+        }
     }
 
     // Method handling player main menu choices
@@ -268,6 +272,10 @@ Value: {0}
             level = int.Parse(input);
             AskForPassword();
         }
+        else if (input == "i")
+        {
+            ShowInventory();
+        }
         else if (input == "007")
         {
             Terminal.WriteLine("Hello Agent Bond, your car is waiting.");
@@ -278,8 +286,35 @@ Value: {0}
         }
         else
         {
-            Terminal.WriteLine(mainMenuHint);
-            Terminal.WriteLine(menuHint);
+            Terminal.WriteLine(validLevelHint);
+        }
+    }
+
+    void ShowInventory()
+    {
+        currentScreen = Screen.Inventory;
+        Terminal.ClearScreen();
+        var itemsValue = 0;
+        var itemsAmount = 0;
+        string inventoryString = "You've got {0} {1} worth {2}$.";
+        foreach (KeyValuePair<string, int> item in inventory)
+        {
+            itemsAmount += inventoryCounter[item.Key];
+            itemsValue += item.Value;
+            //inventoryString += $"{item.Key} - {item.Value} - {inventoryCounter[item.Key]},";
+            //print($"{item.Key} - {item.Value} - {inventoryCounter[item.Key]}");
+        }
+        if (itemsAmount == 0)
+        {
+            Terminal.WriteLine("There are no items in your inventory.");
+        }
+        else if (itemsAmount == 1)
+        {
+            Terminal.WriteLine(string.Format(inventoryString, itemsAmount, "item", itemsValue));
+        }
+        else
+        {
+            Terminal.WriteLine(string.Format(inventoryString, itemsAmount, "item's", itemsValue));
         }
     }
 
@@ -363,7 +398,6 @@ Value: {0}
 
     private int SetRewardValue(string selectedReward)
     {
-        print(selectedReward);
         int selectedRewardValue = 0;
 
         // Reward value configuration
