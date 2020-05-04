@@ -8,7 +8,7 @@ public class Hacker : MonoBehaviour
     string[] locations = { "Local shop", "CrossFit gym", "Hogwarts"};
     string[] locationsPL = { "Sklep żabka", "Rebel Nature Gym", "Hogwart"};
     string[] level1Passwords = { "beer", "icecream", "drink", "fruits", "food"};
-    string[] level2Passwords = { "functional", "backsquat", "barbell", "dumbbell", "exercise", "aabb"};
+    string[] level2Passwords = { "functional", "backsquat", "barbell", "dumbbell", "exercise"};
     string[] level3Passwords = { "quidditch", "blackmagic", "slytherin", "sectumsempra", "buckbeak"};
     string[] level1PasswordsPL = { "piwo", "lody", "napój", "owoce", "jedzenie"};
     string[] level2PasswordsPL = { "funkcjonalny", "przysiad", "sztanga", "sztangielka", "ćwiczenie"};
@@ -18,6 +18,12 @@ public class Hacker : MonoBehaviour
     string[] level1RewardsNames = { "icecream", "laptop", "revenue", "tape", "vodka"};
     string[] level2RewardsNames = { "dumbbell", "plate", "barbell", "picture", "cashRegister"};
     string[] level3RewardsNames = { "broom", "book", "map", "key", "wand"};
+
+    // Items to buy
+    string[] itemsToBuy = { "enigma"};
+    bool enigmaActive = false;
+    int enigmaLevel = 1;
+    int enigmaPrice = 1;
 
     // Level rewards "objects"
     #region Level 1 Rewards
@@ -192,7 +198,7 @@ Value: {0}
 
     // Game State
     int level;  // member variable storing current level
-    enum Screen { MainMenu, Password, Win, Inventory, Shop, Buy, Sell, Back };
+    enum Screen { MainMenu, Password, Win, Inventory, Shop, Buy, Sell, Back, ItemBuyConfirm };
     Screen currentScreen;
     string password;
 
@@ -215,22 +221,19 @@ Value: {0}
     string tryAgainMessagePL = "Błędne hasło, spróbuj ponownie.";
     string shopMenu = "Welcome to the DarkWeb store!\nPress 'b' for Buy\nPress 's' for Sell";
     string sellItemQuestion = "Would you like to sell all your items?\nPress y/Yes or n/NO";
+    string BuyMenu = "What would like to buy?";
 
     void Start()
     {
         ShowMainMenu();
         passwordScreen = "{0}\n*hint: {1}\nPlease enter a password:";
         passwordScreenPL = "{0}\n*podpowiedź: {1}Wprowadź hasło:";
-        //print(level1RewardsNames.Length);
-        //print(level1RewardsNames[Random.Range(0, level1RewardsNames.Length)]);
-        //Terminal.WriteLine(level2Rewards["cashRegister"]);
     }
 
     private void Update()
     {
-
+        print(enigmaActive);
     }
-
     // Display main menu
     private void ShowMainMenu()
     {
@@ -265,10 +268,12 @@ Value: {0}
                     RunShopMenu(input);
                     break;
                 case Screen.Buy:
-                    //RunBuyMenu();
+                    ChooseBuyItem(input);
+                    break;
+                case Screen.ItemBuyConfirm:
+
                     break;
                 case Screen.Sell:
-                    // TODO call method which will sell items and print items/value/count if "yes" and write Bye if "no"
                     SellItemsMenu(input);
                     break;
                 case Screen.Back:
@@ -352,7 +357,7 @@ Value: {0}
     {
         if (input == "b")
         {
-            RunBuyMenu();
+            ShowBuyMenu();
         }
         else if (input == "s")
         {
@@ -376,10 +381,81 @@ Value: {0}
         }
     }
 
-    void RunBuyMenu()
+    void ShowBuyMenu()
     {
+        string itemLabel = "1 Name: {0}, Price: {1}, Level: {2}";
+        string itemLabelLocked = "1 Name: {0}, Price: {1}, LOCKED";
         currentScreen = Screen.Buy;
         Terminal.ClearScreen();
+        Terminal.WriteLine(BuyMenu);
+        if (enigmaActive)
+        {
+            Terminal.WriteLine(string.Format(itemLabel, itemsToBuy[0], enigmaPrice, enigmaLevel));
+        }
+        else if (!enigmaActive)
+        {
+            Terminal.WriteLine(string.Format(itemLabelLocked, itemsToBuy[0], enigmaPrice));
+        }
+    }
+
+    void ChooseBuyItem(string input)
+    {
+        var isValidChoice = (input == "1");
+        if (isValidChoice)
+        {
+            if (input == "1")
+            {
+                Terminal.ClearScreen();
+                if (CanAffordItem("enigma"))
+                {
+                    Terminal.WriteLine($"Do you want to buy:\nEnigma lvl. {enigmaLevel} for {enigmaPrice}$?");
+                    ShowBuyConfirm();
+                }
+                else
+                {
+                    Terminal.WriteLine("You can't afford this item.");
+                }
+            }
+        }
+    }
+
+    bool CanAffordItem(string item)
+    {
+        bool canAfford = false;
+        switch (item)
+        {
+            case "enigma":
+                if (money >= enigmaPrice)
+                {
+                    canAfford = true;
+                }
+                else
+                {
+                    canAfford = false;
+                }
+                break;
+            default:
+                break;
+        }
+        return canAfford;
+    }
+
+    void ShowBuyConfirm()
+    {
+        currentScreen = Screen.ItemBuyConfirm;
+    }
+
+    void BuyItem(string item)
+    {
+        switch (item)
+        {
+            case "enigma":
+                enigmaActive = true;
+                money -= enigmaPrice;
+                break;
+            default:
+                break;
+        }
     }
 
     void RunSellMenu()
