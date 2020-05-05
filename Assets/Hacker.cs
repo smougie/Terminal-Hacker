@@ -5,25 +5,45 @@ public class Hacker : MonoBehaviour
 {
     // Game configuration data
     // Passwords
-    string[] locations = { "Local shop", "CrossFit gym", "Hogwarts"};
-    string[] locationsPL = { "Sklep żabka", "Rebel Nature Gym", "Hogwart"};
-    string[] level1Passwords = { "beer", "icecream", "drink", "fruits", "food"};
-    string[] level2Passwords = { "functional", "backsquat", "barbell", "dumbbell", "exercise"};
-    string[] level3Passwords = { "quidditch", "blackmagic", "slytherin", "sectumsempra", "buckbeak"};
-    string[] level1PasswordsPL = { "piwo", "lody", "napój", "owoce", "jedzenie"};
-    string[] level2PasswordsPL = { "funkcjonalny", "przysiad", "sztanga", "sztangielka", "ćwiczenie"};
-    string[] level3PasswordsPL = { "quidditch", "czarnoksięstwo", "slytherin", "sectumsempra", "hardodziob"};
+    string[] locations = {"Local shop", "CrossFit gym", "Hogwarts"};
+    string[] locationsPL = {"Sklep żabka", "Rebel Nature Gym", "Hogwart"};
+    string[] level1Passwords = {"beer", "icecream", "drink", "fruits", "food"};
+    string[] level2Passwords = {"functional", "backsquat", "barbell", "dumbbell", "exercise"};
+    string[] level3Passwords = {"quidditch", "blackmagic", "slytherin", "sectumsempra", "buckbeak"};
+    string[] level1PasswordsPL = {"piwo", "lody", "napój", "owoce", "jedzenie"};
+    string[] level2PasswordsPL = {"funkcjonalny", "przysiad", "sztanga", "sztangielka", "ćwiczenie"};
+    string[] level3PasswordsPL = {"quidditch", "czarnoksięstwo", "slytherin", "sectumsempra", "hardodziob"};
 
     // Level rewards names
-    string[] level1RewardsNames = { "icecream", "laptop", "revenue", "tape", "vodka"};
-    string[] level2RewardsNames = { "dumbbell", "plate", "barbell", "picture", "cashRegister"};
-    string[] level3RewardsNames = { "broom", "book", "map", "key", "wand"};
+    string[] level1RewardsNames = {"icecream", "laptop", "revenue", "tape", "vodka"};
+    string[] level2RewardsNames = {"dumbbell", "plate", "barbell", "picture", "cashRegister"};
+    string[] level3RewardsNames = {"broom", "book", "map", "key", "wand"};
 
     // Items to buy
-    string[] itemsToBuy = { "enigma"};
+    string itemToBuy = "";
+    string[] gameItems = { "enigma", "decoder"};
+    Dictionary<string, string> enigma = new Dictionary<string, string>
+    {
+        {"name", "enigma"},
+        {"price",  "1"},
+        {"level", "0" },
+        {"shopLevel", "1"},
+        {"upgradeCost1", "2"},
+        {"upgradeCost2", "3"},
+    };
+    Dictionary<string, string> decoder = new Dictionary<string, string>
+    {
+        {"name", "decoder"},
+        {"price",  "1"},
+        {"level", "0" },
+        {"shopLevel", "1"},
+        {"upgradeCost1", "4"},
+        {"upgradeCost2", "6"},
+    };
     bool enigmaActive = false;
-    int enigmaLevel = 1;
-    int enigmaPrice = 1;
+    bool enigmaMaxLevel = false;
+    bool decoderActive = false;
+    bool decoderMaxLevel = false;
 
     // Level rewards "objects"
     #region Level 1 Rewards
@@ -198,7 +218,7 @@ Value: {0}
 
     // Game State
     int level;  // member variable storing current level
-    enum Screen { MainMenu, Password, Win, Inventory, Shop, Buy, Sell, Back, ItemBuyConfirm };
+    enum Screen { MainMenu, Password, Win, Inventory, Shop, BuyMenu, Sell, Sold, Back, ItemBuyConfirm };
     Screen currentScreen;
     string password;
 
@@ -211,10 +231,9 @@ Value: {0}
     string mainMenuScreenPL = "Do czego chcesz się włamać?\nNaciśnij 1 dla sklepu żabka\nNaciśnij 2 dla Rebel Nature Gym\nNaciśnij 3 dla Hogwartu";
     string menuHint = "Type 'menu' for menu";
     string menuHintPL = "Wpisz 'menu' aby wrócić do menu";
-    string validLevelHint = "Please choose a valid level";
-    string validLevelHintPL = "Wybierz odpowiedni poziom";
     string validOptionHint = "Please choose a valid option\nor type 'menu' for menu";
     string validOptionHintPL = "Wybierz odpowiednią opcję";
+    string backHint = "Type 'b' for back or 'menu' for menu";
     string passwordScreen;
     string passwordScreenPL;
     string tryAgainMessage = "Password incorrect, please try again.";
@@ -222,6 +241,8 @@ Value: {0}
     string shopMenu = "Welcome to the DarkWeb store!\nPress 'b' for Buy\nPress 's' for Sell";
     string sellItemQuestion = "Would you like to sell all your items?\nPress y/Yes or n/NO";
     string BuyMenu = "What would like to buy?";
+    string cantAfford = "You can't afford this item.";
+    string itemMaxLevelHint = "Item already in your inventory.";
 
     void Start()
     {
@@ -232,7 +253,7 @@ Value: {0}
 
     private void Update()
     {
-        print(enigmaActive);
+
     }
     // Display main menu
     private void ShowMainMenu()
@@ -250,6 +271,10 @@ Value: {0}
         {
             ShowMainMenu();
         }
+        else if (input == "/saldo")
+        {
+            Terminal.WriteLine($"Money: {money}$");
+        }
         else switch (currentScreen)
             {
                 case Screen.MainMenu:
@@ -259,22 +284,25 @@ Value: {0}
                     CheckPassword(input);
                     break;
                 case Screen.Win:
-                    Terminal.WriteLine(menuHint);
+                    GoBack(input);
                     break;
                 case Screen.Inventory:
-                    Terminal.WriteLine(menuHint);
+                    GoBack(input);
                     break;
                 case Screen.Shop:
                     RunShopMenu(input);
                     break;
-                case Screen.Buy:
+                case Screen.BuyMenu:
                     ChooseBuyItem(input);
                     break;
                 case Screen.ItemBuyConfirm:
-
+                    ConfirmBuy(input);
                     break;
                 case Screen.Sell:
                     SellItemsMenu(input);
+                    break;
+                case Screen.Sold:
+                    GoBack(input);
                     break;
                 case Screen.Back:
                     Terminal.WriteLine(menuHint);
@@ -312,36 +340,36 @@ Value: {0}
         }
         else
         {
-            Terminal.WriteLine(validLevelHint);
+            Terminal.WriteLine(validOptionHint);
         }
     }
 
-    void ShowInventory()
+    void GoBack(string input)
     {
-        currentScreen = Screen.Inventory;
-        Terminal.ClearScreen();
-        string plural = "";
-        var itemsValue = 0;
-        var itemsAmount = 0;
-        string inventoryString = "Money: {0}$\nYou've got {1} item{2} worth {3}$.";
-
-        foreach (KeyValuePair<string, int> item in inventory)
+        var inputBackIsValid = (input == "b" || input == "back" || input == "Back" || input == "BACK");
+        if (inputBackIsValid)
         {
-            itemsAmount += inventoryCounter[item.Key];
-            itemsValue += item.Value;
-        }
-
-        if (itemsAmount == 0)
-        {
-            Terminal.WriteLine($"Money: {money}$\nThere are no items in your inventory.");
-        }
-        else if (itemsAmount == 1)
-        {
-            Terminal.WriteLine(string.Format(inventoryString, money, itemsAmount, plural, itemsValue));
+            switch (currentScreen)
+            {
+                case Screen.Win:
+                    AskForPassword();
+                    break;
+                case Screen.BuyMenu:
+                    ShowShop();
+                    break;
+                case Screen.Sold:
+                    ShowShop();
+                    break;
+                case Screen.Inventory:
+                    ShowMainMenu();
+                    break;
+                default:
+                    break;
+            }
         }
         else
         {
-            Terminal.WriteLine(string.Format(inventoryString, money,itemsAmount, plural = "s", itemsValue));
+            Terminal.WriteLine(backHint);
         }
     }
 
@@ -369,53 +397,71 @@ Value: {0}
         }
     }
 
-    private void CanSell()
-    {
-        if (inventory.Count != 0)
-        {
-            RunSellMenu();
-        }
-        else
-        {
-            Terminal.WriteLine("You have nothing to sell.");
-        }
-    }
-
     void ShowBuyMenu()
     {
-        string itemLabel = "1 Name: {0}, Price: {1}, Level: {2}";
-        string itemLabelLocked = "1 Name: {0}, Price: {1}, LOCKED";
-        currentScreen = Screen.Buy;
+        currentScreen = Screen.BuyMenu;
+        string itemLabel = "{0} Name: {1}, Level: {2}, Price: {3}";
+        string itemLabelMax = "{0} Name: {1}, Level: MAX LEVEL";
         Terminal.ClearScreen();
         Terminal.WriteLine(BuyMenu);
-        if (enigmaActive)
+        if (!enigmaMaxLevel)
         {
-            Terminal.WriteLine(string.Format(itemLabel, itemsToBuy[0], enigmaPrice, enigmaLevel));
+            Terminal.WriteLine(string.Format(itemLabel, "1", enigma["name"], enigma["shopLevel"], enigma["price"]));
         }
-        else if (!enigmaActive)
+        if (enigmaMaxLevel)
         {
-            Terminal.WriteLine(string.Format(itemLabelLocked, itemsToBuy[0], enigmaPrice));
+            Terminal.WriteLine(string.Format(itemLabelMax, "1", enigma["name"]));
         }
+        if (!decoderMaxLevel)
+        {
+            Terminal.WriteLine(string.Format(itemLabel, "2", decoder["name"], decoder["shopLevel"], decoder["price"]));
+        }
+        if (decoderMaxLevel)
+        {
+            Terminal.WriteLine(string.Format(itemLabelMax, "2", decoder["name"]));
+        }
+
     }
 
     void ChooseBuyItem(string input)
     {
-        var isValidChoice = (input == "1");
+        var isValidChoice = (input == "1" || input == "2");
         if (isValidChoice)
         {
             if (input == "1")
             {
-                Terminal.ClearScreen();
-                if (CanAffordItem("enigma"))
+                if (enigmaMaxLevel)
                 {
-                    Terminal.WriteLine($"Do you want to buy:\nEnigma lvl. {enigmaLevel} for {enigmaPrice}$?");
-                    ShowBuyConfirm();
+                    Terminal.WriteLine(itemMaxLevelHint);
+                }
+                else if (CanAffordItem("enigma"))
+                {
+                    ShowBuyConfirm("enigma");
                 }
                 else
                 {
-                    Terminal.WriteLine("You can't afford this item.");
+                    Terminal.WriteLine(cantAfford);
                 }
             }
+            else if (input == "2")
+            {
+                if (decoderMaxLevel)
+                {
+                    Terminal.WriteLine(itemMaxLevelHint);
+                }
+                else if (CanAffordItem("decoder"))
+                {
+                    ShowBuyConfirm("decoder");
+                }
+                else
+                {
+                    Terminal.WriteLine(cantAfford);
+                }
+            }
+        }
+        else
+        {
+            GoBack(input);
         }
     }
 
@@ -425,7 +471,7 @@ Value: {0}
         switch (item)
         {
             case "enigma":
-                if (money >= enigmaPrice)
+                if (money >= int.Parse(enigma["price"]))
                 {
                     canAfford = true;
                 }
@@ -434,15 +480,57 @@ Value: {0}
                     canAfford = false;
                 }
                 break;
+            case "decoder":
+                if (money >= int.Parse(decoder["price"]))
+                {
+                    canAfford = true;
+                }
+                break;
             default:
+                Debug.LogError("CanAffordItem switch statement Error.");
                 break;
         }
         return canAfford;
     }
 
-    void ShowBuyConfirm()
+    void ShowBuyConfirm(string item)
     {
         currentScreen = Screen.ItemBuyConfirm;
+        string confirmQuestion = "Would you like to buy:\n{0} lvl. {1} for {2}$?\n\nPress y/Yes or n/NO";
+        Terminal.ClearScreen();
+        switch (item)
+        {
+            case "enigma":
+                Terminal.WriteLine(string.Format(confirmQuestion, enigma["name"], enigma["shopLevel"], enigma["price"]));
+                itemToBuy = "enigma";
+                break;
+            case "decoder":
+                Terminal.WriteLine(string.Format(confirmQuestion, decoder["name"], decoder["shopLevel"], decoder["price"]));
+                itemToBuy = "decoder";
+                break;
+            default:
+                Debug.LogError("ShowBuyConfirm switch statement Error.");
+                break;
+        }
+    }
+
+    void ConfirmBuy(string input)
+    {
+        var isValidYes = (input == "y" || input == "yes" || input == "Yes" || input == "YES");
+        var isValidNo = (input == "n" || input == "no" || input == "No" || input == "NO");
+
+        if (isValidYes)
+        {
+            BuyItem(itemToBuy);
+        }
+        else if (isValidNo)
+        {
+            ShowBuyMenu();
+        }
+        else
+        {
+            Terminal.WriteLine(validOptionHint);
+        }
     }
 
     void BuyItem(string item)
@@ -450,11 +538,68 @@ Value: {0}
         switch (item)
         {
             case "enigma":
+                money -= int.Parse(enigma["price"]);
                 enigmaActive = true;
-                money -= enigmaPrice;
+                break;
+            case "decoder":
+                money -= int.Parse(decoder["price"]);
+                decoderActive = true;
                 break;
             default:
                 break;
+        }
+        UpdateShopValues(itemToBuy);
+        itemToBuy = "";
+        ShowBuyMenu();
+    }
+
+    void UpdateShopValues(string item)
+    {
+        int newLevelValue;
+        switch (item)
+        {
+            case "enigma":
+                if (!enigmaMaxLevel)
+                {
+                    newLevelValue = int.Parse(enigma["level"]) + 1;
+                    enigma["level"] = newLevelValue.ToString();
+                    if (int.Parse(enigma["level"]) == 3)
+                    {
+                        enigmaMaxLevel = true;
+                        break;
+                    }
+                    enigma["shopLevel"] = (newLevelValue + 1).ToString();
+                    enigma["price"] = enigma["upgradeCost" + newLevelValue];
+                }
+                break;
+            case "decoder":
+                if (!decoderMaxLevel)
+                {
+                    newLevelValue = int.Parse(decoder["level"]) + 1;
+                    decoder["level"] = newLevelValue.ToString();
+                    if (int.Parse(decoder["level"]) == 3)
+                    {
+                        decoderMaxLevel = true;
+                        break;
+                    }
+                    decoder["shopLevel"] = (newLevelValue + 1).ToString();
+                    decoder["price"] = decoder["upgradeCost" + newLevelValue];
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void CanSell()
+    {
+        if (inventory.Count != 0)
+        {
+            RunSellMenu();
+        }
+        else
+        {
+            Terminal.WriteLine("You have nothing to sell.");
         }
     }
 
@@ -473,14 +618,11 @@ Value: {0}
         {
             SellItems();
             RemoveInventory();
-            currentScreen = Screen.Back;
+            currentScreen = Screen.Sold;
         }
         else if (isValidNo)
         {
-            Terminal.ClearScreen();
-            Terminal.WriteLine("As you wish, Bye!");
-            currentScreen = Screen.Back;
-            Invoke("ShowMainMenu", 2);
+            ShowShop();
         }
         else
         {
@@ -514,6 +656,35 @@ Value: {0}
     {
         inventory.Clear();
         inventoryCounter.Clear();
+    }
+
+    void ShowInventory()
+    {
+        currentScreen = Screen.Inventory;
+        Terminal.ClearScreen();
+        string plural = "";
+        var itemsValue = 0;
+        var itemsAmount = 0;
+        string inventoryString = "Money: {0}$\nYou've got {1} item{2} worth {3}$.";
+
+        foreach (KeyValuePair<string, int> item in inventory)
+        {
+            itemsAmount += inventoryCounter[item.Key];
+            itemsValue += item.Value;
+        }
+
+        if (itemsAmount == 0)
+        {
+            Terminal.WriteLine($"Money: {money}$\nThere are no items in your inventory.");
+        }
+        else if (itemsAmount == 1)
+        {
+            Terminal.WriteLine(string.Format(inventoryString, money, itemsAmount, plural, itemsValue));
+        }
+        else
+        {
+            Terminal.WriteLine(string.Format(inventoryString, money, itemsAmount, plural = "s", itemsValue));
+        }
     }
 
     // Method setting random password
