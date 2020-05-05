@@ -8,8 +8,35 @@ public class Hacker : MonoBehaviour
     string[] locations = {"Local shop", "CrossFit gym", "Hogwarts"};
     string[] locationsPL = {"Sklep żabka", "Rebel Nature Gym", "Hogwart"};
     string[] level1Passwords = {"beer", "icecream", "drink", "fruits", "food"};
+    Dictionary<string, string[]> level1hints = new Dictionary<string, string[]>
+    {
+        {"beer", new string[] {"alcohol", "sprakling", "pub"}},
+        {"icecream", new string[] {"cold", "summer", "refreshing"}},
+        { "drink", new string[] {"liquid", "thirst", "refreshing"}},
+        { "fruits", new string[] {"vitamins", "sweet", "sour"}},
+        { "food", new string[] {"hot-dog", "bread", "eat"}},
+    };
+    
     string[] level2Passwords = {"functional", "backsquat", "barbell", "dumbbell", "exercise"};
+    Dictionary<string, string[]> level2hints = new Dictionary<string, string[]>
+    {
+        {"functional", new string[] {"type of training", "daily movements", "versatile"}},
+        {"backsquat", new string[] {"exercise", "powerlifting", "sit" }},
+        {"barbell", new string[] {"long", "heavy", "steel" }},
+        {"dumbbell", new string[] {"can be heavy", "for one hand mostly", "use to exercise" }},
+        {"exercise", new string[] {"home", "gym", "body activity" }},
+    };
     string[] level3Passwords = {"quidditch", "blackmagic", "slytherin", "sectumsempra", "buckbeak"};
+    Dictionary<string, string[]> level3hints = new Dictionary<string, string[]>
+    {
+        {"quidditch", new string[] {"game", "golden snitch", "broom"}},
+        {"blackmagic", new string[] {"forbidden", "dangerous", "used by bad people"}},
+        {"slytherin", new string[] {"cunning", "snake", "salazar"}},
+        {"sectumsempra", new string[] {"deep", "bleed", "spell"}},
+        {"buckbeak", new string[] {"animal", "flying", "magic"}},
+        // TODO
+    };
+
     string[] level1PasswordsPL = {"piwo", "lody", "napój", "owoce", "jedzenie"};
     string[] level2PasswordsPL = {"funkcjonalny", "przysiad", "sztanga", "sztangielka", "ćwiczenie"};
     string[] level3PasswordsPL = {"quidditch", "czarnoksięstwo", "slytherin", "sectumsempra", "hardodziob"};
@@ -246,6 +273,7 @@ Value: {0}
 
     void Start()
     {
+
         ShowMainMenu();
         passwordScreen = "{0}\n*hint: {1}\nPlease enter a password:";
         passwordScreenPL = "{0}\n*podpowiedź: {1}Wprowadź hasło:";
@@ -373,12 +401,210 @@ Value: {0}
         }
     }
 
+    // Method setting random password
+    void AskForPassword()
+    {
+        currentScreen = Screen.Password;
+        SetRandomPassword();
+        Terminal.ClearScreen();
+        Terminal.WriteLine(menuHint);
+        if (enigmaActive)
+        {
+            ShowEnigmaHint();
+        }
+        Terminal.WriteLine(string.Format(passwordScreen, locations[level - 1], password.Anagram()));
+    }
+
+    void ShowEnigmaHint()
+    {
+        string hint = "*enigma: ";
+        switch (enigma["level"])
+        {
+            case "1":
+                hint += password[0];
+                break;
+            case "2":
+                hint += password.Substring(0, 2);
+                break;
+            case "3":
+                hint += password.Substring(0, 3);
+                break;
+            default:
+                break;
+        }
+        Terminal.WriteLine(hint);
+    }
+
+    void SetRandomPassword()
+    {
+        switch (level)
+        {
+            case 1:
+                password = level1Passwords[Random.Range(0, level1Passwords.Length)];
+                break;
+            case 2:
+                password = level2Passwords[Random.Range(0, level2Passwords.Length)];
+                break;
+            case 3:
+                password = level3Passwords[Random.Range(0, level3Passwords.Length)];
+                break;
+            default:
+                Debug.LogError("Invalid level number.");
+                break;
+        }
+    }
+
+    void CheckPassword(string input)
+    {
+        if (input == password)
+        {
+            DisplayWinScreen();
+        }
+        else
+        {
+            AskForPassword();
+        }
+    }
+
+    void DisplayWinScreen()
+    {
+        currentScreen = Screen.Win;
+        Terminal.ClearScreen();
+        ManageLevelReward();
+    }
+
+    void ManageLevelReward()
+    {
+        string selectedReward;
+        int selectedRewardValue;
+        switch (level)
+        {
+            case 1:
+                selectedReward = DrawReward(level1RewardsNames);  // picking random reward from level rewards
+                selectedRewardValue = SetRewardValue(selectedReward);  // setting random value of reward based on reward name
+                InventoryAddReward(selectedReward, selectedRewardValue);  // adding reward with value to inventory and increasing item count value
+                DisplayReward(selectedReward, selectedRewardValue, level1Rewards);  // showing reward ASCII art, name, value
+                break;
+            case 2:
+                selectedReward = DrawReward(level2RewardsNames);
+                selectedRewardValue = SetRewardValue(selectedReward);
+                InventoryAddReward(selectedReward, selectedRewardValue);
+                DisplayReward(selectedReward, selectedRewardValue, level2Rewards);
+                break;
+            case 3:
+                selectedReward = DrawReward(level3RewardsNames);
+                selectedRewardValue = SetRewardValue(selectedReward);
+                InventoryAddReward(selectedReward, selectedRewardValue);
+                DisplayReward(selectedReward, selectedRewardValue, level3Rewards);
+                break;
+            default:
+                Debug.LogError("Invalid level number for reward.");
+                break;
+        }
+    }
+
+    private int SetRewardValue(string selectedReward)
+    {
+        int selectedRewardValue = 0;
+
+        // Reward value configuration
+        switch (selectedReward)
+        {
+            #region configuration
+            // Level 1 rewards
+            case "icecream":
+                selectedRewardValue = SetItemValue(1, 10);
+                break;
+            case "vodka":
+                selectedRewardValue = SetItemValue(10, 50);
+                break;
+            case "tape":
+                selectedRewardValue = SetItemValue(50, 100);
+                break;
+            case "laptop":
+                selectedRewardValue = SetItemValue(100, 500);
+                break;
+            case "revenue":
+                selectedRewardValue = SetItemValue(500, 1000);
+                break;
+            // Level 2 rewards
+            case "dumbbell":
+                selectedRewardValue = SetItemValue(100, 250);
+                break;
+            case "plate":
+                selectedRewardValue = SetItemValue(250, 350);
+                break;
+            case "barbell":
+                selectedRewardValue = SetItemValue(350, 1100);
+                break;
+            case "picture":
+                selectedRewardValue = SetItemValue(500, 2000);
+                break;
+            case "cashRegister":
+                selectedRewardValue = SetItemValue(1000, 2500);
+                break;
+            // Level 3 rewards
+            case "broom":
+                selectedRewardValue = SetItemValue(2500, 5000);
+                break;
+            case "book":
+                selectedRewardValue = SetItemValue(3500, 6000);
+                break;
+            case "map":
+                selectedRewardValue = SetItemValue(4500, 7000);
+                break;
+            case "key":
+                selectedRewardValue = SetItemValue(7000, 15000);
+                break;
+            case "wand":
+                selectedRewardValue = SetItemValue(15000, 20000);
+                break;
+            default:
+                Debug.LogError("Select Reward switch Error.");
+                break;
+            #endregion
+        }
+
+        return selectedRewardValue;
+    }
+
+    private void DisplayReward(string selectedReward, int selectedRewardValue,Dictionary<string, string> levelRewards)
+    {
+        Terminal.WriteLine(string.Format(levelRewards[selectedReward], selectedRewardValue));
+    }
+
+    string DrawReward(string[] rewardsList)
+    {
+        int randomIndex = Random.Range(0, rewardsList.Length);
+        string reward = rewardsList[randomIndex];
+        return reward;
+    }
+
+    int SetItemValue(int minValue, int maxValue)
+    {
+        int value = Random.Range(minValue, maxValue + 1);
+        return value;
+    }
+
+    private void InventoryAddReward(string selectedReward, int selectedRewardValue)
+    {
+        if (inventory.ContainsKey(selectedReward))
+        {
+            inventory[selectedReward] += selectedRewardValue;
+            inventoryCounter[selectedReward] += 1;
+        }
+        else
+        {
+            inventory.Add(selectedReward, selectedRewardValue);
+            inventoryCounter.Add(selectedReward, 1);
+        }
+    }
+
     void ShowShop()
     {
         currentScreen = Screen.Shop;
         Terminal.ClearScreen();
         Terminal.WriteLine(shopMenu);
-
     }
 
     void RunShopMenu(string input)
@@ -684,181 +910,6 @@ Value: {0}
         else
         {
             Terminal.WriteLine(string.Format(inventoryString, money, itemsAmount, plural = "s", itemsValue));
-        }
-    }
-
-    // Method setting random password
-    void AskForPassword()
-    {
-        currentScreen = Screen.Password;
-        SetRandomPassword();
-        Terminal.ClearScreen();
-        Terminal.WriteLine(menuHint);
-        Terminal.WriteLine(string.Format(passwordScreen, locations[level - 1], password.Anagram()));
-    }
-
-    void SetRandomPassword()
-    {
-        switch (level)
-        {
-            case 1:
-                password = level1Passwords[Random.Range(0, level1Passwords.Length)];
-                break;
-            case 2:
-                password = level2Passwords[Random.Range(0, level2Passwords.Length)];
-                break;
-            case 3:
-                password = level3Passwords[Random.Range(0, level3Passwords.Length)];
-                break;
-            default:
-                Debug.LogError("Invalid level number.");
-                break;
-        }
-    }
-
-    void CheckPassword(string input)
-    {
-        if (input == password)
-        {
-            DisplayWinScreen();
-        }
-        else
-        {
-            AskForPassword();
-        }
-    }
-
-    void DisplayWinScreen()
-    {
-        currentScreen = Screen.Win;
-        Terminal.ClearScreen();
-        ManageLevelReward();
-    }
-
-    void ManageLevelReward()
-    {
-        string selectedReward;
-        int selectedRewardValue;
-        switch (level)
-        {
-            case 1:
-                selectedReward = DrawReward(level1RewardsNames);  // picking random reward from level rewards
-                selectedRewardValue = SetRewardValue(selectedReward);  // setting random value of reward based on reward name
-                InventoryAddReward(selectedReward, selectedRewardValue);  // adding reward with value to inventory and increasing item count value
-                DisplayReward(selectedReward, selectedRewardValue, level1Rewards);  // showing reward ASCII art, name, value
-                break;
-            case 2:
-                selectedReward = DrawReward(level2RewardsNames);
-                selectedRewardValue = SetRewardValue(selectedReward);
-                InventoryAddReward(selectedReward, selectedRewardValue);
-                DisplayReward(selectedReward, selectedRewardValue, level2Rewards);
-                break;
-            case 3:
-                selectedReward = DrawReward(level3RewardsNames);
-                selectedRewardValue = SetRewardValue(selectedReward);
-                InventoryAddReward(selectedReward, selectedRewardValue);
-                DisplayReward(selectedReward, selectedRewardValue, level3Rewards);
-                break;
-            default:
-                Debug.LogError("Invalid level number for reward.");
-                break;
-        }
-    }
-
-    private int SetRewardValue(string selectedReward)
-    {
-        int selectedRewardValue = 0;
-
-        // Reward value configuration
-        switch (selectedReward)
-        {
-            #region configuration
-            // Level 1 rewards
-            case "icecream":
-                selectedRewardValue = SetItemValue(1, 10);
-                break;
-            case "vodka":
-                selectedRewardValue = SetItemValue(10, 50);
-                break;
-            case "tape":
-                selectedRewardValue = SetItemValue(50, 100);
-                break;
-            case "laptop":
-                selectedRewardValue = SetItemValue(100, 500);
-                break;
-            case "revenue":
-                selectedRewardValue = SetItemValue(500, 1000);
-                break;
-            // Level 2 rewards
-            case "dumbbell":
-                selectedRewardValue = SetItemValue(100, 250);
-                break;
-            case "plate":
-                selectedRewardValue = SetItemValue(250, 350);
-                break;
-            case "barbell":
-                selectedRewardValue = SetItemValue(350, 1100);
-                break;
-            case "picture":
-                selectedRewardValue = SetItemValue(500, 2000);
-                break;
-            case "cashRegister":
-                selectedRewardValue = SetItemValue(1000, 2500);
-                break;
-            // Level 3 rewards
-            case "broom":
-                selectedRewardValue = SetItemValue(2500, 5000);
-                break;
-            case "book":
-                selectedRewardValue = SetItemValue(3500, 6000);
-                break;
-            case "map":
-                selectedRewardValue = SetItemValue(4500, 7000);
-                break;
-            case "key":
-                selectedRewardValue = SetItemValue(7000, 15000);
-                break;
-            case "wand":
-                selectedRewardValue = SetItemValue(15000, 20000);
-                break;
-            default:
-                Debug.LogError("Select Reward switch Error.");
-                break;
-            #endregion
-        }
-
-        return selectedRewardValue;
-    }
-
-    private void DisplayReward(string selectedReward, int selectedRewardValue,Dictionary<string, string> levelRewards)
-    {
-        Terminal.WriteLine(string.Format(levelRewards[selectedReward], selectedRewardValue));
-    }
-
-    string DrawReward(string[] rewardsList)
-    {
-        int randomIndex = Random.Range(0, rewardsList.Length);
-        string reward = rewardsList[randomIndex];
-        return reward;
-    }
-
-    int SetItemValue(int minValue, int maxValue)
-    {
-        int value = Random.Range(minValue, maxValue + 1);
-        return value;
-    }
-
-    private void InventoryAddReward(string selectedReward, int selectedRewardValue)
-    {
-        if (inventory.ContainsKey(selectedReward))
-        {
-            inventory[selectedReward] += selectedRewardValue;
-            inventoryCounter[selectedReward] += 1;
-        }
-        else
-        {
-            inventory.Add(selectedReward, selectedRewardValue);
-            inventoryCounter.Add(selectedReward, 1);
         }
     }
 }
