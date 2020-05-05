@@ -4,8 +4,8 @@ using UnityEngine.Assertions;
 
 public class Keyboard : MonoBehaviour
 {
-    [SerializeField] AudioClip[] keyStrokeSounds;
-    [SerializeField] Terminal connectedToTerminal;
+    [SerializeField] AudioClip[] keyStrokeSounds = null;
+    [SerializeField] Terminal connectedToTerminal = null;
 
     AudioSource audioSource;
 

@@ -4,11 +4,21 @@ using UnityEngine;
 public class Hacker : MonoBehaviour
 {
     // Game configuration data
-    // Passwords
-    string[] locations = {"Local shop", "CrossFit gym", "Hogwarts"};
-    string[] locationsPL = {"Sklep żabka", "Rebel Nature Gym", "Hogwart"};
-    string[] level1Passwords = {"beer", "icecream", "drink", "fruits", "food"};
-    Dictionary<string, string[]> level1hints = new Dictionary<string, string[]>
+    // Locations
+    [HideInInspector] string[] locations = {"Local shop", "CrossFit gym", "Hogwarts"};
+    [HideInInspector] string[] locationsPL = {"Sklep żabka", "Rebel Nature Gym", "Hogwart"};
+
+    // Level rewards names
+    [HideInInspector] string[] level1RewardsNames = {"icecream", "laptop", "revenue", "tape", "vodka"};
+    [HideInInspector] string[] level2RewardsNames = {"dumbbell", "plate", "barbell", "picture", "cashRegister"};
+    [HideInInspector] string[] level3RewardsNames = {"broom", "book", "map", "key", "wand"};
+
+
+    // Level passwords and passwords hints
+    #region Level 1 passwords and hints
+    [HideInInspector] string[] level1Passwords = {"beer", "icecream", "drink", "fruits", "food"};
+    [HideInInspector] string[] level1PasswordsPL = {"piwo", "lody", "napój", "owoce", "jedzenie"};
+    [HideInInspector] Dictionary<string, string[]> level1hints = new Dictionary<string, string[]>
     {
         {"beer", new string[] {"alcohol", "sprakling", "pub"}},
         {"icecream", new string[] {"cold", "summer", "refreshing"}},
@@ -16,9 +26,12 @@ public class Hacker : MonoBehaviour
         { "fruits", new string[] {"vitamins", "sweet", "sour"}},
         { "food", new string[] {"hot-dog", "bread", "eat"}},
     };
-    
-    string[] level2Passwords = {"functional", "backsquat", "barbell", "dumbbell", "exercise"};
-    Dictionary<string, string[]> level2hints = new Dictionary<string, string[]>
+    #endregion
+
+    #region Level 2 passwords and hints
+    [HideInInspector] string[] level2Passwords = {"functional", "backsquat", "barbell", "dumbbell", "exercise"};
+    [HideInInspector] string[] level2PasswordsPL = {"funkcjonalny", "przysiad", "sztanga", "sztangielka", "ćwiczenie"};
+    [HideInInspector] Dictionary<string, string[]> level2hints = new Dictionary<string, string[]>
     {
         {"functional", new string[] {"type of training", "daily movements", "versatile"}},
         {"backsquat", new string[] {"exercise", "powerlifting", "sit" }},
@@ -26,51 +39,20 @@ public class Hacker : MonoBehaviour
         {"dumbbell", new string[] {"can be heavy", "for one hand mostly", "use to exercise" }},
         {"exercise", new string[] {"home", "gym", "body activity" }},
     };
-    string[] level3Passwords = {"quidditch", "blackmagic", "slytherin", "sectumsempra", "buckbeak"};
-    Dictionary<string, string[]> level3hints = new Dictionary<string, string[]>
+    #endregion
+
+    #region Level 3 passwords and hints
+    [HideInInspector] string[] level3Passwords = {"quidditch", "blackmagic", "slytherin", "sectumsempra", "buckbeak"};
+    [HideInInspector] string[] level3PasswordsPL = {"quidditch", "czarnoksięstwo", "slytherin", "sectumsempra", "hardodziob"};
+    [HideInInspector] Dictionary<string, string[]> level3hints = new Dictionary<string, string[]>
     {
         {"quidditch", new string[] {"game", "golden snitch", "broom"}},
         {"blackmagic", new string[] {"forbidden", "dangerous", "used by bad people"}},
         {"slytherin", new string[] {"cunning", "snake", "salazar"}},
         {"sectumsempra", new string[] {"deep", "bleed", "spell"}},
         {"buckbeak", new string[] {"animal", "flying", "magic"}},
-        // TODO
     };
-
-    string[] level1PasswordsPL = {"piwo", "lody", "napój", "owoce", "jedzenie"};
-    string[] level2PasswordsPL = {"funkcjonalny", "przysiad", "sztanga", "sztangielka", "ćwiczenie"};
-    string[] level3PasswordsPL = {"quidditch", "czarnoksięstwo", "slytherin", "sectumsempra", "hardodziob"};
-
-    // Level rewards names
-    string[] level1RewardsNames = {"icecream", "laptop", "revenue", "tape", "vodka"};
-    string[] level2RewardsNames = {"dumbbell", "plate", "barbell", "picture", "cashRegister"};
-    string[] level3RewardsNames = {"broom", "book", "map", "key", "wand"};
-
-    // Items to buy
-    string itemToBuy = "";
-    string[] gameItems = { "enigma", "decoder"};
-    Dictionary<string, string> enigma = new Dictionary<string, string>
-    {
-        {"name", "enigma"},
-        {"price",  "1"},
-        {"level", "0" },
-        {"shopLevel", "1"},
-        {"upgradeCost1", "2"},
-        {"upgradeCost2", "3"},
-    };
-    Dictionary<string, string> decoder = new Dictionary<string, string>
-    {
-        {"name", "decoder"},
-        {"price",  "1"},
-        {"level", "0" },
-        {"shopLevel", "1"},
-        {"upgradeCost1", "4"},
-        {"upgradeCost2", "6"},
-    };
-    bool enigmaActive = false;
-    bool enigmaMaxLevel = false;
-    bool decoderActive = false;
-    bool decoderMaxLevel = false;
+    #endregion
 
     // Level rewards "objects"
     #region Level 1 Rewards
@@ -198,7 +180,7 @@ You received the barbell!
             "broom", @"You received firebolt!
   |
   |
-  | Value: {0}
+  | Value: {0}$
   | 
  /X\
 //X\\
@@ -208,7 +190,7 @@ You received the barbell!
             "book", @"You received book!
     _______
    /      /,
-  /      // Value: {0}
+  /      // Value: {0}$
  /______//
 (______(/
 'This Book is the Property 
@@ -219,7 +201,7 @@ of the Half-Blood Prince'
             "map", @"You received Marauder's Map!
 _________
 \ x  |  o\
- \   | x  \ Value: {0}
+ \   | x  \ Value: {0}$
   \.,..,.,.\
 "
         },
@@ -229,7 +211,7 @@ _________
  ,o.          8 8
 d   bzzzzzzzza8o8b 
  `o'
-Value: {0}
+Value: {0}$
 "
         },
         {
@@ -237,46 +219,85 @@ Value: {0}
 ( ͡° ͜ʖ ͡°)⊃―━━☆⌒*・。.
 'Avada Kedavra!'
 
-Value: {0}
+Value: {0}$
 "
         }
     };
     #endregion
 
+    // Game items variables
+    string itemToBuy = "";
+    int itemName = 0;
+    int itemPrice = 1;
+    int itemLevel = 2;
+    int itemShopLevel = 3;
+    int itemLvl2UpgradeCost = 4;
+    int itemLvl3UpgradeCost = 5;
+
+    #region gameItems container
+    Dictionary<string, string[]> gameItems = new Dictionary<string, string[]>
+    {
+        {"enigma", new string[]
+        {
+            "enigma",  // itemName
+            "1",  // itemPrice
+            "0",  // itemLevel
+            "1",  // itemShopLevel
+            "2",  // LvL 2 upgrade cost
+            "3"  // LvL 3 upgrade cost
+        }
+        },
+        {"decoder", new string[]
+        {
+            "decoder",
+            "100000",
+            "0",
+            "1",
+            "3",
+            "6"
+        }
+        },
+
+    };
+    #endregion
+
     // Game State
+    bool enigmaActive = false;
+    bool enigmaMaxLevel = false;
+    bool decoderActive = false;
+    bool decoderMaxLevel = false;
     int level;  // member variable storing current level
+    int money = 0;
+    string password;
     enum Screen { MainMenu, Password, Win, Inventory, Shop, BuyMenu, Sell, Sold, Back, ItemBuyConfirm };
     Screen currentScreen;
-    string password;
-
-    int money = 0;
     Dictionary<string, int> inventory = new Dictionary<string, int>();
     Dictionary<string, int> inventoryCounter = new Dictionary<string, int>();
- 
+
     // Strings
-    string mainMenuScreen = "Press 'd' for DarkWeb shop\nPress 'i' for inventory\n\nWhat would you like to hack into?\nPress 1 for {0}\nPress 2 for {1}\nPress 3 for {2}";
-    string mainMenuScreenPL = "Do czego chcesz się włamać?\nNaciśnij 1 dla sklepu żabka\nNaciśnij 2 dla Rebel Nature Gym\nNaciśnij 3 dla Hogwartu";
-    string menuHint = "Type 'menu' for menu";
-    string menuHintPL = "Wpisz 'menu' aby wrócić do menu";
-    string validOptionHint = "Please choose a valid option\nor type 'menu' for menu";
-    string validOptionHintPL = "Wybierz odpowiednią opcję";
-    string backHint = "Type 'b' for back or 'menu' for menu";
-    string passwordScreen;
-    string passwordScreenPL;
-    string tryAgainMessage = "Password incorrect, please try again.";
-    string tryAgainMessagePL = "Błędne hasło, spróbuj ponownie.";
-    string shopMenu = "Welcome to the DarkWeb store!\nPress 'b' for Buy\nPress 's' for Sell";
-    string sellItemQuestion = "Would you like to sell all your items?\nPress y/Yes or n/NO";
-    string BuyMenu = "What would like to buy?";
-    string cantAfford = "You can't afford this item.";
-    string itemMaxLevelHint = "Item already in your inventory.";
+    #region Errors, hints, prompt messagess
+    [HideInInspector] string mainMenuScreen = "Press 'd' for DarkWeb shop\nPress 'i' for inventory\n\nWhat would you like to hack into?\nPress 1 for {0}\nPress 2 for {1}\nPress 3 for {2}";
+    [HideInInspector] string mainMenuScreenPL = "Do czego chcesz się włamać?\nNaciśnij 1 dla sklepu żabka\nNaciśnij 2 dla Rebel Nature Gym\nNaciśnij 3 dla Hogwartu";
+    [HideInInspector] string menuHint = "Type 'menu' for menu";
+    [HideInInspector] string menuHintPL = "Wpisz 'menu' aby wrócić do menu";
+    [HideInInspector] string validOptionHint = "Please choose a valid option\nor type 'menu' for menu";
+    [HideInInspector] string validOptionHintPL = "Wybierz odpowiednią opcję";
+    [HideInInspector] string validOption2Hint = "Please choose a valid option";
+    [HideInInspector] string backHint = "Type 'b' for back or 'menu' for menu";
+    [HideInInspector] string passwordScreen = "{0}\n*hint: {1}\nPlease enter a password:";
+    [HideInInspector] string passwordScreenPL = "{0}\n*podpowiedź: {1}Wprowadź hasło:";
+    [HideInInspector] string tryAgainMessage = "Password incorrect, please try again.";
+    [HideInInspector] string tryAgainMessagePL = "Błędne hasło, spróbuj ponownie.";
+    [HideInInspector] string shopMenu = "Welcome to the DarkWeb store!\nPress 1 for Buy\nPress 2 for Sell";
+    [HideInInspector] string sellItemQuestion = "Would you like to sell all your items?\nPress y/Yes or n/NO";
+    [HideInInspector] string BuyMenu = "What would like to buy?";
+    [HideInInspector] string cantAfford = "You can't afford this item.";
+    [HideInInspector] string itemMaxLevelHint = "Item already in your inventory.";
+    #endregion
 
     void Start()
     {
-
         ShowMainMenu();
-        passwordScreen = "{0}\n*hint: {1}\nPlease enter a password:";
-        passwordScreenPL = "{0}\n*podpowiedź: {1}Wprowadź hasło:";
     }
 
     private void Update()
@@ -305,6 +326,7 @@ Value: {0}
         }
         else switch (currentScreen)
             {
+                #region currentScreen cases
                 case Screen.MainMenu:
                     RunMainMenu(input);
                     break;
@@ -338,6 +360,7 @@ Value: {0}
                 default:
                     Debug.LogError("OnUserInput currentScreen switch statement Error.");
                     break;
+                #endregion
             }
     }
 
@@ -379,6 +402,7 @@ Value: {0}
         {
             switch (currentScreen)
             {
+                #region currentScreen cases
                 case Screen.Win:
                     AskForPassword();
                     break;
@@ -393,6 +417,7 @@ Value: {0}
                     break;
                 default:
                     break;
+                #endregion
             }
         }
         else
@@ -418,7 +443,7 @@ Value: {0}
     void ShowEnigmaHint()
     {
         string hint = "*enigma: ";
-        switch (enigma["level"])
+        switch (gameItems["enigma"][itemLevel])
         {
             case "1":
                 hint += password[0];
@@ -609,11 +634,11 @@ Value: {0}
 
     void RunShopMenu(string input)
     {
-        if (input == "b")
+        if (input == "1")
         {
             ShowBuyMenu();
         }
-        else if (input == "s")
+        else if (input == "2")
         {
             CanSell();
         }
@@ -626,25 +651,25 @@ Value: {0}
     void ShowBuyMenu()
     {
         currentScreen = Screen.BuyMenu;
-        string itemLabel = "{0} Name: {1}, Level: {2}, Price: {3}";
+        string itemLabel = "{0} Name: {1} Level: {2}\nPrice: {3}$";
         string itemLabelMax = "{0} Name: {1}, Level: MAX LEVEL";
         Terminal.ClearScreen();
         Terminal.WriteLine(BuyMenu);
         if (!enigmaMaxLevel)
         {
-            Terminal.WriteLine(string.Format(itemLabel, "1", enigma["name"], enigma["shopLevel"], enigma["price"]));
+            Terminal.WriteLine(string.Format(itemLabel, "1", gameItems["enigma"][itemName], gameItems["enigma"][itemShopLevel], gameItems["enigma"][itemPrice]));
         }
         if (enigmaMaxLevel)
         {
-            Terminal.WriteLine(string.Format(itemLabelMax, "1", enigma["name"]));
+            Terminal.WriteLine(string.Format(itemLabelMax, "1", gameItems["enigma"][itemName]));
         }
         if (!decoderMaxLevel)
         {
-            Terminal.WriteLine(string.Format(itemLabel, "2", decoder["name"], decoder["shopLevel"], decoder["price"]));
+            Terminal.WriteLine(string.Format(itemLabel, "2", gameItems["decoder"][itemName], gameItems["decoder"][itemShopLevel], gameItems["decoder"][itemPrice]));
         }
         if (decoderMaxLevel)
         {
-            Terminal.WriteLine(string.Format(itemLabelMax, "2", decoder["name"]));
+            Terminal.WriteLine(string.Format(itemLabelMax, "2", gameItems["decoder"][itemName]));
         }
 
     }
@@ -687,6 +712,7 @@ Value: {0}
         }
         else
         {
+            Terminal.WriteLine(validOption2Hint);
             GoBack(input);
         }
     }
@@ -697,7 +723,7 @@ Value: {0}
         switch (item)
         {
             case "enigma":
-                if (money >= int.Parse(enigma["price"]))
+                if (money >= int.Parse(gameItems["enigma"][itemPrice]))
                 {
                     canAfford = true;
                 }
@@ -707,7 +733,7 @@ Value: {0}
                 }
                 break;
             case "decoder":
-                if (money >= int.Parse(decoder["price"]))
+                if (money >= int.Parse(gameItems["decoder"][itemPrice]))
                 {
                     canAfford = true;
                 }
@@ -727,11 +753,11 @@ Value: {0}
         switch (item)
         {
             case "enigma":
-                Terminal.WriteLine(string.Format(confirmQuestion, enigma["name"], enigma["shopLevel"], enigma["price"]));
+                Terminal.WriteLine(string.Format(confirmQuestion, gameItems["enigma"][itemName], gameItems["enigma"][itemShopLevel], gameItems["enigma"][itemPrice]));
                 itemToBuy = "enigma";
                 break;
             case "decoder":
-                Terminal.WriteLine(string.Format(confirmQuestion, decoder["name"], decoder["shopLevel"], decoder["price"]));
+                Terminal.WriteLine(string.Format(confirmQuestion, gameItems["decoder"][itemName], gameItems["decoder"][itemShopLevel], gameItems["decoder"][itemPrice]));
                 itemToBuy = "decoder";
                 break;
             default:
@@ -764,11 +790,11 @@ Value: {0}
         switch (item)
         {
             case "enigma":
-                money -= int.Parse(enigma["price"]);
+                money -= int.Parse(gameItems["enigma"][itemPrice]);
                 enigmaActive = true;
                 break;
             case "decoder":
-                money -= int.Parse(decoder["price"]);
+                money -= int.Parse(gameItems["decoder"][itemPrice]);
                 decoderActive = true;
                 break;
             default:
@@ -787,29 +813,43 @@ Value: {0}
             case "enigma":
                 if (!enigmaMaxLevel)
                 {
-                    newLevelValue = int.Parse(enigma["level"]) + 1;
-                    enigma["level"] = newLevelValue.ToString();
-                    if (int.Parse(enigma["level"]) == 3)
+                    newLevelValue = int.Parse(gameItems["enigma"][itemLevel]) + 1;
+                    gameItems["enigma"][itemLevel] = newLevelValue.ToString();
+                    if (int.Parse(gameItems["enigma"][itemLevel]) == 3)
                     {
                         enigmaMaxLevel = true;
                         break;
                     }
-                    enigma["shopLevel"] = (newLevelValue + 1).ToString();
-                    enigma["price"] = enigma["upgradeCost" + newLevelValue];
+                    gameItems["enigma"][itemShopLevel] = (newLevelValue + 1).ToString();
+                    if (int.Parse(gameItems["enigma"][itemLevel]) == 1)
+                    {
+                        gameItems["enigma"][itemPrice] = gameItems["enigma"][itemLvl2UpgradeCost];
+                    }
+                    else
+                    {
+                        gameItems["enigma"][itemPrice] = gameItems["enigma"][itemLvl3UpgradeCost];
+                    }
                 }
                 break;
             case "decoder":
                 if (!decoderMaxLevel)
                 {
-                    newLevelValue = int.Parse(decoder["level"]) + 1;
-                    decoder["level"] = newLevelValue.ToString();
-                    if (int.Parse(decoder["level"]) == 3)
+                    newLevelValue = int.Parse(gameItems["decoder"][itemLevel]) + 1;
+                    gameItems["decoder"][itemLevel] = newLevelValue.ToString();
+                    if (int.Parse(gameItems["decoder"][itemLevel]) == 3)
                     {
                         decoderMaxLevel = true;
                         break;
                     }
-                    decoder["shopLevel"] = (newLevelValue + 1).ToString();
-                    decoder["price"] = decoder["upgradeCost" + newLevelValue];
+                    gameItems["decoder"][itemShopLevel] = (newLevelValue + 1).ToString();
+                    if (int.Parse(gameItems["decoder"][itemLevel]) == 1)
+                    {
+                        gameItems["decoder"][itemPrice] = gameItems["decoder"][itemLvl2UpgradeCost];
+                    }
+                    else
+                    {
+                        gameItems["decoder"][itemPrice] = gameItems["decoder"][itemLvl3UpgradeCost];
+                    }
                 }
                 break;
             default:

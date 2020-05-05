@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class Display : MonoBehaviour
 {
-    [SerializeField] Terminal connectedToTerminal;
+    [SerializeField] Terminal connectedToTerminal = null;
 
     // TODO calculate these two if possible
     [SerializeField] int charactersWide = 40;
