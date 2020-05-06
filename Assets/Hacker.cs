@@ -18,40 +18,55 @@ public class Hacker : MonoBehaviour
     #region Level 1 passwords and hints
     [HideInInspector] string[] level1Passwords = {"beer", "icecream", "drink", "fruits", "food"};
     [HideInInspector] string[] level1PasswordsPL = {"piwo", "lody", "napój", "owoce", "jedzenie"};
-    [HideInInspector] Dictionary<string, string[]> level1hints = new Dictionary<string, string[]>
+    [HideInInspector] Dictionary<string, string[]> passwordsHints = new Dictionary<string, string[]>
     {
+        // Level 1
         {"beer", new string[] {"alcohol", "sprakling", "pub"}},
         {"icecream", new string[] {"cold", "summer", "refreshing"}},
         { "drink", new string[] {"liquid", "thirst", "refreshing"}},
         { "fruits", new string[] {"vitamins", "sweet", "sour"}},
         { "food", new string[] {"hot-dog", "bread", "eat"}},
-    };
-    #endregion
-
-    #region Level 2 passwords and hints
-    [HideInInspector] string[] level2Passwords = {"functional", "backsquat", "barbell", "dumbbell", "exercise"};
-    [HideInInspector] string[] level2PasswordsPL = {"funkcjonalny", "przysiad", "sztanga", "sztangielka", "ćwiczenie"};
-    [HideInInspector] Dictionary<string, string[]> level2hints = new Dictionary<string, string[]>
-    {
+        
+        // Level 2
         {"functional", new string[] {"type of training", "daily movements", "versatile"}},
         {"backsquat", new string[] {"exercise", "powerlifting", "sit" }},
         {"barbell", new string[] {"long", "heavy", "steel" }},
         {"dumbbell", new string[] {"can be heavy", "for one hand mostly", "use to exercise" }},
         {"exercise", new string[] {"home", "gym", "body activity" }},
-    };
-    #endregion
 
-    #region Level 3 passwords and hints
-    [HideInInspector] string[] level3Passwords = {"quidditch", "blackmagic", "slytherin", "sectumsempra", "buckbeak"};
-    [HideInInspector] string[] level3PasswordsPL = {"quidditch", "czarnoksięstwo", "slytherin", "sectumsempra", "hardodziob"};
-    [HideInInspector] Dictionary<string, string[]> level3hints = new Dictionary<string, string[]>
-    {
+        // Level 3
         {"quidditch", new string[] {"game", "golden snitch", "broom"}},
         {"blackmagic", new string[] {"forbidden", "dangerous", "used by bad people"}},
         {"slytherin", new string[] {"cunning", "snake", "salazar"}},
         {"sectumsempra", new string[] {"deep", "bleed", "spell"}},
         {"buckbeak", new string[] {"animal", "flying", "magic"}},
     };
+    #endregion
+
+    #region Level 2 passwords and hints
+    [HideInInspector] string[] level2Passwords = {"functional", "backsquat", "barbell", "dumbbell", "exercise"};
+    [HideInInspector] string[] level2PasswordsPL = {"funkcjonalny", "przysiad", "sztanga", "sztangielka", "ćwiczenie"};
+    //[HideInInspector] Dictionary<string, string[]> level2hints = new Dictionary<string, string[]>
+    //{
+    //    {"functional", new string[] {"type of training", "daily movements", "versatile"}},
+    //    {"backsquat", new string[] {"exercise", "powerlifting", "sit" }},
+    //    {"barbell", new string[] {"long", "heavy", "steel" }},
+    //    {"dumbbell", new string[] {"can be heavy", "for one hand mostly", "use to exercise" }},
+    //    {"exercise", new string[] {"home", "gym", "body activity" }},
+    //};
+    #endregion
+
+    #region Level 3 passwords and hints
+    [HideInInspector] string[] level3Passwords = {"quidditch", "blackmagic", "slytherin", "sectumsempra", "buckbeak"};
+    [HideInInspector] string[] level3PasswordsPL = {"quidditch", "czarnoksięstwo", "slytherin", "sectumsempra", "hardodziob"};
+    //[HideInInspector] Dictionary<string, string[]> level3hints = new Dictionary<string, string[]>
+    //{
+    //    {"quidditch", new string[] {"game", "golden snitch", "broom"}},
+    //    {"blackmagic", new string[] {"forbidden", "dangerous", "used by bad people"}},
+    //    {"slytherin", new string[] {"cunning", "snake", "salazar"}},
+    //    {"sectumsempra", new string[] {"deep", "bleed", "spell"}},
+    //    {"buckbeak", new string[] {"animal", "flying", "magic"}},
+    //};
     #endregion
 
     // Level rewards "objects"
@@ -233,28 +248,31 @@ Value: {0}$
     int itemShopLevel = 3;
     int itemLvl2UpgradeCost = 4;
     int itemLvl3UpgradeCost = 5;
+    int itemStartingPrice = 6;
 
     #region gameItems container
     Dictionary<string, string[]> gameItems = new Dictionary<string, string[]>
     {
         {"enigma", new string[]
         {
-            "enigma",  // itemName
-            "1",  // itemPrice
-            "0",  // itemLevel
-            "1",  // itemShopLevel
-            "2",  // LvL 2 upgrade cost
-            "3"  // LvL 3 upgrade cost
+            "enigma",  // itemName 0
+            "1",  // itemPrice 1
+            "0",  // itemLevel 2
+            "1",  // itemShopLevel 3
+            "2",  // LvL 2 upgrade cost 4
+            "3",  // LvL 3 upgrade cost 5
+            "1",  // starting price 6 - must be the same as item price 1
         }
         },
         {"decoder", new string[]
         {
             "decoder",
-            "100000",
+            "1",
             "0",
             "1",
             "3",
-            "6"
+            "6",
+            "1",
         }
         },
 
@@ -268,8 +286,9 @@ Value: {0}$
     bool decoderMaxLevel = false;
     int level;  // member variable storing current level
     int money = 0;
+    int felonyLevel = 0;
     string password;
-    enum Screen { MainMenu, Password, Win, Inventory, Shop, BuyMenu, Sell, Sold, Back, ItemBuyConfirm };
+    enum Screen { MainMenu, Password, Win, Inventory, Shop, BuyMenu, Sell, Sold, Back, ItemBuyConfirm, Stop };
     Screen currentScreen;
     Dictionary<string, int> inventory = new Dictionary<string, int>();
     Dictionary<string, int> inventoryCounter = new Dictionary<string, int>();
@@ -284,8 +303,9 @@ Value: {0}$
     [HideInInspector] string validOptionHintPL = "Wybierz odpowiednią opcję";
     [HideInInspector] string validOption2Hint = "Please choose a valid option";
     [HideInInspector] string backHint = "Type 'b' for back or 'menu' for menu";
-    [HideInInspector] string passwordScreen = "{0}\n*hint: {1}\nPlease enter a password:";
-    [HideInInspector] string passwordScreenPL = "{0}\n*podpowiedź: {1}Wprowadź hasło:";
+    [HideInInspector] string passwordHint = "*hint: {0}";
+    [HideInInspector] string passwordPrompt = "Please enter a password:";
+    [HideInInspector] string passwordPromptPL = "*podpowiedź: {1}\nWprowadź hasło:";
     [HideInInspector] string tryAgainMessage = "Password incorrect, please try again.";
     [HideInInspector] string tryAgainMessagePL = "Błędne hasło, spróbuj ponownie.";
     [HideInInspector] string shopMenu = "Welcome to the DarkWeb store!\nPress 1 for Buy\nPress 2 for Sell";
@@ -293,6 +313,8 @@ Value: {0}$
     [HideInInspector] string BuyMenu = "What would like to buy?";
     [HideInInspector] string cantAfford = "You can't afford this item.";
     [HideInInspector] string itemMaxLevelHint = "Item already in your inventory.";
+    [HideInInspector] string increaseFelonyMessage = "Wrong password. Felony level icreased!";
+
     #endregion
 
     void Start()
@@ -302,7 +324,7 @@ Value: {0}$
 
     private void Update()
     {
-
+        CheckFelony();
     }
     // Display main menu
     private void ShowMainMenu()
@@ -323,6 +345,10 @@ Value: {0}$
         else if (input == "/saldo")
         {
             Terminal.WriteLine($"Money: {money}$");
+        }
+        else if (input == "/felony")
+        {
+            ShowFelonyLevel();
         }
         else switch (currentScreen)
             {
@@ -355,6 +381,9 @@ Value: {0}$
                     GoBack(input);
                     break;
                 case Screen.Back:
+                    Terminal.WriteLine(menuHint);
+                    break;
+                case Screen.Stop:
                     Terminal.WriteLine(menuHint);
                     break;
                 default:
@@ -433,11 +462,17 @@ Value: {0}$
         SetRandomPassword();
         Terminal.ClearScreen();
         Terminal.WriteLine(menuHint);
+        Terminal.WriteLine(locations[level - 1]);
+        Terminal.WriteLine(string.Format(passwordHint, password.Anagram()));
+        if (decoderActive)
+        {
+            ShowDecoderHint();
+        }
         if (enigmaActive)
         {
             ShowEnigmaHint();
         }
-        Terminal.WriteLine(string.Format(passwordScreen, locations[level - 1], password.Anagram()));
+        Terminal.WriteLine(string.Format(passwordPrompt));
     }
 
     void ShowEnigmaHint()
@@ -446,18 +481,48 @@ Value: {0}$
         switch (gameItems["enigma"][itemLevel])
         {
             case "1":
-                hint += password[0];
+                hint += password[0] + new string('*', password.Length - int.Parse(gameItems["enigma"][itemLevel]));
                 break;
             case "2":
-                hint += password.Substring(0, 2);
+                hint += password.Substring(0, 2) + new string('*', password.Length - int.Parse(gameItems["enigma"][itemLevel]));
                 break;
             case "3":
-                hint += password.Substring(0, 3);
+                hint += password.Substring(0, 3) + new string('*', password.Length - int.Parse(gameItems["enigma"][itemLevel]));
                 break;
             default:
                 break;
         }
         Terminal.WriteLine(hint);
+    }
+
+    void ShowDecoderHint()
+    {
+        string hint = "*decoder: ";
+        List<int> shuffledList = new List<int>();
+        for (int i = 0; i < passwordsHints[password].Length; i++)
+        {
+            shuffledList.Insert(Random.Range(0, shuffledList.Count + 1), i);
+        }
+
+        switch (gameItems["decoder"][itemLevel])
+        {
+            case "1":
+                hint += passwordsHints[password][shuffledList[0]];
+                break;
+            case "2":
+                hint += passwordsHints[password][shuffledList[0]] + " " + passwordsHints[password][shuffledList[1]];
+                break;
+            case "3":
+                hint += passwordsHints[password][shuffledList[0]] + " " + passwordsHints[password][shuffledList[1]] + " " + passwordsHints[password][shuffledList[2]];
+                break;
+            default:
+                break;
+        }
+        Terminal.WriteLine(hint);
+    }
+
+    void CreateDecoderHint(string itemLevel, string password)
+    {
     }
 
     void SetRandomPassword()
@@ -488,6 +553,8 @@ Value: {0}$
         else
         {
             AskForPassword();
+            IcreaseFelony();
+            // TODO wrong password hint?
         }
     }
 
@@ -950,6 +1017,61 @@ Value: {0}$
         else
         {
             Terminal.WriteLine(string.Format(inventoryString, money, itemsAmount, plural = "s", itemsValue));
+        }
+    }
+
+    void IcreaseFelony()
+    {
+        felonyLevel++;
+        Terminal.WriteLine(increaseFelonyMessage);
+    }
+
+    void ShowFelonyLevel()
+    {
+        string felonyReadyLabel;
+        if (felonyLevel == 0)
+        {
+            felonyReadyLabel = "[{0}] {1}%";
+        }
+        else
+        {
+            felonyReadyLabel = "[{0}] {1}0%";
+        }
+
+        string felonyLevelsString = "";
+        for (int i = 1; i <= felonyLevel; i++)
+        {
+            felonyLevelsString += "*";
+        }
+        felonyLevelsString += new string('-', 10 - felonyLevel);
+        Terminal.WriteLine(string.Format(felonyReadyLabel, felonyLevelsString, felonyLevel));
+    }
+
+    bool busted = false;
+    void Busted()
+    {
+        felonyLevel = 0;
+        currentScreen = Screen.Stop;
+        Terminal.ClearScreen();
+        money = -5000;
+        enigmaActive = false;
+        enigmaMaxLevel = false;
+        decoderActive = false;
+        decoderMaxLevel = false;
+        foreach (KeyValuePair<string, string[]> item in gameItems)
+        {
+            gameItems[item.Key][itemPrice] = gameItems[item.Key][itemStartingPrice];
+            gameItems[item.Key][itemLevel] = "0";  // TEST on 
+            gameItems[item.Key][itemShopLevel] = "1";  // TEST on
+        }
+        Terminal.WriteLine("Felony level reached 100% and...\nYou got BUSTED!\nThe Police commandeered all your money and items.\nYou also have to pay 5000$ penalty.");
+    }
+
+    void CheckFelony()
+    {
+        if (felonyLevel == 10)
+        {
+            Busted();
         }
     }
 }
