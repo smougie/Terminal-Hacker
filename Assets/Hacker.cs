@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Hacker : MonoBehaviour
 {
@@ -280,15 +281,21 @@ Value: {0}$
     #endregion
 
     // Game State
+    int crimeLevel = 1;
+    float shopCrimeChance = .5f;
+    float levelTime = 0f;
+    float currentCounterTime = 0f;
+    float[] levelTimeValues = { 5f, 10f, 15f};
     bool enigmaActive = false;
     bool enigmaMaxLevel = false;
     bool decoderActive = false;
     bool decoderMaxLevel = false;
+    bool busted = false;
     int level;  // member variable storing current level
     int money = 0;
     int felonyLevel = 0;
     string password;
-    enum Screen { MainMenu, Password, Win, Inventory, Shop, BuyMenu, Sell, Sold, Back, ItemBuyConfirm, Stop };
+    enum Screen { MainMenu, Password, Win, Inventory, Shop, BuyMenu, Sell, Sold, Back, ItemBuyConfirm, Stop, ShopCrime };
     Screen currentScreen;
     Dictionary<string, int> inventory = new Dictionary<string, int>();
     Dictionary<string, int> inventoryCounter = new Dictionary<string, int>();
@@ -314,21 +321,34 @@ Value: {0}$
     [HideInInspector] string cantAfford = "You can't afford this item.";
     [HideInInspector] string itemMaxLevelHint = "Item already in your inventory.";
     [HideInInspector] string increaseFelonyMessage = "Wrong password. Felony level icreased!";
+    [HideInInspector] string shopCrimeMessage = "Something went wrong...\nWhen you were leaving the shop, the \npolice appeared!\nYou manage to escape but you lost half\n" +
+        "of your sell value and felony level\nicreased by {0}0%!";
 
+    Slider slider;
+    [SerializeField] GameObject progressBar = null;
     #endregion
 
     void Start()
     {
+        slider = gameObject.GetComponentInChildren<Slider>();
+        progressBar.SetActive(false);
         ShowMainMenu();
     }
 
     private void Update()
     {
         CheckFelony();
+        LevelTimeCounter();
     }
+
     // Display main menu
     private void ShowMainMenu()
     {
+        if (currentScreen == Screen.Password)
+        {
+            DisableCounter();
+            //TODO running from password screen must be punished!!!
+        }
         Terminal.ClearScreen();
         currentScreen = Screen.MainMenu;
         Terminal.WriteLine(string.Format(mainMenuScreen, locations[0], locations[1], locations[2]));
@@ -384,6 +404,9 @@ Value: {0}$
                     Terminal.WriteLine(menuHint);
                     break;
                 case Screen.Stop:
+                    Terminal.WriteLine(menuHint);
+                    break;
+                case Screen.ShopCrime:
                     Terminal.WriteLine(menuHint);
                     break;
                 default:
@@ -460,6 +483,7 @@ Value: {0}$
     {
         currentScreen = Screen.Password;
         SetRandomPassword();
+        StartTimer();
         Terminal.ClearScreen();
         Terminal.WriteLine(menuHint);
         Terminal.WriteLine(locations[level - 1]);
@@ -473,6 +497,34 @@ Value: {0}$
             ShowEnigmaHint();
         }
         Terminal.WriteLine(string.Format(passwordPrompt));
+    }
+
+    void StartTimer()
+    {
+        levelTime = levelTimeValues[level - 1];
+        progressBar.SetActive(true);
+        currentCounterTime = levelTime;
+    }
+
+    void DisableCounter()
+    {
+        levelTime = 0f;
+        currentCounterTime = 0f;
+        progressBar.SetActive(false);
+    }
+    
+    void LevelTimeCounter()
+    {
+        if (currentCounterTime > 0)
+        {
+            currentCounterTime -= Time.deltaTime;
+            slider.value = currentCounterTime / levelTime;
+        }
+        else
+        {
+            levelTime = 0;
+            progressBar.SetActive(false);
+        }
     }
 
     void ShowEnigmaHint()
@@ -504,26 +556,14 @@ Value: {0}$
             shuffledList.Insert(Random.Range(0, shuffledList.Count + 1), i);
         }
 
-        switch (gameItems["decoder"][itemLevel])
+        for (int i = 1; i <= int.Parse(gameItems["decoder"][itemLevel]); i++)
         {
-            case "1":
-                hint += passwordsHints[password][shuffledList[0]];
-                break;
-            case "2":
-                hint += passwordsHints[password][shuffledList[0]] + " " + passwordsHints[password][shuffledList[1]];
-                break;
-            case "3":
-                hint += passwordsHints[password][shuffledList[0]] + " " + passwordsHints[password][shuffledList[1]] + " " + passwordsHints[password][shuffledList[2]];
-                break;
-            default:
-                break;
+            hint += $"{passwordsHints[password][shuffledList[i-1]]} ";
         }
+
         Terminal.WriteLine(hint);
     }
 
-    void CreateDecoderHint(string itemLevel, string password)
-    {
-    }
 
     void SetRandomPassword()
     {
@@ -553,7 +593,7 @@ Value: {0}$
         else
         {
             AskForPassword();
-            IcreaseFelony();
+            IcreaseFelony(level);
             // TODO wrong password hint?
         }
     }
@@ -595,7 +635,7 @@ Value: {0}$
         }
     }
 
-    private int SetRewardValue(string selectedReward)
+    int SetRewardValue(string selectedReward)
     {
         int selectedRewardValue = 0;
 
@@ -660,7 +700,7 @@ Value: {0}$
         return selectedRewardValue;
     }
 
-    private void DisplayReward(string selectedReward, int selectedRewardValue,Dictionary<string, string> levelRewards)
+    void DisplayReward(string selectedReward, int selectedRewardValue,Dictionary<string, string> levelRewards)
     {
         Terminal.WriteLine(string.Format(levelRewards[selectedReward], selectedRewardValue));
     }
@@ -678,7 +718,7 @@ Value: {0}$
         return value;
     }
 
-    private void InventoryAddReward(string selectedReward, int selectedRewardValue)
+    void InventoryAddReward(string selectedReward, int selectedRewardValue)
     {
         if (inventory.ContainsKey(selectedReward))
         {
@@ -949,9 +989,17 @@ Value: {0}$
         var isValidNo = (input == "n" || input == "no" || input == "No" || input == "NO");
         if (isValidYes)
         {
-            SellItems();
-            RemoveInventory();
-            currentScreen = Screen.Sold;
+            if (Random.value <= shopCrimeChance)
+            {
+                DisplayShopCrimeScreen();
+                ShopCrime();
+            }
+            else
+            {
+                SellItems();
+                RemoveInventory();
+                currentScreen = Screen.Sold;
+            }
         }
         else if (isValidNo)
         {
@@ -963,19 +1011,38 @@ Value: {0}$
         }
     }
 
+    void DisplayShopCrimeScreen()
+    {
+        currentScreen = Screen.ShopCrime;
+        Terminal.ClearScreen();
+        Terminal.WriteLine(string.Format(shopCrimeMessage, crimeLevel));
+    }
+
+    void ShopCrime()
+    {
+        float percentageTaken = .9f;  // maybe move it to variable section as public var not local
+        int sellValue = CalculateSellValueItems()[0];
+        int newMoneyValue = (int) (sellValue - (sellValue * percentageTaken));  // int number representation e.x. sell value 100, ShopCrime(), 100 - 90% = (100 - (100 * .9f))
+
+        RemoveInventory();
+        IcreaseFelony(crimeLevel);
+        AddMoney(newMoneyValue);
+    }
+
     void SellItems()
     {
-        int itemsNumber = 0;
-        int sellValue = 0;
+        int[] sellValueItemsNumber = CalculateSellValueItems();
+        int sellValue = sellValueItemsNumber[0];
+        int itemsNumber = sellValueItemsNumber[1];
         string plural = "";
 
-        foreach (KeyValuePair<string, int> item in inventory)
-        {
-            sellValue += item.Value;
-            itemsNumber += inventoryCounter[item.Key];
-        }
+        //foreach (KeyValuePair<string, int> item in inventory)
+        //{
+        //    sellValue += item.Value;
+        //    itemsNumber += inventoryCounter[item.Key];
+        //}
 
-        money += sellValue;
+        AddMoney(sellValue);
 
         if (itemsNumber > 1)
         {
@@ -983,6 +1050,25 @@ Value: {0}$
         }
         Terminal.ClearScreen();
         Terminal.WriteLine($"You sold {itemsNumber} item{plural} for {sellValue}$.");
+    }
+
+    void AddMoney(int value)
+    {
+        money += value;
+    }
+
+    int[] CalculateSellValueItems()
+    {
+        int sellValue = 0;
+        int itemsNumber = 0;
+
+        foreach (KeyValuePair<string, int> item in inventory)
+        {
+            sellValue += item.Value;
+            itemsNumber += inventoryCounter[item.Key];
+        }
+        
+        return new [] { sellValue, itemsNumber};
     }
 
     void RemoveInventory()
@@ -1020,10 +1106,13 @@ Value: {0}$
         }
     }
 
-    void IcreaseFelony()
+    void IcreaseFelony(int increaseValue)
     {
-        felonyLevel++;
-        Terminal.WriteLine(increaseFelonyMessage);
+        felonyLevel += increaseValue;
+        if (currentScreen != Screen.ShopCrime)
+        {
+            Terminal.WriteLine(increaseFelonyMessage);
+        }
     }
 
     void ShowFelonyLevel()
@@ -1047,7 +1136,6 @@ Value: {0}$
         Terminal.WriteLine(string.Format(felonyReadyLabel, felonyLevelsString, felonyLevel));
     }
 
-    bool busted = false;
     void Busted()
     {
         felonyLevel = 0;
@@ -1069,7 +1157,7 @@ Value: {0}$
 
     void CheckFelony()
     {
-        if (felonyLevel == 10)
+        if (felonyLevel >= 10)
         {
             Busted();
         }
