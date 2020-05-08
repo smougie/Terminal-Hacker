@@ -242,14 +242,14 @@ Value: {0}$
     #endregion
 
     // Game items variables
-    string itemToBuy = "";
-    int itemName = 0;
-    int itemPrice = 1;
-    int itemLevel = 2;
-    int itemShopLevel = 3;
-    int itemLvl2UpgradeCost = 4;
-    int itemLvl3UpgradeCost = 5;
-    int itemStartingPrice = 6;
+    [HideInInspector] string itemToBuy = "";
+    [HideInInspector] int itemName = 0;
+    [HideInInspector] int itemPrice = 1;
+    [HideInInspector] int itemLevel = 2;
+    [HideInInspector] int itemShopLevel = 3;
+    [HideInInspector] int itemLvl2UpgradeCost = 4;
+    [HideInInspector] int itemLvl3UpgradeCost = 5;
+    [HideInInspector] int itemStartingPrice = 6;
 
     #region gameItems container
     Dictionary<string, string[]> gameItems = new Dictionary<string, string[]>
@@ -281,11 +281,15 @@ Value: {0}$
     #endregion
 
     // Game State
+    string passwordHint = "";
+    string enigmaHint = "";
+    string decoderHint = "";
     int crimeLevel = 1;
     float shopCrimeChance = .5f;
+    private bool timerOn;
     float levelTime = 0f;
     float currentCounterTime = 0f;
-    float[] levelTimeValues = { 5f, 10f, 15f};
+    float[] levelTimeValues = { 15f, 25f, 35f};
     bool enigmaActive = false;
     bool enigmaMaxLevel = false;
     bool decoderActive = false;
@@ -295,7 +299,7 @@ Value: {0}$
     int money = 0;
     int felonyLevel = 0;
     string password;
-    enum Screen { MainMenu, Password, Win, Inventory, Shop, BuyMenu, Sell, Sold, Back, ItemBuyConfirm, Stop, ShopCrime };
+    enum Screen { MainMenu, Password, Win, Inventory, Shop, BuyMenu, Sell, Sold, Back, ItemBuyConfirm, Stop, ShopCrime, TimesUp };
     Screen currentScreen;
     Dictionary<string, int> inventory = new Dictionary<string, int>();
     Dictionary<string, int> inventoryCounter = new Dictionary<string, int>();
@@ -310,7 +314,7 @@ Value: {0}$
     [HideInInspector] string validOptionHintPL = "Wybierz odpowiednią opcję";
     [HideInInspector] string validOption2Hint = "Please choose a valid option";
     [HideInInspector] string backHint = "Type 'b' for back or 'menu' for menu";
-    [HideInInspector] string passwordHint = "*hint: {0}";
+
     [HideInInspector] string passwordPrompt = "Please enter a password:";
     [HideInInspector] string passwordPromptPL = "*podpowiedź: {1}\nWprowadź hasło:";
     [HideInInspector] string tryAgainMessage = "Password incorrect, please try again.";
@@ -320,18 +324,22 @@ Value: {0}$
     [HideInInspector] string BuyMenu = "What would like to buy?";
     [HideInInspector] string cantAfford = "You can't afford this item.";
     [HideInInspector] string itemMaxLevelHint = "Item already in your inventory.";
-    [HideInInspector] string increaseFelonyMessage = "Wrong password. Felony level icreased!";
     [HideInInspector] string shopCrimeMessage = "Something went wrong...\nWhen you were leaving the shop, the \npolice appeared!\nYou manage to escape but you lost half\n" +
         "of your sell value and felony level\nicreased by {0}0%!";
+    [HideInInspector] string counterString = "{0} sec.";
+    [HideInInspector] string timesUpMessage = "You fail to hack in time...\nSomeone notified the police.\nFelony level increased by {0}0%!";
+    [HideInInspector] string timePenaltyMessage = "Wrong password.\nHack time reduced by {0} sec.";
 
     Slider slider;
     [SerializeField] GameObject progressBar = null;
+    [SerializeField] Text counterText = null;
     #endregion
 
     void Start()
     {
         slider = gameObject.GetComponentInChildren<Slider>();
         progressBar.SetActive(false);
+        counterText.gameObject.SetActive(false);
         ShowMainMenu();
     }
 
@@ -339,6 +347,10 @@ Value: {0}$
     {
         CheckFelony();
         LevelTimeCounter();
+        if (currentScreen == Screen.Password && timerOn)
+        {
+            trackTimerTime();
+        }
     }
 
     // Display main menu
@@ -346,7 +358,8 @@ Value: {0}$
     {
         if (currentScreen == Screen.Password)
         {
-            DisableCounter();
+            DisableTimer();
+            ClearPasswordAndHints();
             //TODO running from password screen must be punished!!!
         }
         Terminal.ClearScreen();
@@ -409,6 +422,9 @@ Value: {0}$
                 case Screen.ShopCrime:
                     Terminal.WriteLine(menuHint);
                     break;
+                case Screen.TimesUp:
+                    GoBack(input);
+                    break;
                 default:
                     Debug.LogError("OnUserInput currentScreen switch statement Error.");
                     break;
@@ -467,6 +483,9 @@ Value: {0}$
                 case Screen.Inventory:
                     ShowMainMenu();
                     break;
+                case Screen.TimesUp:
+                    AskForPassword();
+                    break;
                 default:
                     break;
                 #endregion
@@ -482,52 +501,111 @@ Value: {0}$
     void AskForPassword()
     {
         currentScreen = Screen.Password;
-        SetRandomPassword();
+        if (string.IsNullOrEmpty(password))
+        {
+            SetRandomPassword();
+        }
+        if (string.IsNullOrEmpty(passwordHint))
+        {
+            CreatePasswordHint();
+        }
+        if (decoderActive && string.IsNullOrEmpty(decoderHint))
+        {
+            CreateDecoderHint();
+        }
+        if (enigmaActive && string.IsNullOrEmpty(enigmaHint))
+        {
+            CreateEnigmaHint();
+        }
         StartTimer();
+        DisplayPasswordScreen();
+    }
+
+    private void DisplayPasswordScreen()
+    {
         Terminal.ClearScreen();
         Terminal.WriteLine(menuHint);
         Terminal.WriteLine(locations[level - 1]);
-        Terminal.WriteLine(string.Format(passwordHint, password.Anagram()));
+        Terminal.WriteLine(passwordHint);
         if (decoderActive)
         {
-            ShowDecoderHint();
+            Terminal.WriteLine(decoderHint);
         }
         if (enigmaActive)
         {
-            ShowEnigmaHint();
+            Terminal.WriteLine(enigmaHint);
         }
         Terminal.WriteLine(string.Format(passwordPrompt));
     }
 
+    void ClearPassword()
+    {
+        password = "";
+    }
+
     void StartTimer()
     {
+        timerOn = true;
         levelTime = levelTimeValues[level - 1];
         progressBar.SetActive(true);
+        counterText.gameObject.SetActive(true);
         currentCounterTime = levelTime;
     }
 
-    void DisableCounter()
-    {
-        levelTime = 0f;
-        currentCounterTime = 0f;
-        progressBar.SetActive(false);
-    }
-    
     void LevelTimeCounter()
     {
         if (currentCounterTime > 0)
         {
             currentCounterTime -= Time.deltaTime;
             slider.value = currentCounterTime / levelTime;
-        }
-        else
-        {
-            levelTime = 0;
-            progressBar.SetActive(false);
+            counterText.text = string.Format(counterString, (currentCounterTime).ToString("0.0"));
         }
     }
 
-    void ShowEnigmaHint()
+    void trackTimerTime()
+    {
+        if (currentCounterTime <= 0)
+        {
+            DisableTimer();
+            DisplayTimesUp();
+            TimesUp();
+        }
+    }
+
+    void DisableTimer()
+    {
+        timerOn = false;
+        progressBar.SetActive(false);
+        counterText.gameObject.SetActive(false);
+    }
+
+    void DisplayTimesUp()
+    {
+        currentScreen = Screen.TimesUp;
+        Terminal.ClearScreen();
+        Terminal.WriteLine(string.Format(timesUpMessage, level));
+    }
+
+    void TimesUp()
+    {
+        ClearPasswordAndHints();
+        IncreaseFelony(level);
+    }
+
+    void TimePenalty()
+    {
+        DisplayPasswordScreen();
+        Terminal.WriteLine(string.Format(timePenaltyMessage, level));
+        currentCounterTime -= level;
+    }
+
+    void CreatePasswordHint()
+    {
+        string hint = "*hint: {0}";
+        passwordHint = string.Format(hint, password.Anagram());
+    }
+
+    void CreateEnigmaHint()
     {
         string hint = "*enigma: ";
         switch (gameItems["enigma"][itemLevel])
@@ -544,10 +622,10 @@ Value: {0}$
             default:
                 break;
         }
-        Terminal.WriteLine(hint);
+        enigmaHint = hint;
     }
 
-    void ShowDecoderHint()
+    void CreateDecoderHint()
     {
         string hint = "*decoder: ";
         List<int> shuffledList = new List<int>();
@@ -561,9 +639,31 @@ Value: {0}$
             hint += $"{passwordsHints[password][shuffledList[i-1]]} ";
         }
 
-        Terminal.WriteLine(hint);
+        decoderHint = hint;
     }
 
+    void ClearPasswordAndHints()
+    {
+        ClearPassword();
+        ClearPasswordHint();
+        ClearEnigmaHint();
+        ClearDecoderHint();
+    }
+
+    void ClearEnigmaHint()
+    {
+        enigmaHint = "";
+    }
+
+    void ClearDecoderHint()
+    {
+        decoderHint = "";
+    }
+
+    void ClearPasswordHint()
+    {
+        passwordHint = "";
+    }
 
     void SetRandomPassword()
     {
@@ -589,12 +689,14 @@ Value: {0}$
         if (input == password)
         {
             DisplayWinScreen();
+            ClearPasswordAndHints();
+            DisableTimer();
         }
         else
         {
-            AskForPassword();
-            IcreaseFelony(level);
-            // TODO wrong password hint?
+            //AskForPassword();
+            // TODO PUNISH
+            TimePenalty();
         }
     }
 
@@ -603,6 +705,7 @@ Value: {0}$
         currentScreen = Screen.Win;
         Terminal.ClearScreen();
         ManageLevelReward();
+
     }
 
     void ManageLevelReward()
@@ -1025,7 +1128,7 @@ Value: {0}$
         int newMoneyValue = (int) (sellValue - (sellValue * percentageTaken));  // int number representation e.x. sell value 100, ShopCrime(), 100 - 90% = (100 - (100 * .9f))
 
         RemoveInventory();
-        IcreaseFelony(crimeLevel);
+        IncreaseFelony(crimeLevel);
         AddMoney(newMoneyValue);
     }
 
@@ -1106,12 +1209,12 @@ Value: {0}$
         }
     }
 
-    void IcreaseFelony(int increaseValue)
+    void IncreaseFelony(int increaseValue)
     {
         felonyLevel += increaseValue;
-        if (currentScreen != Screen.ShopCrime)
+        if (currentScreen == Screen.Password)
         {
-            Terminal.WriteLine(increaseFelonyMessage);
+            Terminal.WriteLine(timePenaltyMessage);
         }
     }
 
