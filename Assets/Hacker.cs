@@ -420,11 +420,11 @@ Value: {0}$
     private void ShowMainMenu()
     {
         Terminal.ClearScreen();
-        SetUpScreen(Screen.MainMenu);
+        SetScreen(Screen.MainMenu);
         Terminal.WriteLine(string.Format(mainMenuScreen, locations[0], locations[1], locations[2]));
     }
 
-    void SetUpScreen(Screen screen)
+    void SetScreen(Screen screen)
     {
         currentScreen = screen;
     }
@@ -437,7 +437,7 @@ Value: {0}$
             DisableTimer();
             ClearPasswordAndHints();
             IncreaseFelony(level);
-            SetUpScreen(Screen.Back);
+            SetScreen(Screen.Back);
             Terminal.ClearScreen();
             Terminal.WriteLine(string.Format(safeConnectionMessage, level));
         }
@@ -600,22 +600,22 @@ Value: {0}$
     // Method setting random password
     void AskForPassword()
     {
-        SetUpScreen(Screen.Password);
+        SetScreen(Screen.Password);
         if (string.IsNullOrEmpty(password))
         {
             SetRandomPassword();
         }
         if (string.IsNullOrEmpty(passwordHint))
         {
-            CreatePasswordHint();
+            SetPasswordHint();
         }
         if (decoderActive && string.IsNullOrEmpty(decoderHint))
         {
-            CreateDecoderHint();
+            SetDecoderHint();
         }
         if (enigmaActive && string.IsNullOrEmpty(enigmaHint))
         {
-            CreateEnigmaHint();
+            SetEnigmaHint();
         }
         StartTimer();
         DisplayPasswordScreen();
@@ -703,7 +703,7 @@ Value: {0}$
 
     void DisplayTimesUp()
     {
-        SetUpScreen(Screen.TimesUp);
+        SetScreen(Screen.TimesUp);
         Terminal.ClearScreen();
         Terminal.WriteLine(string.Format(timesUpMessage, level));
     }
@@ -721,13 +721,13 @@ Value: {0}$
         currentCounterTime -= level;
     }
 
-    void CreatePasswordHint()
+    void SetPasswordHint()
     {
         string hint = "*hint: {0}";
         passwordHint = string.Format(hint, password.Anagram());
     }
 
-    void CreateEnigmaHint()
+    void SetEnigmaHint()
     {
         string hint = "*enigma: ";
         switch (gameItems["enigma"][itemLevel])
@@ -747,7 +747,7 @@ Value: {0}$
         enigmaHint = hint;
     }
 
-    void CreateDecoderHint()
+    void SetDecoderHint()
     {
         string hint = "*decoder: ";
         List<int> shuffledList = new List<int>();
@@ -822,7 +822,7 @@ Value: {0}$
 
     void DisplayWinScreen()
     {
-        SetUpScreen(Screen.Win);
+        SetScreen(Screen.Win);
         Terminal.ClearScreen();
         ManageLevelReward();
 
@@ -957,7 +957,7 @@ Value: {0}$
 
     void ShowShop()
     {
-        SetUpScreen(Screen.Shop);
+        SetScreen(Screen.Shop);
         Terminal.ClearScreen();
         Terminal.WriteLine(shopMenu);
     }
@@ -980,35 +980,50 @@ Value: {0}$
 
     void ShowBuyMenu()
     {
-        SetUpScreen(Screen.BuyMenu);
-        string itemLabel = "{0} Name: {1} Level: {2}\nPrice: {3}$";
-        string itemLabelMax = "{0} Name: {1}, Level: \nMAX LEVEL";
+        SetScreen(Screen.BuyMenu);
+        string itemLabel = "\n{0} Name: {1} Level: {2}\nPrice: {3}$";
+        string itemLabelMax = "\n{0} Name: {1}, Level: \nMAX LEVEL";
         Terminal.ClearScreen();
+
+        var counter = 1;
+        foreach (KeyValuePair<string, string[]> item in gameItems)
+        {
+            if (int.Parse(item.Value[itemLevel]) == 3)
+            {
+                BuyMenu += string.Format(itemLabelMax, counter, item.Value[itemName]);
+            }
+            else
+            {
+                BuyMenu += string.Format(itemLabel, counter, item.Value[itemName], item.Value[itemShopLevel], item.Value[itemPrice]);
+            }
+            counter++;
+        }
         Terminal.WriteLine(BuyMenu);
-        if (!enigmaMaxLevel)
-        {
-            Terminal.WriteLine(string.Format(itemLabel, "1", gameItems["enigma"][itemName], gameItems["enigma"][itemShopLevel], gameItems["enigma"][itemPrice]));
-        }
-        if (enigmaMaxLevel)
-        {
-            Terminal.WriteLine(string.Format(itemLabelMax, "1", gameItems["enigma"][itemName]));
-        }
-        if (!decoderMaxLevel)
-        {
-            Terminal.WriteLine(string.Format(itemLabel, "2", gameItems["decoder"][itemName], gameItems["decoder"][itemShopLevel], gameItems["decoder"][itemPrice]));
-        }
-        if (decoderMaxLevel)
-        {
-            Terminal.WriteLine(string.Format(itemLabelMax, "2", gameItems["decoder"][itemName]));
-        }
-        if (!hackTimerMaxLevel)
-        {
-            Terminal.WriteLine(string.Format(itemLabel, "3", gameItems["hacktimer"][itemName], gameItems["hacktimer"][itemShopLevel], gameItems["hacktimer"][itemPrice]));
-        }
-        if (hackTimerMaxLevel)
-        {
-            Terminal.WriteLine(string.Format(itemLabelMax, "3", gameItems["hacktimer"][itemName], gameItems["hacktimer"][itemShopLevel], gameItems["hacktimer"][itemPrice]));
-        }
+
+        //if (!enigmaMaxLevel)
+        //{
+        //    Terminal.WriteLine(string.Format(itemLabel, "1", gameItems["enigma"][itemName], gameItems["enigma"][itemShopLevel], gameItems["enigma"][itemPrice]));
+        //}
+        //else
+        //{
+        //    Terminal.WriteLine(string.Format(itemLabelMax, "1", gameItems["enigma"][itemName]));
+        //}
+        //if (!decoderMaxLevel)
+        //{
+        //    Terminal.WriteLine(string.Format(itemLabel, "2", gameItems["decoder"][itemName], gameItems["decoder"][itemShopLevel], gameItems["decoder"][itemPrice]));
+        //}
+        //else
+        //{
+        //    Terminal.WriteLine(string.Format(itemLabelMax, "2", gameItems["decoder"][itemName]));
+        //}
+        //if (!hackTimerMaxLevel)
+        //{
+        //    Terminal.WriteLine(string.Format(itemLabel, "3", gameItems["hacktimer"][itemName], gameItems["hacktimer"][itemShopLevel], gameItems["hacktimer"][itemPrice]));
+        //}
+        //else
+        //{
+        //    Terminal.WriteLine(string.Format(itemLabelMax, "3", gameItems["hacktimer"][itemName], gameItems["hacktimer"][itemShopLevel], gameItems["hacktimer"][itemPrice]));
+        //}
 
     }
 
@@ -1102,7 +1117,7 @@ Value: {0}$
 
     void ShowBuyConfirm(string item)
     {
-        SetUpScreen(Screen.ItemBuyConfirm);
+        SetScreen(Screen.ItemBuyConfirm);
         string confirmQuestion = "Would you like to buy:\n{0} lvl. {1} for {2}$?\n\nPress y/Yes or n/NO";
         Terminal.ClearScreen();
         switch (item)
@@ -1255,7 +1270,7 @@ Value: {0}$
 
     void RunSellMenu()
     {
-        SetUpScreen(Screen.Sell);
+        SetScreen(Screen.Sell);
         Terminal.ClearScreen();
         Terminal.WriteLine(sellItemQuestion);
     }
@@ -1275,7 +1290,7 @@ Value: {0}$
             {
                 SellItems();
                 RemoveInventory();
-                SetUpScreen(Screen.Sold);
+                SetScreen(Screen.Sold);
             }
         }
         else if (isValidNo)
@@ -1290,7 +1305,7 @@ Value: {0}$
 
     void DisplayShopCrimeScreen()
     {
-        SetUpScreen(Screen.ShopCrime);
+        SetScreen(Screen.ShopCrime);
         Terminal.ClearScreen();
         Terminal.WriteLine(string.Format(shopCrimeMessage, crimeLevel));
     }
@@ -1356,7 +1371,7 @@ Value: {0}$
 
     void ShowInventory()
     {
-        SetUpScreen(Screen.Inventory);
+        SetScreen(Screen.Inventory);
         Terminal.ClearScreen();
         string plural = "";
         var itemsValue = 0;
@@ -1416,7 +1431,7 @@ Value: {0}$
     void Busted()
     {
         felonyLevel = 0;
-        SetUpScreen(Screen.Stop);
+        SetScreen(Screen.Stop);
         Terminal.ClearScreen();
         money = -5000;
         enigmaActive = false;
