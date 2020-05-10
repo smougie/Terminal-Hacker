@@ -276,7 +276,61 @@ Value: {0}$
             "1",
         }
         },
-
+        {"hacktimer", new string[]
+        {
+            "hacking timer",
+            "3",
+            "0",
+            "1",
+            "4",
+            "8",
+            "3",
+        }
+        },
+        {"auctioneer", new string[]
+        {
+            "auctioneer",
+            "3",
+            "0",
+            "1",
+            "4",
+            "8",
+            "3",
+        }
+        },
+        {"loster", new string[]
+        {
+            "loster",
+            "3",
+            "0",
+            "1",
+            "4",
+            "8",
+            "3",
+        }
+        },
+        {"timeencoder", new string[]
+        {
+            "timeencoder",
+            "3",
+            "0",
+            "1",
+            "4",
+            "8",
+            "3",
+        }
+        },
+        {"bribe", new string[]
+        {
+            "bribe",
+            "3",
+            "0",
+            "1",
+            "4",
+            "8",
+            "3",
+        }
+        },
     };
     #endregion
 
@@ -284,16 +338,20 @@ Value: {0}$
     string passwordHint = "";
     string enigmaHint = "";
     string decoderHint = "";
+    int menuCounter = 0;
     int crimeLevel = 1;
     float shopCrimeChance = .5f;
     private bool timerOn;
     float levelTime = 0f;
     float currentCounterTime = 0f;
-    float[] levelTimeValues = { 15f, 25f, 35f};
+    float[] levelTimeValues = { 20f, 30f, 40f};
+    float[] hackTimerTimeBonus = { 5f, 10f, 15f};
     bool enigmaActive = false;
     bool enigmaMaxLevel = false;
     bool decoderActive = false;
     bool decoderMaxLevel = false;
+    bool hackTimerActive = false;
+    bool hackTimerMaxLevel = false;
     bool busted = false;
     int level;  // member variable storing current level
     int money = 0;
@@ -324,11 +382,15 @@ Value: {0}$
     [HideInInspector] string BuyMenu = "What would like to buy?";
     [HideInInspector] string cantAfford = "You can't afford this item.";
     [HideInInspector] string itemMaxLevelHint = "Item already in your inventory.";
-    [HideInInspector] string shopCrimeMessage = "Something went wrong...\nWhen you were leaving the shop, the \npolice appeared!\nYou manage to escape but you lost half\n" +
-        "of your sell value and felony level\nicreased by {0}0%!";
+    [HideInInspector] string shopCrimeMessage = "Something went wrong...\nWhen you were leaving the shop, the\npolice appeared!\nYou managed to escape but you\nlost half of your sell value" +
+        "and\nfelony level icreased by {0}0%!";
     [HideInInspector] string counterString = "{0} sec.";
+    [HideInInspector] string counterBonusString = "{0} sec. ({1} sec. time bonus)";
     [HideInInspector] string timesUpMessage = "You fail to hack in time...\nSomeone notified the police.\nFelony level increased by {0}0%!";
     [HideInInspector] string timePenaltyMessage = "Wrong password.\nHack time reduced by {0} sec.";
+    [HideInInspector] string safeConnectionMessage = "You didn't close safe connection\nproperly when you decided to finish\nhacking. Police found your network\ntrace. Felony level " +
+        "increased by\n{0}0%!";
+    [HideInInspector] string leavingPasswordMessage = "\nRepeat 'menu' if you want to quit\nhacking - this action will cause you\npenalty.";
 
     Slider slider;
     [SerializeField] GameObject progressBar = null;
@@ -341,6 +403,7 @@ Value: {0}$
         progressBar.SetActive(false);
         counterText.gameObject.SetActive(false);
         ShowMainMenu();
+        money = 100000;  // DELETE
     }
 
     private void Update()
@@ -356,15 +419,33 @@ Value: {0}$
     // Display main menu
     private void ShowMainMenu()
     {
-        if (currentScreen == Screen.Password)
+        Terminal.ClearScreen();
+        SetUpScreen(Screen.MainMenu);
+        Terminal.WriteLine(string.Format(mainMenuScreen, locations[0], locations[1], locations[2]));
+    }
+
+    void SetUpScreen(Screen screen)
+    {
+        currentScreen = screen;
+    }
+
+    void CheckMenuCounter()
+    {
+        if (menuCounter == 2)
         {
+            ResetMenuCounter();
             DisableTimer();
             ClearPasswordAndHints();
-            //TODO running from password screen must be punished!!!
+            IncreaseFelony(level);
+            SetUpScreen(Screen.Back);
+            Terminal.ClearScreen();
+            Terminal.WriteLine(string.Format(safeConnectionMessage, level));
         }
-        Terminal.ClearScreen();
-        currentScreen = Screen.MainMenu;
-        Terminal.WriteLine(string.Format(mainMenuScreen, locations[0], locations[1], locations[2]));
+        else
+        {
+            DisplayPasswordScreen();
+            Terminal.WriteLine(leavingPasswordMessage);
+        }
     }
 
     // Method deciding how to handle user input
@@ -373,7 +454,16 @@ Value: {0}$
         // Player can always go to main menu
         if (input == "menu")
         {
-            ShowMainMenu();
+            if (currentScreen == Screen.Password)
+            {
+                IncreaseMenuCounter();
+                CheckMenuCounter();       
+            }
+            else
+            {
+                ShowMainMenu();
+            }
+
         }
         else if (input == "/saldo")
         {
@@ -430,6 +520,16 @@ Value: {0}$
                     break;
                 #endregion
             }
+    }
+
+    void ResetMenuCounter()
+    {
+        menuCounter = 0;
+    }
+
+    private void IncreaseMenuCounter()
+    {
+        menuCounter += 1;
     }
 
     // Method handling player main menu choices
@@ -500,7 +600,7 @@ Value: {0}$
     // Method setting random password
     void AskForPassword()
     {
-        currentScreen = Screen.Password;
+        SetUpScreen(Screen.Password);
         if (string.IsNullOrEmpty(password))
         {
             SetRandomPassword();
@@ -546,19 +646,38 @@ Value: {0}$
     void StartTimer()
     {
         timerOn = true;
-        levelTime = levelTimeValues[level - 1];
+        SetLevelTime();
         progressBar.SetActive(true);
         counterText.gameObject.SetActive(true);
         currentCounterTime = levelTime;
     }
 
+    private void SetLevelTime()
+    {
+        if (hackTimerActive)
+        {
+            levelTime = levelTimeValues[level - 1] + hackTimerTimeBonus[level - 1];
+        }
+        else
+        {
+            levelTime = levelTimeValues[level - 1];
+        }
+    }
+
     void LevelTimeCounter()
     {
-        if (currentCounterTime > 0)
+        if (currentCounterTime > 0 && timerOn)
         {
             currentCounterTime -= Time.deltaTime;
             slider.value = currentCounterTime / levelTime;
-            counterText.text = string.Format(counterString, (currentCounterTime).ToString("0.0"));
+            if (hackTimerActive)
+            {
+                counterText.text = string.Format(counterBonusString, (currentCounterTime).ToString("0.0"), hackTimerTimeBonus[int.Parse(gameItems["hacktimer"][itemLevel]) - 1]);
+            }
+            else
+            {
+                counterText.text = string.Format(counterString, (currentCounterTime).ToString("0.0"));
+            }
         }
     }
 
@@ -575,13 +694,16 @@ Value: {0}$
     void DisableTimer()
     {
         timerOn = false;
+        currentCounterTime = 0;
+        levelTime = 0;
         progressBar.SetActive(false);
         counterText.gameObject.SetActive(false);
+
     }
 
     void DisplayTimesUp()
     {
-        currentScreen = Screen.TimesUp;
+        SetUpScreen(Screen.TimesUp);
         Terminal.ClearScreen();
         Terminal.WriteLine(string.Format(timesUpMessage, level));
     }
@@ -694,15 +816,13 @@ Value: {0}$
         }
         else
         {
-            //AskForPassword();
-            // TODO PUNISH
             TimePenalty();
         }
     }
 
     void DisplayWinScreen()
     {
-        currentScreen = Screen.Win;
+        SetUpScreen(Screen.Win);
         Terminal.ClearScreen();
         ManageLevelReward();
 
@@ -837,7 +957,7 @@ Value: {0}$
 
     void ShowShop()
     {
-        currentScreen = Screen.Shop;
+        SetUpScreen(Screen.Shop);
         Terminal.ClearScreen();
         Terminal.WriteLine(shopMenu);
     }
@@ -860,9 +980,9 @@ Value: {0}$
 
     void ShowBuyMenu()
     {
-        currentScreen = Screen.BuyMenu;
+        SetUpScreen(Screen.BuyMenu);
         string itemLabel = "{0} Name: {1} Level: {2}\nPrice: {3}$";
-        string itemLabelMax = "{0} Name: {1}, Level: MAX LEVEL";
+        string itemLabelMax = "{0} Name: {1}, Level: \nMAX LEVEL";
         Terminal.ClearScreen();
         Terminal.WriteLine(BuyMenu);
         if (!enigmaMaxLevel)
@@ -881,12 +1001,20 @@ Value: {0}$
         {
             Terminal.WriteLine(string.Format(itemLabelMax, "2", gameItems["decoder"][itemName]));
         }
+        if (!hackTimerMaxLevel)
+        {
+            Terminal.WriteLine(string.Format(itemLabel, "3", gameItems["hacktimer"][itemName], gameItems["hacktimer"][itemShopLevel], gameItems["hacktimer"][itemPrice]));
+        }
+        if (hackTimerMaxLevel)
+        {
+            Terminal.WriteLine(string.Format(itemLabelMax, "3", gameItems["hacktimer"][itemName], gameItems["hacktimer"][itemShopLevel], gameItems["hacktimer"][itemPrice]));
+        }
 
     }
 
     void ChooseBuyItem(string input)
     {
-        var isValidChoice = (input == "1" || input == "2");
+        var isValidChoice = (input == "1" || input == "2" || input == "3");
         if (isValidChoice)
         {
             if (input == "1")
@@ -919,6 +1047,21 @@ Value: {0}$
                     Terminal.WriteLine(cantAfford);
                 }
             }
+            else if (input == "3")
+            {
+                if (hackTimerMaxLevel)
+                {
+                    Terminal.WriteLine(itemMaxLevelHint);
+                }
+                else if (CanAffordItem("hacktimer"))
+                {
+                    ShowBuyConfirm("hacktimer");
+                }
+                else
+                {
+                    Terminal.WriteLine(cantAfford);
+                }
+            }
         }
         else
         {
@@ -937,13 +1080,15 @@ Value: {0}$
                 {
                     canAfford = true;
                 }
-                else
-                {
-                    canAfford = false;
-                }
                 break;
             case "decoder":
                 if (money >= int.Parse(gameItems["decoder"][itemPrice]))
+                {
+                    canAfford = true;
+                }
+                break;
+            case "hacktimer":
+                if (money >= int.Parse(gameItems["hacktimer"][itemPrice]))
                 {
                     canAfford = true;
                 }
@@ -957,7 +1102,7 @@ Value: {0}$
 
     void ShowBuyConfirm(string item)
     {
-        currentScreen = Screen.ItemBuyConfirm;
+        SetUpScreen(Screen.ItemBuyConfirm);
         string confirmQuestion = "Would you like to buy:\n{0} lvl. {1} for {2}$?\n\nPress y/Yes or n/NO";
         Terminal.ClearScreen();
         switch (item)
@@ -969,6 +1114,10 @@ Value: {0}$
             case "decoder":
                 Terminal.WriteLine(string.Format(confirmQuestion, gameItems["decoder"][itemName], gameItems["decoder"][itemShopLevel], gameItems["decoder"][itemPrice]));
                 itemToBuy = "decoder";
+                break;
+            case "hacktimer":
+                Terminal.WriteLine(string.Format(confirmQuestion, gameItems["hacktimer"][itemName], gameItems["hacktimer"][itemShopLevel], gameItems["hacktimer"][itemPrice]));
+                itemToBuy = "hacktimer";
                 break;
             default:
                 Debug.LogError("ShowBuyConfirm switch statement Error.");
@@ -1006,6 +1155,10 @@ Value: {0}$
             case "decoder":
                 money -= int.Parse(gameItems["decoder"][itemPrice]);
                 decoderActive = true;
+                break;
+            case "hacktimer":
+                money -= int.Parse(gameItems["hacktimer"][itemPrice]);
+                hackTimerActive = true;
                 break;
             default:
                 break;
@@ -1062,6 +1215,27 @@ Value: {0}$
                     }
                 }
                 break;
+            case "hacktimer":
+                if (!hackTimerMaxLevel)
+                {
+                    newLevelValue = int.Parse(gameItems["hacktimer"][itemLevel]) + 1;
+                    gameItems["hacktimer"][itemLevel] = newLevelValue.ToString();
+                    if (int.Parse(gameItems["hacktimer"][itemLevel]) == 3)
+                    {
+                        hackTimerMaxLevel = true;
+                        break;
+                    }
+                    gameItems["hacktimer"][itemShopLevel] = (newLevelValue + 1).ToString();
+                    if (int.Parse(gameItems["hacktimer"][itemLevel]) == 1)
+                    {
+                        gameItems["hacktimer"][itemPrice] = gameItems["hacktimer"][itemLvl2UpgradeCost];
+                    }
+                    else
+                    {
+                        gameItems["hacktimer"][itemPrice] = gameItems["hacktimer"][itemLvl3UpgradeCost];
+                    }
+                }
+                break;
             default:
                 break;
         }
@@ -1081,7 +1255,7 @@ Value: {0}$
 
     void RunSellMenu()
     {
-        currentScreen = Screen.Sell;
+        SetUpScreen(Screen.Sell);
         Terminal.ClearScreen();
         Terminal.WriteLine(sellItemQuestion);
     }
@@ -1101,7 +1275,7 @@ Value: {0}$
             {
                 SellItems();
                 RemoveInventory();
-                currentScreen = Screen.Sold;
+                SetUpScreen(Screen.Sold);
             }
         }
         else if (isValidNo)
@@ -1116,7 +1290,7 @@ Value: {0}$
 
     void DisplayShopCrimeScreen()
     {
-        currentScreen = Screen.ShopCrime;
+        SetUpScreen(Screen.ShopCrime);
         Terminal.ClearScreen();
         Terminal.WriteLine(string.Format(shopCrimeMessage, crimeLevel));
     }
@@ -1182,7 +1356,7 @@ Value: {0}$
 
     void ShowInventory()
     {
-        currentScreen = Screen.Inventory;
+        SetUpScreen(Screen.Inventory);
         Terminal.ClearScreen();
         string plural = "";
         var itemsValue = 0;
@@ -1242,13 +1416,15 @@ Value: {0}$
     void Busted()
     {
         felonyLevel = 0;
-        currentScreen = Screen.Stop;
+        SetUpScreen(Screen.Stop);
         Terminal.ClearScreen();
         money = -5000;
         enigmaActive = false;
         enigmaMaxLevel = false;
         decoderActive = false;
         decoderMaxLevel = false;
+        hackTimerActive = false;
+        hackTimerMaxLevel = false;
         foreach (KeyValuePair<string, string[]> item in gameItems)
         {
             gameItems[item.Key][itemPrice] = gameItems[item.Key][itemStartingPrice];
