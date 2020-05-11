@@ -344,6 +344,8 @@ Value: {0}$
     private bool timerOn;
     float levelTime = 0f;
     float currentCounterTime = 0f;
+    int[] timePenaltyValues = { 3, 4, 5 };
+    int[] timeEncoderReduceValues = { 1, 2, 3 };
     float[] LosterAvoidChances = { .2f, .25f, .33f };
     float[] auctioneerPercentageValues = { .1f, .2f, .3f};
     string[] bribeNames = { "Harry", "Nikita", "Jackarta", "'Chief Smith'" };
@@ -420,11 +422,11 @@ Value: {0}$
         counterText.gameObject.SetActive(false);
         ShowMainMenu();
         money = 1000000;  // DELETE
-        print(timePenaltyValues[int.Parse(gameItems["timeencoder"][itemLevel])]);
     }
 
     private void Update()
     {
+        print(RewardTier());
         CheckFelony();
         LevelTimeCounter();
         if (currentScreen == Screen.Password && timerOn)
@@ -781,8 +783,6 @@ Value: {0}$
         Terminal.WriteLine(losterMessage);
     }
 
-    int[] timePenaltyValues = { 3, 4, 5};
-    int[] timeEncoderReduceValues = { 1, 2, 3};
     void TimePenalty()
     {
         DisplayPasswordScreen();
@@ -1007,9 +1007,46 @@ Value: {0}$
 
     string DrawReward(string[] rewardsList)
     {
+        // TODO set tier chances for rewards (t1 - 10, t2 - 15, t3 - 20, t4 - 25, t5 - 30)
         int randomIndex = Random.Range(0, rewardsList.Length);
         string reward = rewardsList[randomIndex];
         return reward;
+    }
+
+    int RewardTier()
+    {
+        int tierIndex = 0;
+        float dropChance = Random.value;
+        if (dropChance <= .3f)
+        {
+            // tier 5 - index 0 == tier 5
+            tierIndex = 0;
+        }
+        else if (dropChance > .3f && dropChance <= .55f)
+        {
+            // tier 4
+            tierIndex = 1;
+        }
+        else if (dropChance > .55f && dropChance <= .75f)
+        {
+            // tier 3
+            tierIndex = 2;
+        }
+        else if (dropChance > .75f && dropChance <= .90f)
+        {
+            // tier 2
+            tierIndex = 3;
+        }
+        else if (dropChance > .90f)
+        {
+            // tier 1 - index 4 == tier 1
+            tierIndex = 4;
+        }
+        else
+        {
+            Debug.LogError("RewardTier() drop chance Error.");
+        }
+        return tierIndex;
     }
 
     int SetItemValue(int minValue, int maxValue)
