@@ -344,6 +344,7 @@ Value: {0}$
     private bool timerOn;
     float levelTime = 0f;
     float currentCounterTime = 0f;
+    float[] auctioneerPercentageValues = { .1f, .2f, .3f};
     string[] bribeNames = { "Harry", "Nikita", "Jackarta", "'Chief Smith'" };
     int[] bribeCost = { 50000, 100000, 150000, 350000 };
     int[] bribeReduceValue = { 1, 2, 3, 10 };
@@ -693,7 +694,7 @@ Value: {0}$
     {
         if (hackTimerActive)
         {
-            levelTime = levelTimeValues[level - 1] + hackTimerTimeBonus[level - 1];
+            levelTime = levelTimeValues[level - 1] + hackTimerTimeBonus[int.Parse(gameItems["hacktimer"][itemLevel]) - 1];
         }
         else
         {
@@ -1103,11 +1104,12 @@ Value: {0}$
         var ordinalNumber = 1;
         foreach (KeyValuePair<string, string[]> item in gameItems)
         {
-            if (counter == 7)
+            if (counter == 7 && currentScreen == Screen.Shop3)
             {
                 ShowBribeOptions();
+                break;
             }
-            else if (shopItemsDivision[shopNumber].Contains(counter))
+            if (shopItemsDivision[shopNumber].Contains(counter))
             {
                 if (int.Parse(item.Value[itemLevel]) == 3)
                 {
@@ -1634,12 +1636,7 @@ Value: {0}$
         int sellValue = sellValueItemsNumber[0];
         int itemsNumber = sellValueItemsNumber[1];
         string plural = "";
-
-        //foreach (KeyValuePair<string, int> item in inventory)
-        //{
-        //    sellValue += item.Value;
-        //    itemsNumber += inventoryCounter[item.Key];
-        //}
+        string sellMessage = $"You sold {itemsNumber} item{plural} for {sellValue}$.";
 
         AddMoney(sellValue);
 
@@ -1647,8 +1644,12 @@ Value: {0}$
         {
             plural = "s";
         }
+        else if (auctioneerActive)
+        {
+            sellMessage += string.Format("\n(+{0}% bonus)", auctioneerPercentageValues[int.Parse(gameItems["auctioneer"][itemLevel]) - 1] * 100);
+        }
         Terminal.ClearScreen();
-        Terminal.WriteLine($"You sold {itemsNumber} item{plural} for {sellValue}$.");
+        Terminal.WriteLine(sellMessage);
     }
 
     void AddMoney(int value)
@@ -1665,6 +1666,10 @@ Value: {0}$
         {
             sellValue += item.Value;
             itemsNumber += inventoryCounter[item.Key];
+        }
+        if (auctioneerActive)
+        {
+            sellValue += (int)(sellValue * auctioneerPercentageValues[int.Parse(gameItems["auctioneer"][itemLevel]) - 1]);
         }
         
         return new [] { sellValue, itemsNumber};
