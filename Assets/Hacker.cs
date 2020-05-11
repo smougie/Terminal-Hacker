@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +9,7 @@ public class Hacker : MonoBehaviour
     // Locations
     [HideInInspector] string[] locations = {"Local shop", "CrossFit gym", "Hogwarts"};
     [HideInInspector] string[] locationsPL = {"Sklep żabka", "Rebel Nature Gym", "Hogwart"};
+    [HideInInspector] string[] shopNames = { "Crazy Hacker Shop", "Wierd Guys Shop", "Police .Net Vendor"};
 
     // Level rewards names
     [HideInInspector] string[] level1RewardsNames = {"icecream", "laptop", "revenue", "tape", "vodka"};
@@ -268,12 +270,12 @@ Value: {0}$
         {"decoder", new string[]
         {
             "decoder",
-            "1",
+            "2",
             "0",
             "1",
-            "3",
+            "4",
             "6",
-            "1",
+            "2",
         }
         },
         {"hacktimer", new string[]
@@ -282,42 +284,42 @@ Value: {0}$
             "3",
             "0",
             "1",
-            "4",
-            "8",
+            "6",
+            "9",
             "3",
         }
         },
         {"auctioneer", new string[]
         {
             "auctioneer",
-            "3",
+            "4",
             "0",
             "1",
+            "5",
+            "6",
             "4",
-            "8",
-            "3",
         }
         },
         {"loster", new string[]
         {
             "loster",
-            "3",
+            "5",
             "0",
             "1",
-            "4",
-            "8",
-            "3",
+            "10",
+            "15",
+            "5",
         }
         },
         {"timeencoder", new string[]
         {
-            "timeencoder",
-            "3",
+            "time encoder",
+            "6",
             "0",
             "1",
-            "4",
-            "8",
-            "3",
+            "12",
+            "18",
+            "6",
         }
         },
         {"bribe", new string[]
@@ -326,15 +328,13 @@ Value: {0}$
             "3",
             "0",
             "1",
-            "4",
-            "8",
-            "3",
         }
         },
     };
     #endregion
 
     // Game State
+    int shopNumber;
     string passwordHint = "";
     string enigmaHint = "";
     string decoderHint = "";
@@ -344,6 +344,9 @@ Value: {0}$
     private bool timerOn;
     float levelTime = 0f;
     float currentCounterTime = 0f;
+    string[] bribeNames = { "Harry", "Nikita", "Jackarta", "'Chief Smith'" };
+    int[] bribeCost = { 50000, 100000, 150000, 350000 };
+    int[] bribeReduceValue = { 1, 2, 3, 10 };
     float[] levelTimeValues = { 20f, 30f, 40f};
     float[] hackTimerTimeBonus = { 5f, 10f, 15f};
     bool enigmaActive = false;
@@ -352,12 +355,18 @@ Value: {0}$
     bool decoderMaxLevel = false;
     bool hackTimerActive = false;
     bool hackTimerMaxLevel = false;
+    bool auctioneerActive = false;
+    bool auctioneerMaxLevel = false;
+    bool losterActive = false;
+    bool losterMaxLevel = false;
+    bool timeEncoderActive = false;
+    bool timeEncoderMaxLevel = false;
     bool busted = false;
     int level;  // member variable storing current level
     int money = 0;
     int felonyLevel = 0;
     string password;
-    enum Screen { MainMenu, Password, Win, Inventory, Shop, BuyMenu, Sell, Sold, Back, ItemBuyConfirm, Stop, ShopCrime, TimesUp };
+    enum Screen { MainMenu, Password, Win, Inventory, Shop, BuyMenu, Sell, Sold, Back, ItemBuyConfirm, Stop, ShopCrime, TimesUp, ChooseShop, Shop1, Shop2, Shop3 };
     Screen currentScreen;
     Dictionary<string, int> inventory = new Dictionary<string, int>();
     Dictionary<string, int> inventoryCounter = new Dictionary<string, int>();
@@ -379,8 +388,8 @@ Value: {0}$
     [HideInInspector] string tryAgainMessagePL = "Błędne hasło, spróbuj ponownie.";
     [HideInInspector] string shopMenu = "Welcome to the DarkWeb store!\nPress 1 for Buy\nPress 2 for Sell";
     [HideInInspector] string sellItemQuestion = "Would you like to sell all your items?\nPress y/Yes or n/NO";
-    [HideInInspector] string BuyMenu = "What would like to buy?";
     [HideInInspector] string cantAfford = "You can't afford this item.";
+    [HideInInspector] string notEnoughMoneyMsg = "Not enough money.";
     [HideInInspector] string itemMaxLevelHint = "Item already in your inventory.";
     [HideInInspector] string shopCrimeMessage = "Something went wrong...\nWhen you were leaving the shop, the\npolice appeared!\nYou managed to escape but you\nlost half of your sell value" +
         "and\nfelony level icreased by {0}0%!";
@@ -391,6 +400,10 @@ Value: {0}$
     [HideInInspector] string safeConnectionMessage = "You didn't close safe connection\nproperly when you decided to finish\nhacking. Police found your network\ntrace. Felony level " +
         "increased by\n{0}0%!";
     [HideInInspector] string leavingPasswordMessage = "\nRepeat 'menu' if you want to quit\nhacking - this action will cause you\npenalty.";
+    [HideInInspector] string itemLabel = "\n{0} Name: {1} Level: {2}\nPrice: {3}$";
+    [HideInInspector] string itemLabelMax = "\n{0} Name: {1}, Level: \nMAX LEVEL";
+    [HideInInspector] string notEnoughFelonyLevel = "You are not under police eye.";
+    [HideInInspector] string bribeSuccessfulMsg = "Bribe successful";
 
     Slider slider;
     [SerializeField] GameObject progressBar = null;
@@ -403,7 +416,7 @@ Value: {0}$
         progressBar.SetActive(false);
         counterText.gameObject.SetActive(false);
         ShowMainMenu();
-        money = 100000;  // DELETE
+        money = 1000000;  // DELETE
     }
 
     private void Update()
@@ -492,7 +505,7 @@ Value: {0}$
                     RunShopMenu(input);
                     break;
                 case Screen.BuyMenu:
-                    ChooseBuyItem(input);
+                    //ChooseBuyItem(input);
                     break;
                 case Screen.ItemBuyConfirm:
                     ConfirmBuy(input);
@@ -514,6 +527,18 @@ Value: {0}$
                     break;
                 case Screen.TimesUp:
                     GoBack(input);
+                    break;
+                case Screen.ChooseShop:
+                    RunChooseShop(input);
+                    break;
+                case Screen.Shop1:
+                    ChooseBuyItem(input);
+                    break;
+                case Screen.Shop2:
+                    ChooseBuyItem(input);
+                    break;
+                case Screen.Shop3:
+                    ChooseBuyItem(input);
                     break;
                 default:
                     Debug.LogError("OnUserInput currentScreen switch statement Error.");
@@ -565,7 +590,7 @@ Value: {0}$
 
     void GoBack(string input)
     {
-        var inputBackIsValid = (input == "b" || input == "back" || input == "Back" || input == "BACK");
+        var inputBackIsValid = (input == "b" || input == "B" || input == "back" || input == "Back" || input == "BACK");
         if (inputBackIsValid)
         {
             switch (currentScreen)
@@ -585,6 +610,18 @@ Value: {0}$
                     break;
                 case Screen.TimesUp:
                     AskForPassword();
+                    break;
+                case Screen.ChooseShop:
+                    ShowShop();
+                    break;
+                case Screen.Shop1:
+                    ShowChooseShop();
+                    break;
+                case Screen.Shop2:
+                    ShowChooseShop();
+                    break;
+                case Screen.Shop3:
+                    ShowChooseShop();
                     break;
                 default:
                     break;
@@ -966,7 +1003,8 @@ Value: {0}$
     {
         if (input == "1")
         {
-            ShowBuyMenu();
+            //ShowBuyMenu();
+            ShowChooseShop();
         }
         else if (input == "2")
         {
@@ -978,104 +1016,252 @@ Value: {0}$
         }
     }
 
-    void ShowBuyMenu()
+    void ShowChooseShop()
     {
-        SetScreen(Screen.BuyMenu);
-        string itemLabel = "\n{0} Name: {1} Level: {2}\nPrice: {3}$";
-        string itemLabelMax = "\n{0} Name: {1}, Level: \nMAX LEVEL";
+        SetScreen(Screen.ChooseShop);
         Terminal.ClearScreen();
-
-        var counter = 1;
-        foreach (KeyValuePair<string, string[]> item in gameItems)
-        {
-            if (int.Parse(item.Value[itemLevel]) == 3)
-            {
-                BuyMenu += string.Format(itemLabelMax, counter, item.Value[itemName]);
-            }
-            else
-            {
-                BuyMenu += string.Format(itemLabel, counter, item.Value[itemName], item.Value[itemShopLevel], item.Value[itemPrice]);
-            }
-            counter++;
-        }
-        Terminal.WriteLine(BuyMenu);
-
-        //if (!enigmaMaxLevel)
-        //{
-        //    Terminal.WriteLine(string.Format(itemLabel, "1", gameItems["enigma"][itemName], gameItems["enigma"][itemShopLevel], gameItems["enigma"][itemPrice]));
-        //}
-        //else
-        //{
-        //    Terminal.WriteLine(string.Format(itemLabelMax, "1", gameItems["enigma"][itemName]));
-        //}
-        //if (!decoderMaxLevel)
-        //{
-        //    Terminal.WriteLine(string.Format(itemLabel, "2", gameItems["decoder"][itemName], gameItems["decoder"][itemShopLevel], gameItems["decoder"][itemPrice]));
-        //}
-        //else
-        //{
-        //    Terminal.WriteLine(string.Format(itemLabelMax, "2", gameItems["decoder"][itemName]));
-        //}
-        //if (!hackTimerMaxLevel)
-        //{
-        //    Terminal.WriteLine(string.Format(itemLabel, "3", gameItems["hacktimer"][itemName], gameItems["hacktimer"][itemShopLevel], gameItems["hacktimer"][itemPrice]));
-        //}
-        //else
-        //{
-        //    Terminal.WriteLine(string.Format(itemLabelMax, "3", gameItems["hacktimer"][itemName], gameItems["hacktimer"][itemShopLevel], gameItems["hacktimer"][itemPrice]));
-        //}
-
+        DisplayAvailableShops();
     }
 
-    void ChooseBuyItem(string input)
+    void DisplayAvailableShops()
+    {
+        string chooseShopMenu = "Choose the shop you want to vist:";
+        for (int i = 1; i < shopNames.Length + 1; i++)
+        {
+            chooseShopMenu += string.Format($"\n{i} {shopNames[i - 1]}");
+        }
+        Terminal.WriteLine(chooseShopMenu);
+    }
+
+    void RunChooseShop(string input)
     {
         var isValidChoice = (input == "1" || input == "2" || input == "3");
         if (isValidChoice)
         {
-            if (input == "1")
+            switch (input)
             {
-                if (enigmaMaxLevel)
-                {
-                    Terminal.WriteLine(itemMaxLevelHint);
-                }
-                else if (CanAffordItem("enigma"))
-                {
-                    ShowBuyConfirm("enigma");
-                }
-                else
-                {
-                    Terminal.WriteLine(cantAfford);
-                }
+                case "1":
+                    shopNumber = 1;
+                    break;
+                case "2":
+                    shopNumber = 2;
+                    break;
+                case "3":
+                    shopNumber = 3;
+                    break;
+                default:
+                    Debug.LogError("RunChooseShop Switch on input Error.");
+                    break;
             }
-            else if (input == "2")
+            SetCurrentShopScreen(shopNumber);
+            ShowBuyMenu();
+        }
+        else
+        {
+            Terminal.WriteLine(validOption2Hint);
+            GoBack(input);
+        }
+    }
+
+    void SetCurrentShopScreen(int shopNumber)
+    {
+        switch (shopNumber)
+        {
+            case 1:
+                SetScreen(Screen.Shop1);
+                break;
+            case 2:
+                SetScreen(Screen.Shop2);
+                break;
+            case 3:
+                SetScreen(Screen.Shop3);
+                break;
+            default:
+                Debug.LogError("SetCurrentShopScreen() Switch on shopNumber Error.");
+                break;
+        }
+    }
+
+    /*
+     * ShowBuyMenu displays items to buy depending on shop number e.x.:
+     * Shop1 - shop number: 1 - shopItemsDivision[shopNumber] is equal to 1, 2, 3, gameItems with indexes 1-3(inclusive) will be showed in shop 1
+     * Shop2 - shop number: 2 - shopItemsDivision[shopNumber] is equal to 4, 5, 6, gameItems with indexes 4-6(inclusive) will be showed in shop 2
+     */
+    void ShowBuyMenu()
+    {
+        SetCurrentShopScreen(shopNumber);
+        Terminal.ClearScreen();
+        string buyMenu = "What would you like to buy?";
+        Dictionary<int, int[]> shopItemsDivision = new Dictionary<int, int[]>
+        {
+            { 1, new int[] { 1, 2, 3} },
+            { 2, new int[] { 4, 5, 6} },
+            { 3, new int[] { 7} }
+        };
+
+        var counter = 1;
+        var ordinalNumber = 1;
+        foreach (KeyValuePair<string, string[]> item in gameItems)
+        {
+            if (counter == 7)
             {
-                if (decoderMaxLevel)
-                {
-                    Terminal.WriteLine(itemMaxLevelHint);
-                }
-                else if (CanAffordItem("decoder"))
-                {
-                    ShowBuyConfirm("decoder");
-                }
-                else
-                {
-                    Terminal.WriteLine(cantAfford);
-                }
+                ShowBribeOptions();
             }
-            else if (input == "3")
+            else if (shopItemsDivision[shopNumber].Contains(counter))
             {
-                if (hackTimerMaxLevel)
+                if (int.Parse(item.Value[itemLevel]) == 3)
                 {
-                    Terminal.WriteLine(itemMaxLevelHint);
-                }
-                else if (CanAffordItem("hacktimer"))
-                {
-                    ShowBuyConfirm("hacktimer");
+                    buyMenu += string.Format(itemLabelMax, ordinalNumber, item.Value[itemName]);
                 }
                 else
                 {
-                    Terminal.WriteLine(cantAfford);
+                    buyMenu += string.Format(itemLabel, ordinalNumber, item.Value[itemName], item.Value[itemShopLevel], item.Value[itemPrice]);
                 }
+                ordinalNumber++;
+            }
+            counter++;
+        }
+
+        if (currentScreen != Screen.Shop3)
+        {
+        Terminal.WriteLine(buyMenu);
+        }
+    }
+
+    void ShowBribeOptions()
+    {
+        Terminal.ClearScreen();
+
+        string bribeOptions = "Someone can remove felony from your\naccount:";
+        for (int i = 0; i < bribeNames.Length; i++)
+        {
+            bribeOptions += string.Format("\n{0} {1} can remove {2}0% felony\nfor {3}$", i+1, bribeNames[i], bribeReduceValue[i], bribeCost[i]);
+        }
+        Terminal.WriteLine(bribeOptions);
+    }
+
+    void ChooseBuyItem(string input)
+    {
+        var isValidChoice = (input == "1" || input == "2" || input == "3" || input == "4");
+        if (isValidChoice)
+        {
+            switch (currentScreen)
+            {
+                case Screen.Shop1:
+                    if (input == "1")
+                    {
+                        if (enigmaMaxLevel)
+                        {
+                            Terminal.WriteLine(itemMaxLevelHint);
+                        }
+                        else if (CanAffordItem("enigma"))
+                        {
+                            ShowBuyConfirm("enigma");
+                        }
+                        else
+                        {
+                            Terminal.WriteLine(cantAfford);
+                        }
+                    }
+                    else if (input == "2")
+                    {
+                        if (decoderMaxLevel)
+                        {
+                            Terminal.WriteLine(itemMaxLevelHint);
+                        }
+                        else if (CanAffordItem("decoder"))
+                        {
+                            ShowBuyConfirm("decoder");
+                        }
+                        else
+                        {
+                            Terminal.WriteLine(cantAfford);
+                        }
+                    }
+                    else if (input == "3")
+                    {
+                        if (hackTimerMaxLevel)
+                        {
+                            Terminal.WriteLine(itemMaxLevelHint);
+                        }
+                        else if (CanAffordItem("hacktimer"))
+                        {
+                            ShowBuyConfirm("hacktimer");
+                        }
+                        else
+                        {
+                            Terminal.WriteLine(cantAfford);
+                        }
+                    }
+                    break;
+                case Screen.Shop2:
+                    if (input == "1")
+                    {
+                        if (auctioneerMaxLevel)
+                        {
+                            Terminal.WriteLine(itemMaxLevelHint);
+                        }
+                        else if (CanAffordItem("auctioneer"))
+                        {
+                            ShowBuyConfirm("auctioneer");
+                        }
+                        else
+                        {
+                            Terminal.WriteLine(cantAfford);
+                        }
+                    }
+                    else if (input == "2")
+                    {
+                        if (losterMaxLevel)
+                        {
+                            Terminal.WriteLine(itemMaxLevelHint);
+                        }
+                        else if (CanAffordItem("loster"))
+                        {
+                            ShowBuyConfirm("loster");
+                        }
+                        else
+                        {
+                            Terminal.WriteLine(cantAfford);
+                        }
+                    }
+                    else if (input == "3")
+                    {
+                        if (timeEncoderMaxLevel)
+                        {
+                            Terminal.WriteLine(itemMaxLevelHint);
+                        }
+                        else if (CanAffordItem("timeencoder"))
+                        {
+                            ShowBuyConfirm("timeencoder");
+                        }
+                        else
+                        {
+                            Terminal.WriteLine(cantAfford);
+                        }
+                    }
+                    break;
+                case Screen.Shop3:
+                    if (input == "1")
+                    {
+                        RunBribeMachine(input);
+                    }
+                    else if (input == "2")
+                    {
+                        RunBribeMachine(input);
+                    }
+                    else if (input == "3")
+                    {
+                        RunBribeMachine(input);
+                    }
+                    else if (input == "4")
+                    {
+                        RunBribeMachine(input);
+                    }
+                    break;
+                default:
+                    Debug.LogError("ChooseBuyItem() Switch on currentScreen Error.");
+                    break;
             }
         }
         else
@@ -1085,59 +1271,105 @@ Value: {0}$
         }
     }
 
+    private void RunBribeMachine(string input)
+    {
+        if (!VerifyFelonyLevel())
+        {
+            DisplayNotEnoughFelonyMsg();
+        }
+        else if (!CanAffordBribe(int.Parse(input)))
+        {
+            DisplayNotEnoughMoneyMsg();
+        }
+        else
+        {
+            Bribe(int.Parse(input));
+            DisplayBribeSuccessfulMsg();
+        }
+    }
+
+    void Bribe(int bribeOption)
+    {
+        int bribeIndex = bribeOption - 1;
+        money -= bribeCost[bribeIndex];
+        if (felonyLevel < bribeReduceValue[bribeIndex])
+        {
+            felonyLevel = 0;
+        }
+        else
+        {
+            felonyLevel -= bribeReduceValue[bribeIndex];
+        }
+    }
+
+    void DisplayBribeSuccessfulMsg()
+    {
+        Terminal.ClearScreen();
+        ShowBribeOptions();
+        Terminal.WriteLine(bribeSuccessfulMsg);
+    }
+
+    void DisplayNotEnoughFelonyMsg()
+    {
+        ShowBribeOptions();
+        Terminal.WriteLine(notEnoughFelonyLevel);
+    }
+
+    void DisplayNotEnoughMoneyMsg()
+    {
+        ShowBribeOptions();
+        Terminal.WriteLine(notEnoughMoneyMsg);
+    }
+
+    bool VerifyFelonyLevel()
+    {
+        bool canResetFelony;
+        if (felonyLevel > 0)
+        {
+            canResetFelony = true;
+        }
+        else
+        {
+            canResetFelony = false;
+        }
+
+        return canResetFelony;
+    }
+    
+    bool CanAffordBribe(int bribeValueIndex)
+    {
+        int properIndex = bribeValueIndex - 1;
+        bool canAfford = false;
+        if (money >= bribeCost[properIndex])
+        {
+            canAfford = true;
+        }
+        else
+        {
+            canAfford = false;
+        }
+
+        return canAfford;
+    }
+
     bool CanAffordItem(string item)
     {
+
         bool canAfford = false;
-        switch (item)
+        if (money >= int.Parse(gameItems[item][itemPrice]))
         {
-            case "enigma":
-                if (money >= int.Parse(gameItems["enigma"][itemPrice]))
-                {
-                    canAfford = true;
-                }
-                break;
-            case "decoder":
-                if (money >= int.Parse(gameItems["decoder"][itemPrice]))
-                {
-                    canAfford = true;
-                }
-                break;
-            case "hacktimer":
-                if (money >= int.Parse(gameItems["hacktimer"][itemPrice]))
-                {
-                    canAfford = true;
-                }
-                break;
-            default:
-                Debug.LogError("CanAffordItem switch statement Error.");
-                break;
+            canAfford = true;
         }
         return canAfford;
     }
 
     void ShowBuyConfirm(string item)
     {
+        itemToBuy = item;
         SetScreen(Screen.ItemBuyConfirm);
         string confirmQuestion = "Would you like to buy:\n{0} lvl. {1} for {2}$?\n\nPress y/Yes or n/NO";
         Terminal.ClearScreen();
-        switch (item)
-        {
-            case "enigma":
-                Terminal.WriteLine(string.Format(confirmQuestion, gameItems["enigma"][itemName], gameItems["enigma"][itemShopLevel], gameItems["enigma"][itemPrice]));
-                itemToBuy = "enigma";
-                break;
-            case "decoder":
-                Terminal.WriteLine(string.Format(confirmQuestion, gameItems["decoder"][itemName], gameItems["decoder"][itemShopLevel], gameItems["decoder"][itemPrice]));
-                itemToBuy = "decoder";
-                break;
-            case "hacktimer":
-                Terminal.WriteLine(string.Format(confirmQuestion, gameItems["hacktimer"][itemName], gameItems["hacktimer"][itemShopLevel], gameItems["hacktimer"][itemPrice]));
-                itemToBuy = "hacktimer";
-                break;
-            default:
-                Debug.LogError("ShowBuyConfirm switch statement Error.");
-                break;
-        }
+        Terminal.WriteLine(string.Format(confirmQuestion, gameItems[item][itemName], gameItems[item][itemShopLevel], gameItems[item][itemPrice]));
     }
 
     void ConfirmBuy(string input)
@@ -1164,16 +1396,28 @@ Value: {0}$
         switch (item)
         {
             case "enigma":
-                money -= int.Parse(gameItems["enigma"][itemPrice]);
+                money -= int.Parse(gameItems[item][itemPrice]);
                 enigmaActive = true;
                 break;
             case "decoder":
-                money -= int.Parse(gameItems["decoder"][itemPrice]);
+                money -= int.Parse(gameItems[item][itemPrice]);
                 decoderActive = true;
                 break;
             case "hacktimer":
-                money -= int.Parse(gameItems["hacktimer"][itemPrice]);
+                money -= int.Parse(gameItems[item][itemPrice]);
                 hackTimerActive = true;
+                break;
+            case "auctioneer":
+                money -= int.Parse(gameItems[item][itemPrice]);
+                auctioneerActive = true;
+                break;
+            case "loster":
+                money -= int.Parse(gameItems[item][itemPrice]);
+                losterActive = true;
+                break;
+            case "timeencoder":
+                money -= int.Parse(gameItems[item][itemPrice]);
+                timeEncoderActive = true;
                 break;
             default:
                 break;
@@ -1191,63 +1435,126 @@ Value: {0}$
             case "enigma":
                 if (!enigmaMaxLevel)
                 {
-                    newLevelValue = int.Parse(gameItems["enigma"][itemLevel]) + 1;
-                    gameItems["enigma"][itemLevel] = newLevelValue.ToString();
-                    if (int.Parse(gameItems["enigma"][itemLevel]) == 3)
+                    newLevelValue = int.Parse(gameItems[item][itemLevel]) + 1;
+                    gameItems[item][itemLevel] = newLevelValue.ToString();
+                    if (int.Parse(gameItems[item][itemLevel]) == 3)
                     {
                         enigmaMaxLevel = true;
                         break;
                     }
-                    gameItems["enigma"][itemShopLevel] = (newLevelValue + 1).ToString();
-                    if (int.Parse(gameItems["enigma"][itemLevel]) == 1)
+                    gameItems[item][itemShopLevel] = (newLevelValue + 1).ToString();
+                    if (int.Parse(gameItems[item][itemLevel]) == 1)
                     {
-                        gameItems["enigma"][itemPrice] = gameItems["enigma"][itemLvl2UpgradeCost];
+                        gameItems[item][itemPrice] = gameItems[item][itemLvl2UpgradeCost];
                     }
                     else
                     {
-                        gameItems["enigma"][itemPrice] = gameItems["enigma"][itemLvl3UpgradeCost];
+                        gameItems[item][itemPrice] = gameItems[item][itemLvl3UpgradeCost];
                     }
                 }
                 break;
             case "decoder":
                 if (!decoderMaxLevel)
                 {
-                    newLevelValue = int.Parse(gameItems["decoder"][itemLevel]) + 1;
-                    gameItems["decoder"][itemLevel] = newLevelValue.ToString();
-                    if (int.Parse(gameItems["decoder"][itemLevel]) == 3)
+                    newLevelValue = int.Parse(gameItems[item][itemLevel]) + 1;
+                    gameItems[item][itemLevel] = newLevelValue.ToString();
+                    if (int.Parse(gameItems[item][itemLevel]) == 3)
                     {
                         decoderMaxLevel = true;
                         break;
                     }
-                    gameItems["decoder"][itemShopLevel] = (newLevelValue + 1).ToString();
-                    if (int.Parse(gameItems["decoder"][itemLevel]) == 1)
+                    gameItems[item][itemShopLevel] = (newLevelValue + 1).ToString();
+                    if (int.Parse(gameItems[item][itemLevel]) == 1)
                     {
-                        gameItems["decoder"][itemPrice] = gameItems["decoder"][itemLvl2UpgradeCost];
+                        gameItems[item][itemPrice] = gameItems[item][itemLvl2UpgradeCost];
                     }
                     else
                     {
-                        gameItems["decoder"][itemPrice] = gameItems["decoder"][itemLvl3UpgradeCost];
+                        gameItems[item][itemPrice] = gameItems[item][itemLvl3UpgradeCost];
                     }
                 }
                 break;
             case "hacktimer":
                 if (!hackTimerMaxLevel)
                 {
-                    newLevelValue = int.Parse(gameItems["hacktimer"][itemLevel]) + 1;
-                    gameItems["hacktimer"][itemLevel] = newLevelValue.ToString();
-                    if (int.Parse(gameItems["hacktimer"][itemLevel]) == 3)
+                    newLevelValue = int.Parse(gameItems[item][itemLevel]) + 1;
+                    gameItems[item][itemLevel] = newLevelValue.ToString();
+                    if (int.Parse(gameItems[item][itemLevel]) == 3)
                     {
                         hackTimerMaxLevel = true;
                         break;
                     }
-                    gameItems["hacktimer"][itemShopLevel] = (newLevelValue + 1).ToString();
-                    if (int.Parse(gameItems["hacktimer"][itemLevel]) == 1)
+                    gameItems[item][itemShopLevel] = (newLevelValue + 1).ToString();
+                    if (int.Parse(gameItems[item][itemLevel]) == 1)
                     {
-                        gameItems["hacktimer"][itemPrice] = gameItems["hacktimer"][itemLvl2UpgradeCost];
+                        gameItems[item][itemPrice] = gameItems[item][itemLvl2UpgradeCost];
                     }
                     else
                     {
-                        gameItems["hacktimer"][itemPrice] = gameItems["hacktimer"][itemLvl3UpgradeCost];
+                        gameItems[item][itemPrice] = gameItems[item][itemLvl3UpgradeCost];
+                    }
+                }
+                break;
+            case "auctioneer":
+                if (!auctioneerMaxLevel)
+                {
+                    newLevelValue = int.Parse(gameItems[item][itemLevel]) + 1;
+                    gameItems[item][itemLevel] = newLevelValue.ToString();
+                    if (int.Parse(gameItems[item][itemLevel]) == 3)
+                    {
+                        auctioneerMaxLevel = true;
+                        break;
+                    }
+                    gameItems[item][itemShopLevel] = (newLevelValue + 1).ToString();
+                    if (int.Parse(gameItems[item][itemLevel]) == 1)
+                    {
+                        gameItems[item][itemPrice] = gameItems[item][itemLvl2UpgradeCost];
+                    }
+                    else
+                    {
+                        gameItems[item][itemPrice] = gameItems[item][itemLvl3UpgradeCost];
+                    }
+                }
+                break;
+            case "loster":
+                if (!losterMaxLevel)
+                {
+                    newLevelValue = int.Parse(gameItems[item][itemLevel]) + 1;
+                    gameItems[item][itemLevel] = newLevelValue.ToString();
+                    if (int.Parse(gameItems[item][itemLevel]) == 3)
+                    {
+                        losterMaxLevel = true;
+                        break;
+                    }
+                    gameItems[item][itemShopLevel] = (newLevelValue + 1).ToString();
+                    if (int.Parse(gameItems[item][itemLevel]) == 1)
+                    {
+                        gameItems[item][itemPrice] = gameItems[item][itemLvl2UpgradeCost];
+                    }
+                    else
+                    {
+                        gameItems[item][itemPrice] = gameItems[item][itemLvl3UpgradeCost];
+                    }
+                }
+                break;
+            case "timeencoder":
+                if (!timeEncoderMaxLevel)
+                {
+                    newLevelValue = int.Parse(gameItems[item][itemLevel]) + 1;
+                    gameItems[item][itemLevel] = newLevelValue.ToString();
+                    if (int.Parse(gameItems[item][itemLevel]) == 3)
+                    {
+                        timeEncoderMaxLevel = true;
+                        break;
+                    }
+                    gameItems[item][itemShopLevel] = (newLevelValue + 1).ToString();
+                    if (int.Parse(gameItems[item][itemLevel]) == 1)
+                    {
+                        gameItems[item][itemPrice] = gameItems[item][itemLvl2UpgradeCost];
+                    }
+                    else
+                    {
+                        gameItems[item][itemPrice] = gameItems[item][itemLvl3UpgradeCost];
                     }
                 }
                 break;
@@ -1440,11 +1747,20 @@ Value: {0}$
         decoderMaxLevel = false;
         hackTimerActive = false;
         hackTimerMaxLevel = false;
+        auctioneerActive = false;
+        auctioneerMaxLevel = false;
+        losterActive = false;
+        losterMaxLevel = false;
+        timeEncoderActive = false;
+        timeEncoderMaxLevel = false;
         foreach (KeyValuePair<string, string[]> item in gameItems)
         {
+            if (item.Key != "bribe")
+            {
             gameItems[item.Key][itemPrice] = gameItems[item.Key][itemStartingPrice];
             gameItems[item.Key][itemLevel] = "0";  // TEST on 
             gameItems[item.Key][itemShopLevel] = "1";  // TEST on
+            }
         }
         Terminal.WriteLine("Felony level reached 100% and...\nYou got BUSTED!\nThe Police commandeered all your money and items.\nYou also have to pay 5000$ penalty.");
     }
