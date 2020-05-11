@@ -344,6 +344,7 @@ Value: {0}$
     private bool timerOn;
     float levelTime = 0f;
     float currentCounterTime = 0f;
+    float[] LosterAvoidChances = { .2f, .25f, .33f };
     float[] auctioneerPercentageValues = { .1f, .2f, .3f};
     string[] bribeNames = { "Harry", "Nikita", "Jackarta", "'Chief Smith'" };
     int[] bribeCost = { 50000, 100000, 150000, 350000 };
@@ -397,6 +398,7 @@ Value: {0}$
     [HideInInspector] string counterString = "{0} sec.";
     [HideInInspector] string counterBonusString = "{0} sec. ({1} sec. time bonus)";
     [HideInInspector] string timesUpMessage = "You fail to hack in time...\nSomeone notified the police.\nFelony level increased by {0}0%!";
+    [HideInInspector] string losterMessage = "You fail to hack in time...\nBut fast connection provided by loster\nallows you to close hacking connection\nsoon enough to avoid raising an alarm!";
     [HideInInspector] string timePenaltyMessage = "Wrong password.\nHack time reduced by {0} sec.";
     [HideInInspector] string safeConnectionMessage = "You didn't close safe connection\nproperly when you decided to finish\nhacking. Police found your network\ntrace. Felony level " +
         "increased by\n{0}0%!";
@@ -418,6 +420,7 @@ Value: {0}$
         counterText.gameObject.SetActive(false);
         ShowMainMenu();
         money = 1000000;  // DELETE
+        print(timePenaltyValues[int.Parse(gameItems["timeencoder"][itemLevel])]);
     }
 
     private void Update()
@@ -724,8 +727,15 @@ Value: {0}$
         if (currentCounterTime <= 0)
         {
             DisableTimer();
-            DisplayTimesUp();
-            TimesUp();
+            if (losterActive && LosterAvoidChance())
+            {
+                DisplayLosterMessage();
+            }
+            else
+            {
+                DisplayTimesUp();
+                TimesUp();
+            }
         }
     }
 
@@ -748,15 +758,44 @@ Value: {0}$
 
     void TimesUp()
     {
-        ClearPasswordAndHints();
-        IncreaseFelony(level);
+         IncreaseFelony(level);
     }
 
+    bool LosterAvoidChance()
+    {
+        float randomValue = Random.value;
+        if (randomValue <= LosterAvoidChances[int.Parse(gameItems["loster"][itemLevel]) - 1])
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    void DisplayLosterMessage()
+    {
+        SetScreen(Screen.TimesUp);
+        Terminal.ClearScreen();
+        Terminal.WriteLine(losterMessage);
+    }
+
+    int[] timePenaltyValues = { 3, 4, 5};
+    int[] timeEncoderReduceValues = { 1, 2, 3};
     void TimePenalty()
     {
         DisplayPasswordScreen();
-        Terminal.WriteLine(string.Format(timePenaltyMessage, level));
-        currentCounterTime -= level;
+        if (timeEncoderActive)
+        {
+            Terminal.WriteLine(string.Format(timePenaltyMessage, timePenaltyValues[level - 1] - timeEncoderReduceValues[int.Parse(gameItems["timeencoder"][itemLevel]) - 1]));
+            Terminal.WriteLine($"Penalty reduced by {timeEncoderReduceValues[int.Parse(gameItems["timeencoder"][itemLevel]) - 1]} sec.");
+        }
+        else
+        {
+            Terminal.WriteLine(string.Format(timePenaltyMessage, timePenaltyValues[level - 1]));
+            currentCounterTime -= timePenaltyValues[level - 1];
+        }
     }
 
     void SetPasswordHint()
