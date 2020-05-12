@@ -252,6 +252,7 @@ Value: {0}$
     [HideInInspector] int itemLvl2UpgradeCost = 4;
     [HideInInspector] int itemLvl3UpgradeCost = 5;
     [HideInInspector] int itemStartingPrice = 6;
+    [HideInInspector] int itemDescription = 7;
 
     #region gameItems container
     Dictionary<string, string[]> gameItems = new Dictionary<string, string[]>
@@ -265,6 +266,7 @@ Value: {0}$
             "2",  // LvL 2 upgrade cost 4
             "3",  // LvL 3 upgrade cost 5
             "1",  // starting price 6 - must be the same as item price 1
+            "Display password first letters",
         }
         },
         {"decoder", new string[]
@@ -276,6 +278,7 @@ Value: {0}$
             "4",
             "6",
             "2",
+            "Display word hints about password",
         }
         },
         {"hacktimer", new string[]
@@ -287,6 +290,7 @@ Value: {0}$
             "6",
             "9",
             "3",
+            "Increase location hacking time",
         }
         },
         {"auctioneer", new string[]
@@ -298,6 +302,7 @@ Value: {0}$
             "5",
             "6",
             "4",
+            "Icrease items sell value",
         }
         },
         {"loster", new string[]
@@ -309,6 +314,7 @@ Value: {0}$
             "10",
             "15",
             "5",
+            "Chance to avoid felony level increase",
         }
         },
         {"timeencoder", new string[]
@@ -320,6 +326,7 @@ Value: {0}$
             "12",
             "18",
             "6",
+            "Reduce time penalty after not guessing password",
         }
         },
         {"bribe", new string[]
@@ -419,8 +426,8 @@ Value: {0}$
     [HideInInspector] string safeConnectionMessage = "You didn't close safe connection\nproperly when you decided to finish\nhacking. Police found your network\ntrace. Felony level " +
         "increased by\n{0}0%!";
     [HideInInspector] string leavingPasswordMessage = "\nRepeat 'menu' if you want to quit\nhacking - this action will cause you\npenalty.";
-    [HideInInspector] string itemLabel = "\n{0} Name: {1} Level: {2}\nPrice: {3}$";
-    [HideInInspector] string itemLabelMax = "\n{0} Name: {1}, Level: \nMAX LEVEL";
+    [HideInInspector] string itemLabel = "\n{0} Name: {1} Level: {2}\nPrice: {3}$\n{4}";
+    [HideInInspector] string itemLabelMax = "\n{0} Name: {1}, Level: \nMAX LEVEL\n{2}";
     [HideInInspector] string notEnoughFelonyLevel = "You are not under police eye.";
     [HideInInspector] string bribeSuccessfulMsg = "Bribe successful";
     [HideInInspector] string addressAddMessage = "IP Address successfully added into\nyour DateBase.";
@@ -1346,11 +1353,11 @@ Value: {0}$
             {
                 if (int.Parse(item.Value[itemLevel]) == 3)
                 {
-                    buyMenu += string.Format(itemLabelMax, ordinalNumber, item.Value[itemName]);
+                    buyMenu += string.Format(itemLabelMax, ordinalNumber, item.Value[itemName], item.Value[itemDescription]);
                 }
                 else
                 {
-                    buyMenu += string.Format(itemLabel, ordinalNumber, item.Value[itemName], item.Value[itemShopLevel], item.Value[itemPrice]);
+                    buyMenu += string.Format(itemLabel, ordinalNumber, item.Value[itemName], item.Value[itemShopLevel], item.Value[itemPrice], item.Value[itemDescription]);
                 }
                 ordinalNumber++;
             }
@@ -2003,6 +2010,8 @@ Value: {0}$
         {
             Terminal.WriteLine(string.Format(inventoryString, money, itemsAmount, plural = "s", itemsValue));
         }
+
+
     }
 
     void IncreaseFelony(int increaseValue)
