@@ -353,6 +353,12 @@ Value: {0}$
     int[] bribeReduceValue = { 1, 2, 3, 10 };
     float[] levelTimeValues = { 20f, 30f, 40f};
     float[] hackTimerTimeBonus = { 5f, 10f, 15f};
+    bool additionalReward = false;
+    bool level1Locked = false;  // TODO check location locked property 
+    bool level2Locked = true;
+    bool level3Locked = true;
+    bool level4Locked = false;
+    bool level5Locked = false;
     bool enigmaActive = false;
     bool enigmaMaxLevel = false;
     bool decoderActive = false;
@@ -370,14 +376,14 @@ Value: {0}$
     int money = 0;
     int felonyLevel = 0;
     string password;
-    enum Screen { MainMenu, Password, Win, Inventory, Shop, BuyMenu, Sell, Sold, Back, ItemBuyConfirm, Stop, ShopCrime, TimesUp, ChooseShop, Shop1, Shop2, Shop3 };
+    enum Screen { MainMenu, Password, Win, WinAdditional, Inventory, Shop, BuyMenu, Sell, Sold, Back, ItemBuyConfirm, Stop, ShopCrime, TimesUp, ChooseShop, Shop1, Shop2, Shop3 };
     Screen currentScreen;
     Dictionary<string, int> inventory = new Dictionary<string, int>();
     Dictionary<string, int> inventoryCounter = new Dictionary<string, int>();
 
     // Strings
     #region Errors, hints, prompt messagess
-    [HideInInspector] string mainMenuScreen = "Press 'd' for DarkWeb shop\nPress 'i' for inventory\n\nWhat would you like to hack into?\nPress 1 for {0}\nPress 2 for {1}\nPress 3 for {2}";
+    [HideInInspector] string mainMenuScreen = "Press 'd' for DarkWeb shop\nPress 'i' for inventory\n\nWhat would you like to hack into?";
     [HideInInspector] string mainMenuScreenPL = "Do czego chcesz się włamać?\nNaciśnij 1 dla sklepu żabka\nNaciśnij 2 dla Rebel Nature Gym\nNaciśnij 3 dla Hogwartu";
     [HideInInspector] string menuHint = "Type 'menu' for menu";
     [HideInInspector] string menuHintPL = "Wpisz 'menu' aby wrócić do menu";
@@ -385,6 +391,7 @@ Value: {0}$
     [HideInInspector] string validOptionHintPL = "Wybierz odpowiednią opcję";
     [HideInInspector] string validOption2Hint = "Please choose a valid option";
     [HideInInspector] string backHint = "Type 'b' for back or 'menu' for menu";
+    [HideInInspector] string forwardHint = "You found something else...\nType 'next'/'n' to check it";
 
     [HideInInspector] string passwordPrompt = "Please enter a password:";
     [HideInInspector] string passwordPromptPL = "*podpowiedź: {1}\nWprowadź hasło:";
@@ -409,6 +416,8 @@ Value: {0}$
     [HideInInspector] string itemLabelMax = "\n{0} Name: {1}, Level: \nMAX LEVEL";
     [HideInInspector] string notEnoughFelonyLevel = "You are not under police eye.";
     [HideInInspector] string bribeSuccessfulMsg = "Bribe successful";
+    [HideInInspector] string additionalRewardMsg = "You found the '{0}'\nIP Address! You can now hack this\nlocation.";
+    [HideInInspector] string levelLockedMessage = "Level locked. You need to find or buy\nIP address of this location.";
 
     Slider slider;
     [SerializeField] GameObject progressBar = null;
@@ -426,7 +435,6 @@ Value: {0}$
 
     private void Update()
     {
-        print(RewardTier());
         CheckFelony();
         LevelTimeCounter();
         if (currentScreen == Screen.Password && timerOn)
@@ -436,11 +444,29 @@ Value: {0}$
     }
 
     // Display main menu
-    private void ShowMainMenu()
+    void ShowMainMenu()
     {
         Terminal.ClearScreen();
         SetScreen(Screen.MainMenu);
         Terminal.WriteLine(string.Format(mainMenuScreen, locations[0], locations[1], locations[2]));
+        ShowLocations();
+    }
+
+    void ShowLocations()
+    {
+        string locationsString = "";
+        for (int i = 1; i <= locations.Length; i++)
+        {
+            if (LevelLocked(i))
+            {
+                locationsString += $"\nPress {i} for {locations[i - 1]} LOCKED";
+            }
+            else
+            {
+                locationsString += $"\nPress {i} for {locations[i-1]}";
+            }
+        }
+        Terminal.WriteLine(locationsString);
     }
 
     void SetScreen(Screen screen)
@@ -471,7 +497,7 @@ Value: {0}$
     void OnUserInput(string input)
     {
         // Player can always go to main menu
-        if (input == "menu")
+        if (input == "menu" && !additionalReward)
         {
             if (currentScreen == Screen.Password)
             {
@@ -503,6 +529,9 @@ Value: {0}$
                     break;
                 case Screen.Win:
                     GoBack(input);
+                    break;
+                case Screen.WinAdditional:
+                    GoForward(input);
                     break;
                 case Screen.Inventory:
                     GoBack(input);
@@ -567,7 +596,11 @@ Value: {0}$
     void RunMainMenu(string input)
     {
         var isValidLevel = (input == "1" || input == "2" || input == "3");
-        if (isValidLevel)
+        if (isValidLevel && LevelLocked(int.Parse(input)))
+        {
+            Terminal.WriteLine(levelLockedMessage);
+        }
+        else if (isValidLevel)
         {
             level = int.Parse(input);
             AskForPassword();
@@ -592,6 +625,32 @@ Value: {0}$
         {
             Terminal.WriteLine(validOptionHint);
         }
+    }
+
+    bool LevelLocked(int levelNumber)
+    {
+        bool levelLocked = true;
+        switch (levelNumber)
+        {
+            case 1:
+                levelLocked = level1Locked;
+                break;
+            case 2:
+                levelLocked = level2Locked;
+                break;
+            case 3:
+                levelLocked = level3Locked;
+                break;
+            case 4:
+                levelLocked = level4Locked;
+                break;
+            case 5:
+                levelLocked = level5Locked;
+                break;
+            default:
+                break;
+        }
+        return levelLocked;
     }
 
     void GoBack(string input)
@@ -637,6 +696,19 @@ Value: {0}$
         else
         {
             Terminal.WriteLine(backHint);
+        }
+    }
+
+    void GoForward(string input)
+    {
+        var inputForwardIsValid = (input == "n" || input == "N" || input == "next" || input == "Next" || input == "NEXT" || input == "menu");
+        if (inputForwardIsValid)
+        {
+            DisplayAdditionalReward();
+        }
+        else
+        {
+            Terminal.WriteLine(forwardHint);
         }
     }
 
@@ -899,25 +971,39 @@ Value: {0}$
 
     void DisplayWinScreen()
     {
-        SetScreen(Screen.Win);
-        Terminal.ClearScreen();
         ManageLevelReward();
-
+        if (additionalReward)
+        {
+            SetScreen(Screen.WinAdditional);
+        }
+        else
+        {
+            SetScreen(Screen.Win);
+        }
     }
 
     void ManageLevelReward()
     {
         string selectedReward;
         int selectedRewardValue;
+        Terminal.ClearScreen();
         switch (level)
         {
             case 1:
+                if (level2Locked)
+                {
+                    RandomLocationUnlock();
+                }
                 selectedReward = DrawReward(level1RewardsNames);  // picking random reward from level rewards
                 selectedRewardValue = SetRewardValue(selectedReward);  // setting random value of reward based on reward name
                 InventoryAddReward(selectedReward, selectedRewardValue);  // adding reward with value to inventory and increasing item count value
                 DisplayReward(selectedReward, selectedRewardValue, level1Rewards);  // showing reward ASCII art, name, value
                 break;
             case 2:
+                if (level3Locked)
+                {
+                    RandomLocationUnlock();
+                }
                 selectedReward = DrawReward(level2RewardsNames);
                 selectedRewardValue = SetRewardValue(selectedReward);
                 InventoryAddReward(selectedReward, selectedRewardValue);
@@ -933,6 +1019,45 @@ Value: {0}$
                 Debug.LogError("Invalid level number for reward.");
                 break;
         }
+    }
+
+    void RandomLocationUnlock()
+    {
+        float randomChance = Random.value;
+        if (randomChance <= .5f)  // TODO change value from 50% to 5% after tests
+        {
+            UnlockLevel();
+            additionalReward = true;
+        }
+    }
+
+    void UnlockLevel()
+    {
+        switch (level)
+        {
+            case 1:
+                level2Locked = false;
+                break;
+            case 2:
+                level3Locked = false;
+                break;
+            case 3:
+                level4Locked = false;
+                break;
+            case 4:
+                level5Locked = false;
+                break;
+            default:
+                break;
+        }
+    }
+
+    void DisplayAdditionalReward()
+    {
+        SetScreen(Screen.Win);
+        additionalReward = false;
+        Terminal.ClearScreen();
+        Terminal.WriteLine(string.Format(additionalRewardMsg, locations[level]));
     }
 
     int SetRewardValue(string selectedReward)
@@ -1007,13 +1132,12 @@ Value: {0}$
 
     string DrawReward(string[] rewardsList)
     {
-        // TODO set tier chances for rewards (t1 - 10, t2 - 15, t3 - 20, t4 - 25, t5 - 30)
         int randomIndex = Random.Range(0, rewardsList.Length);
         string reward = rewardsList[randomIndex];
         return reward;
     }
 
-    int RewardTier()
+    int SetRewardTier()
     {
         int tierIndex = 0;
         float dropChance = Random.value;
