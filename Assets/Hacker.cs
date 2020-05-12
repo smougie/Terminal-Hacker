@@ -382,6 +382,7 @@ Value: {0}$
     int money = 0;
     int felonyLevel = 0;
     string password;
+    string previousPassword;
     enum Screen { MainMenu, Password, Win, WinAdditional, Inventory, Shop, BuyMenu, Sell, Sold, Back, ItemBuyConfirm, Stop, ShopCrime, TimesUp, ChooseShop, Shop1, Shop2, Shop3, Shop4 };
     Screen currentScreen;
     Dictionary<string, int> inventory = new Dictionary<string, int>();
@@ -967,6 +968,12 @@ Value: {0}$
                 Debug.LogError("Invalid level number.");
                 break;
         }
+        if (password == previousPassword)
+        {
+            print("same password, repeating");
+            SetRandomPassword();
+        }
+        previousPassword = password;
     }
 
     void CheckPassword(string input)
