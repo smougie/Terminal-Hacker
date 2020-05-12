@@ -7,20 +7,32 @@ public class Hacker : MonoBehaviour
 {
     // Game configuration data
     // Locations
-    [HideInInspector] string[] locations = {"Local shop", "CrossFit gym", "Hogwarts"};
+    [HideInInspector] string[] locations = {"Local shop", "CrossFit gym", "Hogwarts", "Police Station", "NASA"};
     [HideInInspector] string[] locationsPL = {"Sklep żabka", "Rebel Nature Gym", "Hogwart"};
-    [HideInInspector] string[] shopNames = { "Crazy Hacker Shop", "Wierd Guys Shop", "Police .Net Vendor", "IP DataBase"};
+    [HideInInspector] string[] shopNames = { "Crazy Hacker Shop", "Weird Guys Shop", "Police .Net Vendor", "IP DataBase"};
 
     // Level rewards names
     [HideInInspector] string[] level1RewardsNames = {"icecream", "laptop", "revenue", "tape", "vodka"};
     [HideInInspector] string[] level2RewardsNames = {"dumbbell", "plate", "barbell", "picture", "cashRegister"};
     [HideInInspector] string[] level3RewardsNames = {"broom", "book", "map", "key", "wand"};
+    [HideInInspector] string[] level4RewardsNames = {"handcuff", "gun", "weapon", "badge", "dna"};
+    [HideInInspector] string[] level5RewardsNames = {"hole", "star", "ticket", "rocket", "alien"};
 
 
     // Level passwords and passwords hints
     #region Level 1 passwords and hints
     [HideInInspector] string[] level1Passwords = {"beer", "icecream", "drink", "fruits", "food"};
     [HideInInspector] string[] level1PasswordsPL = {"piwo", "lody", "napój", "owoce", "jedzenie"};
+
+    [HideInInspector] string[] level2Passwords = { "functional", "backsquat", "barbell", "dumbbell", "exercise" };
+    [HideInInspector] string[] level2PasswordsPL = { "funkcjonalny", "przysiad", "sztanga", "sztangielka", "ćwiczenie" };
+
+    [HideInInspector] string[] level3Passwords = { "quidditch", "blackmagic", "slytherin", "sectumsempra", "buckbeak" };
+    [HideInInspector] string[] level3PasswordsPL = { "quidditch", "czarnoksięstwo", "slytherin", "sectumsempra", "hardodziob" };
+
+    [HideInInspector] string[] level4Passwords = { "handcuffs", "officer", "suspect", "pistol", "prison" };
+    [HideInInspector] string[] level5Passwords = { "apollo", "astronaut", "research", "asteroid", "spacecraft" };
+
     [HideInInspector] Dictionary<string, string[]> passwordsHints = new Dictionary<string, string[]>
     {
         // Level 1
@@ -43,33 +55,21 @@ public class Hacker : MonoBehaviour
         {"slytherin", new string[] {"cunning", "snake", "salazar"}},
         {"sectumsempra", new string[] {"deep", "bleed", "spell"}},
         {"buckbeak", new string[] {"animal", "flying", "magic"}},
+
+        // Level 4
+        {"handcuffs", new string[] {"metal", "arrested", "aggressive"}},
+        {"officer", new string[] {"superior", "person", "duty"}},
+        {"suspect", new string[] {"charge", "felony", "crime"}},
+        {"pistol", new string[] {"bullet", "cop", "dangerous"}},
+        {"prison", new string[] {"liberty", "building", "suspect"}},
+
+        // Level 5
+        {"apollo", new string[] {"program", "astronauts", "moon"}},
+        {"astronaut", new string[] {"person", "space", "station"}},
+        {"research", new string[] {"science", "scientis", "instruments"}},
+        {"asteroid", new string[] {"rock", "ice", "atmosphere"}},
+        {"spacecraft", new string[] {"crew", "ignition", "fuel"}},
     };
-    #endregion
-
-    #region Level 2 passwords and hints
-    [HideInInspector] string[] level2Passwords = {"functional", "backsquat", "barbell", "dumbbell", "exercise"};
-    [HideInInspector] string[] level2PasswordsPL = {"funkcjonalny", "przysiad", "sztanga", "sztangielka", "ćwiczenie"};
-    //[HideInInspector] Dictionary<string, string[]> level2hints = new Dictionary<string, string[]>
-    //{
-    //    {"functional", new string[] {"type of training", "daily movements", "versatile"}},
-    //    {"backsquat", new string[] {"exercise", "powerlifting", "sit" }},
-    //    {"barbell", new string[] {"long", "heavy", "steel" }},
-    //    {"dumbbell", new string[] {"can be heavy", "for one hand mostly", "use to exercise" }},
-    //    {"exercise", new string[] {"home", "gym", "body activity" }},
-    //};
-    #endregion
-
-    #region Level 3 passwords and hints
-    [HideInInspector] string[] level3Passwords = {"quidditch", "blackmagic", "slytherin", "sectumsempra", "buckbeak"};
-    [HideInInspector] string[] level3PasswordsPL = {"quidditch", "czarnoksięstwo", "slytherin", "sectumsempra", "hardodziob"};
-    //[HideInInspector] Dictionary<string, string[]> level3hints = new Dictionary<string, string[]>
-    //{
-    //    {"quidditch", new string[] {"game", "golden snitch", "broom"}},
-    //    {"blackmagic", new string[] {"forbidden", "dangerous", "used by bad people"}},
-    //    {"slytherin", new string[] {"cunning", "snake", "salazar"}},
-    //    {"sectumsempra", new string[] {"deep", "bleed", "spell"}},
-    //    {"buckbeak", new string[] {"animal", "flying", "magic"}},
-    //};
     #endregion
 
     // Level rewards "objects"
@@ -243,7 +243,118 @@ Value: {0}$
     };
     #endregion
 
+    #region Level 4 Rewards
+    Dictionary<string, string> level4Rewards = new Dictionary<string, string>
+    {
+        {
+            "handcuff", @"You received handcuff!
+           /`  `\
+          |      | Value: {0}$
+[___]>=-=' \____/
+"
+        },
+        {
+            "gun", @"You received gun!
+      __,_____
+     / __.==--' Value: {0}$
+    /#(-'
+    `-'
+"
+        },
+        {
+            "weapon", @"
+You received murder weapon!
+ ______
+|_,.,--\
+   ||
+   || Value: {0}$
+   ##
+   ##
+"
+        },
+        {
+            "badge", @"
+   ,   /\   ,
+  / '-'  '-' \
+  |  POLICE  | You received police
+  |   .--.   | badge!
+  |  ( 19 )  | Value: {0}$
+  \   '--'   /
+   '--.  .--'
+       \/
+"
+        },
+        {
+            "dna", @"You received DNA!
+-. .-.   .-. 
+  \   \ /   \  Value: {0}$
+ / \   \   / \ 
+~   `-~ `-`   `
+"
+        },
+    };
+    #endregion
+
+    #region Level 5 Rewards
+    Dictionary<string, string> level5Rewards = new Dictionary<string, string>
+    {
+        {
+            "hole", @"
+You found a hole in NASA fence!
+=|===|===|/\=|===|===
+=|===|===|\/=|===|===
+    Value: {0}$
+"
+        },
+        {
+            "star", @"You received star!
+   ,
+__/ \__
+\     / Value: {0}$
+/_   _\
+  \ /
+   '
+"
+        },
+        {
+            "ticket", @"You received ticket to the moon!
+     _..,
+   .' .-'`_______
+  /  /    |TICKET|
+  |  |     ------
+  \  '.___.; Value: {0}$
+   '._  _.'
+      ``
+"
+        },
+        {
+            "rocket", @"
+     | You are now owner of rocket!
+    / \
+   |--o| Value: {0}$
+  /     \
+ |       |
+ |       |
+ |_______|
+  |@| |@|
+  ''' '''
+"
+        },
+        {
+            "alien", @"You received aliens dead body!
+  .-.
+ (@ @)
+  \-/ Value: {0}$
+  / \
+ /\ /\
+/ _H_ \
+"
+        },
+    };
+    #endregion
+
     // Game items variables
+    #region Game items variables
     [HideInInspector] string itemToBuy = "";
     [HideInInspector] int itemName = 0;
     [HideInInspector] int itemPrice = 1;
@@ -253,6 +364,7 @@ Value: {0}$
     [HideInInspector] int itemLvl3UpgradeCost = 5;
     [HideInInspector] int itemStartingPrice = 6;
     [HideInInspector] int itemDescription = 7;
+    #endregion
 
     #region gameItems container
     Dictionary<string, string[]> gameItems = new Dictionary<string, string[]>
@@ -266,7 +378,7 @@ Value: {0}$
             "2",  // LvL 2 upgrade cost 4
             "3",  // LvL 3 upgrade cost 5
             "1",  // starting price 6 - must be the same as item price 1
-            "Display password first letters",
+            "Shows first letters of password",
         }
         },
         {"decoder", new string[]
@@ -278,7 +390,7 @@ Value: {0}$
             "4",
             "6",
             "2",
-            "Display word hints about password",
+            "Shows word hints about password",
         }
         },
         {"hacktimer", new string[]
@@ -290,7 +402,7 @@ Value: {0}$
             "6",
             "9",
             "3",
-            "Increase location hacking time",
+            "Increases location hacking time",
         }
         },
         {"auctioneer", new string[]
@@ -302,7 +414,7 @@ Value: {0}$
             "5",
             "6",
             "4",
-            "Icrease items sell value",
+            "Icreases items sell value",
         }
         },
         {"loster", new string[]
@@ -326,7 +438,7 @@ Value: {0}$
             "12",
             "18",
             "6",
-            "Reduce time penalty after not guessing password",
+            "Reduces time penalty after not guessing\npassword",
         }
         },
         {"bribe", new string[]
@@ -346,6 +458,7 @@ Value: {0}$
     #endregion
 
     // Game State
+    #region Game State variables
     int shopNumber;
     string passwordHint = "";
     string enigmaHint = "";
@@ -356,22 +469,22 @@ Value: {0}$
     private bool timerOn;
     float levelTime = 0f;
     float currentCounterTime = 0f;
-    int[] timePenaltyValues = { 3, 4, 5 };
+    int[] timePenaltyValues = { 3, 4, 5, 5, 5 };
     int[] timeEncoderReduceValues = { 1, 2, 3 };
     float[] LosterAvoidChances = { .2f, .25f, .33f };
     float[] auctioneerPercentageValues = { .1f, .2f, .3f};
     string[] bribeNames = { "Harry", "Nikita", "Jackarta", "'Chief Smith'" };
-    int[] IPcost = { 50000, 200000};
+    int[] IPcost = { 50000, 200000, 300000, 400000};
     int[] bribeCost = { 50000, 100000, 150000, 350000 };
     int[] bribeReduceValue = { 1, 2, 3, 10 };
-    float[] levelTimeValues = { 20f, 30f, 40f};
+    float[] levelTimeValues = { 20f, 30f, 40f, 40f, 40f};
     float[] hackTimerTimeBonus = { 5f, 10f, 15f};
     bool additionalReward = false;
     bool level1Locked = false;  // TODO check location locked property 
     bool level2Locked = true;
     bool level3Locked = true;
-    bool level4Locked = false;
-    bool level5Locked = false;
+    bool level4Locked = true;
+    bool level5Locked = true;
     bool enigmaActive = false;
     bool enigmaMaxLevel = false;
     bool decoderActive = false;
@@ -394,6 +507,7 @@ Value: {0}$
     Screen currentScreen;
     Dictionary<string, int> inventory = new Dictionary<string, int>();
     Dictionary<string, int> inventoryCounter = new Dictionary<string, int>();
+    #endregion
 
     // Strings
     #region Errors, hints, prompt messagess
@@ -449,7 +563,7 @@ Value: {0}$
         money = 1000000;  // DELETE
     }
 
-    private void Update()
+    void Update()
     {
         CheckFelony();
         LevelTimeCounter();
@@ -528,7 +642,7 @@ Value: {0}$
         }
         else if (input == "/saldo")
         {
-            Terminal.WriteLine($"Money: {money}$");
+            Terminal.WriteLine(string.Format("Money: {0:n0}$", money));
         }
         else if (input == "/felony")
         {
@@ -606,7 +720,7 @@ Value: {0}$
         menuCounter = 0;
     }
 
-    private void IncreaseMenuCounter()
+    void IncreaseMenuCounter()
     {
         menuCounter += 1;
     }
@@ -614,7 +728,7 @@ Value: {0}$
     // Method handling player main menu choices
     void RunMainMenu(string input)
     {
-        var isValidLevel = (input == "1" || input == "2" || input == "3");
+        var isValidLevel = (input == "1" || input == "2" || input == "3" || input == "4" || input == "5");
         if (isValidLevel && LevelLocked(int.Parse(input)))
         {
             Terminal.WriteLine(levelLockedMessage);
@@ -758,7 +872,7 @@ Value: {0}$
         DisplayPasswordScreen();
     }
 
-    private void DisplayPasswordScreen()
+    void DisplayPasswordScreen()
     {
         Terminal.ClearScreen();
         Terminal.WriteLine(menuHint);
@@ -789,7 +903,7 @@ Value: {0}$
         currentCounterTime = levelTime;
     }
 
-    private void SetLevelTime()
+    void SetLevelTime()
     {
         if (hackTimerActive)
         {
@@ -971,6 +1085,12 @@ Value: {0}$
             case 3:
                 password = level3Passwords[Random.Range(0, level3Passwords.Length)];
                 break;
+            case 4:
+                password = level4Passwords[Random.Range(0, level3Passwords.Length)];
+                break;
+            case 5:
+                password = level5Passwords[Random.Range(0, level3Passwords.Length)];
+                break;
             default:
                 Debug.LogError("Invalid level number.");
                 break;
@@ -1038,10 +1158,32 @@ Value: {0}$
                 DisplayReward(selectedReward, selectedRewardValue, level2Rewards);
                 break;
             case 3:
+                if (level4Locked)
+                {
+                    RandomLocationUnlock();
+                }
                 selectedReward = DrawReward(level3RewardsNames);
                 selectedRewardValue = SetRewardValue(selectedReward);
                 InventoryAddReward(selectedReward, selectedRewardValue);
                 DisplayReward(selectedReward, selectedRewardValue, level3Rewards);
+                break;
+            case 4:
+                if (level5Locked)
+                {
+                    RandomLocationUnlock();
+                }
+                selectedReward = DrawReward(level4RewardsNames);
+                print(selectedReward);
+                selectedRewardValue = SetRewardValue(selectedReward);
+                InventoryAddReward(selectedReward, selectedRewardValue);
+                DisplayReward(selectedReward, selectedRewardValue, level4Rewards);
+                break;
+            case 5:
+                selectedReward = DrawReward(level5RewardsNames);
+                print(selectedReward);
+                selectedRewardValue = SetRewardValue(selectedReward);
+                InventoryAddReward(selectedReward, selectedRewardValue);
+                DisplayReward(selectedReward, selectedRewardValue, level5Rewards);
                 break;
             default:
                 Debug.LogError("Invalid level number for reward.");
@@ -1144,12 +1286,43 @@ Value: {0}$
             case "wand":
                 selectedRewardValue = SetItemValue(15000, 20000);
                 break;
+            // Level 4 rewards
+            case "handcuff":
+                selectedRewardValue = SetItemValue(15000, 20000);
+                break;
+            case "gun":
+                selectedRewardValue = SetItemValue(15000, 20000);
+                break;
+            case "weapon":
+                selectedRewardValue = SetItemValue(15000, 20000);
+                break;
+            case "badge":
+                selectedRewardValue = SetItemValue(15000, 20000);
+                break;
+            case "dna":
+                selectedRewardValue = SetItemValue(15000, 20000);
+                break;
+            // Level 5 rewards
+            case "hole":
+                selectedRewardValue = SetItemValue(15000, 20000);
+                break;
+            case "star":
+                selectedRewardValue = SetItemValue(15000, 20000);
+                break;
+            case "ticket":
+                selectedRewardValue = SetItemValue(15000, 20000);
+                break;
+            case "rocket":
+                selectedRewardValue = SetItemValue(15000, 20000);
+                break;
+            case "alien":
+                selectedRewardValue = SetItemValue(15000, 20000);
+                break;
             default:
                 Debug.LogError("Select Reward switch Error.");
                 break;
-            #endregion
         }
-
+        #endregion
         return selectedRewardValue;
     }
 
@@ -1396,7 +1569,7 @@ Value: {0}$
         string bribeOptions = "Someone can remove felony from your\naccount:";
         for (int i = 0; i < bribeNames.Length; i++)
         {
-            bribeOptions += string.Format("\n{0} {1} can remove {2}0% felony\nfor {3}$", i+1, bribeNames[i], bribeReduceValue[i], bribeCost[i]);
+            bribeOptions += string.Format("\n{0} {1} can remove {2}0% felony\nfor {3:n0}$", i+1, bribeNames[i], bribeReduceValue[i], bribeCost[i]);
         }
         Terminal.WriteLine(bribeOptions);
     }
@@ -1527,6 +1700,16 @@ Value: {0}$
                         DisplayBuyIPMessage();
                     }
                     else if (input == "2" && CanAffordIP(input) && LevelLocked(int.Parse(input) + 1))
+                    {
+                        BuyIP(input);
+                        DisplayBuyIPMessage();
+                    }
+                    else if (input == "3" && CanAffordIP(input) && LevelLocked(int.Parse(input) + 1))
+                    {
+                        BuyIP(input);
+                        DisplayBuyIPMessage();
+                    }
+                    else if (input == "4" && CanAffordIP(input) && LevelLocked(int.Parse(input) + 1))
                     {
                         BuyIP(input);
                         DisplayBuyIPMessage();
@@ -1867,7 +2050,7 @@ Value: {0}$
         }
     }
 
-    private void CanSell()
+    void CanSell()
     {
         if (inventory.Count != 0)
         {
