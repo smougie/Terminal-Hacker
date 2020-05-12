@@ -9,7 +9,7 @@ public class Hacker : MonoBehaviour
     // Locations
     [HideInInspector] string[] locations = {"Local shop", "CrossFit gym", "Hogwarts"};
     [HideInInspector] string[] locationsPL = {"Sklep żabka", "Rebel Nature Gym", "Hogwart"};
-    [HideInInspector] string[] shopNames = { "Crazy Hacker Shop", "Wierd Guys Shop", "Police .Net Vendor"};
+    [HideInInspector] string[] shopNames = { "Crazy Hacker Shop", "Wierd Guys Shop", "Police .Net Vendor", "IP DataBase"};
 
     // Level rewards names
     [HideInInspector] string[] level1RewardsNames = {"icecream", "laptop", "revenue", "tape", "vodka"};
@@ -330,6 +330,11 @@ Value: {0}$
             "1",
         }
         },
+        {"ipdatabase", new string[]
+        {
+            "ipdatabase",
+        }
+        },
     };
     #endregion
 
@@ -349,6 +354,7 @@ Value: {0}$
     float[] LosterAvoidChances = { .2f, .25f, .33f };
     float[] auctioneerPercentageValues = { .1f, .2f, .3f};
     string[] bribeNames = { "Harry", "Nikita", "Jackarta", "'Chief Smith'" };
+    int[] IPcost = { 50000, 200000};
     int[] bribeCost = { 50000, 100000, 150000, 350000 };
     int[] bribeReduceValue = { 1, 2, 3, 10 };
     float[] levelTimeValues = { 20f, 30f, 40f};
@@ -376,7 +382,7 @@ Value: {0}$
     int money = 0;
     int felonyLevel = 0;
     string password;
-    enum Screen { MainMenu, Password, Win, WinAdditional, Inventory, Shop, BuyMenu, Sell, Sold, Back, ItemBuyConfirm, Stop, ShopCrime, TimesUp, ChooseShop, Shop1, Shop2, Shop3 };
+    enum Screen { MainMenu, Password, Win, WinAdditional, Inventory, Shop, BuyMenu, Sell, Sold, Back, ItemBuyConfirm, Stop, ShopCrime, TimesUp, ChooseShop, Shop1, Shop2, Shop3, Shop4 };
     Screen currentScreen;
     Dictionary<string, int> inventory = new Dictionary<string, int>();
     Dictionary<string, int> inventoryCounter = new Dictionary<string, int>();
@@ -416,8 +422,10 @@ Value: {0}$
     [HideInInspector] string itemLabelMax = "\n{0} Name: {1}, Level: \nMAX LEVEL";
     [HideInInspector] string notEnoughFelonyLevel = "You are not under police eye.";
     [HideInInspector] string bribeSuccessfulMsg = "Bribe successful";
+    [HideInInspector] string addressAddMessage = "IP Address successfully added into\nyour DateBase.";
     [HideInInspector] string additionalRewardMsg = "You found the '{0}'\nIP Address! You can now hack this\nlocation.";
     [HideInInspector] string levelLockedMessage = "Level locked. You need to find or buy\nIP address of this location.";
+    [HideInInspector] string addressMaxLvL = "IP Address already in your DataBase.";
 
     Slider slider;
     [SerializeField] GameObject progressBar = null;
@@ -575,6 +583,9 @@ Value: {0}$
                 case Screen.Shop3:
                     ChooseBuyItem(input);
                     break;
+                case Screen.Shop4:
+                    ChooseBuyItem(input);
+                    break;
                 default:
                     Debug.LogError("OnUserInput currentScreen switch statement Error.");
                     break;
@@ -686,6 +697,9 @@ Value: {0}$
                     ShowChooseShop();
                     break;
                 case Screen.Shop3:
+                    ShowChooseShop();
+                    break;
+                case Screen.Shop4:
                     ShowChooseShop();
                     break;
                 default:
@@ -1026,14 +1040,14 @@ Value: {0}$
         float randomChance = Random.value;
         if (randomChance <= .5f)  // TODO change value from 50% to 5% after tests
         {
-            UnlockLevel();
+            UnlockLevel(level);
             additionalReward = true;
         }
     }
 
-    void UnlockLevel()
+    void UnlockLevel(int levelUnlock)
     {
-        switch (level)
+        switch (levelUnlock)
         {
             case 1:
                 level2Locked = false;
@@ -1236,7 +1250,7 @@ Value: {0}$
 
     void RunChooseShop(string input)
     {
-        var isValidChoice = (input == "1" || input == "2" || input == "3");
+        var isValidChoice = (input == "1" || input == "2" || input == "3" || input == "4");
         if (isValidChoice)
         {
             switch (input)
@@ -1249,6 +1263,9 @@ Value: {0}$
                     break;
                 case "3":
                     shopNumber = 3;
+                    break;
+                case "4":
+                    shopNumber = 4;
                     break;
                 default:
                     Debug.LogError("RunChooseShop Switch on input Error.");
@@ -1277,6 +1294,9 @@ Value: {0}$
             case 3:
                 SetScreen(Screen.Shop3);
                 break;
+            case 4:
+                SetScreen(Screen.Shop4);
+                break;
             default:
                 Debug.LogError("SetCurrentShopScreen() Switch on shopNumber Error.");
                 break;
@@ -1297,7 +1317,8 @@ Value: {0}$
         {
             { 1, new int[] { 1, 2, 3} },
             { 2, new int[] { 4, 5, 6} },
-            { 3, new int[] { 7} }
+            { 3, new int[] { 7} },
+            { 4, new int[] { 8} }
         };
 
         var counter = 1;
@@ -1307,6 +1328,11 @@ Value: {0}$
             if (counter == 7 && currentScreen == Screen.Shop3)
             {
                 ShowBribeOptions();
+                break;
+            }
+            if (counter == 8 && currentScreen == Screen.Shop4)
+            {
+                ShowIPAddresses();
                 break;
             }
             if (shopItemsDivision[shopNumber].Contains(counter))
@@ -1324,10 +1350,29 @@ Value: {0}$
             counter++;
         }
 
-        if (currentScreen != Screen.Shop3)
+        if (currentScreen != Screen.Shop3 && currentScreen != Screen.Shop4)
         {
         Terminal.WriteLine(buyMenu);
         }
+    }
+
+    void ShowIPAddresses()
+    {
+        Terminal.ClearScreen();
+
+        string IPaddresses = "Which IP address would you like to buy and add to your DataBase: ";
+        for (int i = 1; i < locations.Length; i++)
+        {
+            if (LevelLocked(i + 1))
+            {
+                IPaddresses += string.Format("\n{0} {1} IP {2:n0}$", i, locations[i], IPcost[i-1]);
+            }
+            else
+            {
+                IPaddresses += $"\n{i} {locations[i]} IP - in database";
+            }
+        }
+        Terminal.WriteLine(IPaddresses);
     }
 
     void ShowBribeOptions()
@@ -1461,6 +1506,26 @@ Value: {0}$
                         RunBribeMachine(input);
                     }
                     break;
+                case Screen.Shop4:
+                    if (input == "1" && CanAffordIP(input) && LevelLocked(int.Parse(input) + 1))
+                    {
+                        BuyIP(input);
+                        DisplayBuyIPMessage();
+                    }
+                    else if (input == "2" && CanAffordIP(input) && LevelLocked(int.Parse(input) + 1))
+                    {
+                        BuyIP(input);
+                        DisplayBuyIPMessage();
+                    }
+                    else if (!LevelLocked(int.Parse(input) + 1))
+                    {
+                        Terminal.WriteLine(addressMaxLvL);
+                    }
+                    else
+                    {
+                        Terminal.WriteLine(cantAfford);
+                    }
+                    break;
                 default:
                     Debug.LogError("ChooseBuyItem() Switch on currentScreen Error.");
                     break;
@@ -1473,7 +1538,20 @@ Value: {0}$
         }
     }
 
-    private void RunBribeMachine(string input)
+    void BuyIP(string buyOption)
+    {
+        UnlockLevel(int.Parse(buyOption));
+        money -= IPcost[int.Parse(buyOption) - 1];
+    }
+
+    void DisplayBuyIPMessage()
+    {
+        Terminal.ClearScreen();
+        ShowIPAddresses();
+        Terminal.WriteLine(addressAddMessage);
+    }
+
+    void RunBribeMachine(string input)
     {
         if (!VerifyFelonyLevel())
         {
@@ -1538,6 +1616,16 @@ Value: {0}$
         return canResetFelony;
     }
     
+    bool CanAffordIP(string buyOption)
+    {
+        bool canAfford = false;
+        if (money >= IPcost[int.Parse(buyOption) - 1])
+        {
+            canAfford = true;
+        }
+        return canAfford;
+    }
+
     bool CanAffordBribe(int bribeValueIndex)
     {
         int properIndex = bribeValueIndex - 1;
@@ -1960,7 +2048,7 @@ Value: {0}$
         timeEncoderMaxLevel = false;
         foreach (KeyValuePair<string, string[]> item in gameItems)
         {
-            if (item.Key != "bribe")
+            if (item.Key != "bribe" && item.Key != "ipdatabase")
             {
             gameItems[item.Key][itemPrice] = gameItems[item.Key][itemStartingPrice];
             gameItems[item.Key][itemLevel] = "0";  // TEST on 
