@@ -7,15 +7,15 @@ public class Hacker : MonoBehaviour
 {
     // Game configuration data
     // Locations
-    [HideInInspector] string[] locations = {"Local shop", "CrossFit gym", "Hogwarts", "Police Station", "NASA"};
+    [HideInInspector] string[] locations = {"Local shop", "CrossFit gym", "Police Station", "Hogwarts", "NASA" };
     [HideInInspector] string[] locationsPL = {"Sklep żabka", "Rebel Nature Gym", "Hogwart"};
     [HideInInspector] string[] shopNames = { "Crazy Hacker Shop", "Weird Guys Shop", "Police .Net Vendor", "IP DataBase"};
 
     // Level rewards names
     [HideInInspector] string[] level1RewardsNames = {"icecream", "laptop", "revenue", "tape", "vodka"};
     [HideInInspector] string[] level2RewardsNames = {"dumbbell", "plate", "barbell", "picture", "cashRegister"};
-    [HideInInspector] string[] level3RewardsNames = {"broom", "book", "map", "key", "wand"};
-    [HideInInspector] string[] level4RewardsNames = {"handcuff", "gun", "weapon", "badge", "dna"};
+    [HideInInspector] string[] level3RewardsNames = {"handcuff", "gun", "weapon", "badge", "dna"};
+    [HideInInspector] string[] level4RewardsNames = {"broom", "book", "map", "key", "wand"};
     [HideInInspector] string[] level5RewardsNames = {"hole", "star", "ticket", "rocket", "alien"};
 
 
@@ -27,10 +27,10 @@ public class Hacker : MonoBehaviour
     [HideInInspector] string[] level2Passwords = { "functional", "backsquat", "barbell", "dumbbell", "exercise" };
     [HideInInspector] string[] level2PasswordsPL = { "funkcjonalny", "przysiad", "sztanga", "sztangielka", "ćwiczenie" };
 
-    [HideInInspector] string[] level3Passwords = { "quidditch", "blackmagic", "slytherin", "sectumsempra", "buckbeak" };
-    [HideInInspector] string[] level3PasswordsPL = { "quidditch", "czarnoksięstwo", "slytherin", "sectumsempra", "hardodziob" };
+    [HideInInspector] string[] level3Passwords = { "handcuffs", "officer", "suspect", "pistol", "prison" };
 
-    [HideInInspector] string[] level4Passwords = { "handcuffs", "officer", "suspect", "pistol", "prison" };
+    [HideInInspector] string[] level4Passwords = { "quidditch", "blackmagic", "slytherin", "sectumsempra", "buckbeak" };
+    [HideInInspector] string[] level4PasswordsPL = { "quidditch", "czarnoksięstwo", "slytherin", "sectumsempra", "hardodziob" };
     [HideInInspector] string[] level5Passwords = { "apollo", "astronaut", "research", "asteroid", "spacecraft" };
 
     [HideInInspector] Dictionary<string, string[]> passwordsHints = new Dictionary<string, string[]>
@@ -151,8 +151,8 @@ You received the dumbbell!
 "
         },
         {
-            "plate", @"You received the 25kg plate!
-          .-"" -.
+            "plate", @"You received 25kg plate!
+          .-""-.
          / 25kg \  
         ;  { }   ; Value: {0}$
          \      /
@@ -192,7 +192,7 @@ You received the barbell!
     #endregion
 
     #region Level 3 Rewards
-    Dictionary<string, string> level3Rewards = new Dictionary<string, string>
+    Dictionary<string, string> level4Rewards = new Dictionary<string, string>
     {
         {
             "broom", @"You received firebolt!
@@ -244,7 +244,7 @@ Value: {0}$
     #endregion
 
     #region Level 4 Rewards
-    Dictionary<string, string> level4Rewards = new Dictionary<string, string>
+    Dictionary<string, string> level3Rewards = new Dictionary<string, string>
     {
         {
             "handcuff", @"You received handcuff!
@@ -1097,7 +1097,6 @@ __/ \__
         }
         if (password == previousPassword)
         {
-            print("same password, repeating");
             SetRandomPassword();
         }
         previousPassword = password;
@@ -1155,7 +1154,9 @@ __/ \__
                 selectedReward = DrawReward(level2RewardsNames);
                 selectedRewardValue = SetRewardValue(selectedReward);
                 InventoryAddReward(selectedReward, selectedRewardValue);
+                print(selectedReward);
                 DisplayReward(selectedReward, selectedRewardValue, level2Rewards);
+                print("some error");
                 break;
             case 3:
                 if (level4Locked)
