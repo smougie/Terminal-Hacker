@@ -8,7 +8,6 @@ public class Hacker : MonoBehaviour
     // Game configuration data
     // Locations
     [HideInInspector] string[] locations = {"Local shop", "CrossFit gym", "Police Station", "Hogwarts", "NASA" };
-    [HideInInspector] string[] locationsPL = {"Sklep żabka", "Rebel Nature Gym", "Hogwart"};
     [HideInInspector] string[] shopNames = { "Crazy Hacker Shop", "Weird Guys Shop", "Police .Net Vendor", "IP DataBase"};
 
     // Level rewards names
@@ -22,15 +21,12 @@ public class Hacker : MonoBehaviour
     // Level passwords and passwords hints
     #region Level 1 passwords and hints
     [HideInInspector] string[] level1Passwords = {"beer", "icecream", "drink", "fruits", "food"};
-    [HideInInspector] string[] level1PasswordsPL = {"piwo", "lody", "napój", "owoce", "jedzenie"};
 
     [HideInInspector] string[] level2Passwords = { "functional", "backsquat", "barbell", "dumbbell", "exercise" };
-    [HideInInspector] string[] level2PasswordsPL = { "funkcjonalny", "przysiad", "sztanga", "sztangielka", "ćwiczenie" };
 
     [HideInInspector] string[] level3Passwords = { "handcuffs", "officer", "suspect", "pistol", "prison" };
 
     [HideInInspector] string[] level4Passwords = { "quidditch", "blackmagic", "slytherin", "sectumsempra", "buckbeak" };
-    [HideInInspector] string[] level4PasswordsPL = { "quidditch", "czarnoksięstwo", "slytherin", "sectumsempra", "hardodziob" };
     [HideInInspector] string[] level5Passwords = { "apollo", "astronaut", "research", "asteroid", "spacecraft" };
 
     [HideInInspector] Dictionary<string, string[]> passwordsHints = new Dictionary<string, string[]>
@@ -341,7 +337,7 @@ __/ \__
 "
         },
         {
-            "alien", @"You received aliens dead body!
+            "alien", @"You received alien dead body!
   .-.
  (@ @)
   \-/ Value: {0}$
@@ -497,7 +493,6 @@ __/ \__
     bool losterMaxLevel = false;
     bool timeEncoderActive = false;
     bool timeEncoderMaxLevel = false;
-    bool busted = false;
     int level;  // member variable storing current level
     int money = 0;
     int felonyLevel = 0;
@@ -512,19 +507,12 @@ __/ \__
     // Strings
     #region Errors, hints, prompt messagess
     [HideInInspector] string mainMenuScreen = "Press 'd' for DarkWeb shop\nPress 'i' for inventory\n\nWhat would you like to hack into?";
-    [HideInInspector] string mainMenuScreenPL = "Do czego chcesz się włamać?\nNaciśnij 1 dla sklepu żabka\nNaciśnij 2 dla Rebel Nature Gym\nNaciśnij 3 dla Hogwartu";
     [HideInInspector] string menuHint = "Type 'menu' for menu";
-    [HideInInspector] string menuHintPL = "Wpisz 'menu' aby wrócić do menu";
     [HideInInspector] string validOptionHint = "Please choose a valid option\nor type 'menu' for menu";
-    [HideInInspector] string validOptionHintPL = "Wybierz odpowiednią opcję";
     [HideInInspector] string validOption2Hint = "Please choose a valid option";
     [HideInInspector] string backHint = "Type 'b' for back or 'menu' for menu";
     [HideInInspector] string forwardHint = "You found something else...\nType 'next'/'n' to check it";
-
     [HideInInspector] string passwordPrompt = "Please enter a password:";
-    [HideInInspector] string passwordPromptPL = "*podpowiedź: {1}\nWprowadź hasło:";
-    [HideInInspector] string tryAgainMessage = "Password incorrect, please try again.";
-    [HideInInspector] string tryAgainMessagePL = "Błędne hasło, spróbuj ponownie.";
     [HideInInspector] string shopMenu = "Welcome to the DarkWeb store!\nPress 1 for Buy\nPress 2 for Sell";
     [HideInInspector] string sellItemQuestion = "Would you like to sell all your items?\nPress y/Yes or n/NO";
     [HideInInspector] string cantAfford = "You can't afford this item.";
@@ -1154,9 +1142,7 @@ __/ \__
                 selectedReward = DrawReward(level2RewardsNames);
                 selectedRewardValue = SetRewardValue(selectedReward);
                 InventoryAddReward(selectedReward, selectedRewardValue);
-                print(selectedReward);
                 DisplayReward(selectedReward, selectedRewardValue, level2Rewards);
-                print("some error");
                 break;
             case 3:
                 if (level4Locked)
@@ -1272,52 +1258,52 @@ __/ \__
                 selectedRewardValue = SetItemValue(1000, 2500);
                 break;
             // Level 3 rewards
+            case "handcuff":
+                selectedRewardValue = SetItemValue(350, 550);
+                break;
+            case "gun":
+                selectedRewardValue = SetItemValue(1500, 4500);
+                break;
+            case "weapon":
+                selectedRewardValue = SetItemValue(2500, 7500);
+                break;
+            case "badge":
+                selectedRewardValue = SetItemValue(5000, 10000);
+                break;
+            case "dna":
+                selectedRewardValue = SetItemValue(7000, 15000);
+                break;
+            // Level 4 rewards
             case "broom":
                 selectedRewardValue = SetItemValue(2500, 5000);
                 break;
             case "book":
-                selectedRewardValue = SetItemValue(3500, 6000);
+                selectedRewardValue = SetItemValue(3500, 7500);
                 break;
             case "map":
-                selectedRewardValue = SetItemValue(4500, 7000);
+                selectedRewardValue = SetItemValue(5500, 11000);
                 break;
             case "key":
-                selectedRewardValue = SetItemValue(7000, 15000);
+                selectedRewardValue = SetItemValue(11000, 20000);
                 break;
             case "wand":
-                selectedRewardValue = SetItemValue(15000, 20000);
-                break;
-            // Level 4 rewards
-            case "handcuff":
-                selectedRewardValue = SetItemValue(15000, 20000);
-                break;
-            case "gun":
-                selectedRewardValue = SetItemValue(15000, 20000);
-                break;
-            case "weapon":
-                selectedRewardValue = SetItemValue(15000, 20000);
-                break;
-            case "badge":
-                selectedRewardValue = SetItemValue(15000, 20000);
-                break;
-            case "dna":
-                selectedRewardValue = SetItemValue(15000, 20000);
+                selectedRewardValue = SetItemValue(15000, 25000);
                 break;
             // Level 5 rewards
             case "hole":
-                selectedRewardValue = SetItemValue(15000, 20000);
+                selectedRewardValue = SetItemValue(4000, 6000);
                 break;
             case "star":
-                selectedRewardValue = SetItemValue(15000, 20000);
+                selectedRewardValue = SetItemValue(6500, 14000);
                 break;
             case "ticket":
-                selectedRewardValue = SetItemValue(15000, 20000);
+                selectedRewardValue = SetItemValue(15000, 25000);
                 break;
             case "rocket":
-                selectedRewardValue = SetItemValue(15000, 20000);
+                selectedRewardValue = SetItemValue(20000, 35000);
                 break;
             case "alien":
-                selectedRewardValue = SetItemValue(15000, 20000);
+                selectedRewardValue = SetItemValue(35000, 50000);
                 break;
             default:
                 Debug.LogError("Select Reward switch Error.");
