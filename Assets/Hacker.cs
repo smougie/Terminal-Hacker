@@ -20,15 +20,20 @@ public class Hacker : MonoBehaviour
 
     // Level passwords and passwords hints
     #region Level 1 passwords and hints
-    [HideInInspector] string[] level1Passwords = {"beer", "icecream", "drink", "fruits", "food", "candy", "jelly", "cookie", "rice", "cigarettes", "bread", "money", "specie", "vegetables", "meat"};
+    [HideInInspector] string[] level1Passwords = {"beer", "icecream", "drink", "fruits", "food", "candy", "jelly", "cookie", "rice", "cigarettes", "bread", "money", "specie",
+        "vegetables", "meat"};
 
-    [HideInInspector] string[] level2Passwords = { "functional", "backsquat", "barbell", "dumbbell", "exercise", "isolation", "streching", "cutting", "powerlifting", "conditioning", "gymnastics", "steroids", "bodybuilding", "repeats", "compete"};
+    [HideInInspector] string[] level2Passwords = { "functional", "backsquat", "barbell", "dumbbell", "exercise", "isolation", "streching", "cutting", "powerlifting",
+        "conditioning", "gymnastics", "steroids", "bodybuilding", "repeats", "compete"};
 
-    [HideInInspector] string[] level3Passwords = { "handcuffs", "officer", "suspect", "pistol", "prison", "detective", "evidence", "radiostation", "badge", "taser", "drugs", "deposit", "chase", "felony", "bulletproof"};
+    [HideInInspector] string[] level3Passwords = { "handcuffs", "officer", "suspect", "pistol", "prison", "detective", "evidence", "radiostation", "badge", "taser", "drugs",
+        "deposit", "chase", "felony", "bulletproof"};
 
-    [HideInInspector] string[] level4Passwords = { "quidditch", "blackmagic", "slytherin", "sectumsempra", "buckbeak", "gryffindor", "hufflepuff", "ravenclav", "polyjuice", "muggles", "phoenix", "dumbledore", "horcrux", "dudley", "basilisk" };
+    [HideInInspector] string[] level4Passwords = { "quidditch", "blackmagic", "slytherin", "sectumsempra", "buckbeak", "gryffindor", "hufflepuff", "ravenclav", "polyjuice",
+        "muggles", "phoenix", "dumbledore", "horcrux", "dudley", "basilisk" };
 
-    [HideInInspector] string[] level5Passwords = { "apollo", "astronaut", "research", "asteroid", "spacecraft", "eisenhower", "explorer", "skylab", "telescope", "armstrong", "columbia", "satellite", "planet", "comet" };
+    [HideInInspector] string[] level5Passwords = { "apollo", "astronaut", "research", "asteroid", "spacecraft", "eisenhower", "explorer", "skylab", "telescope", "armstrong",
+        "columbia", "satellite", "planet", "comet", "solar" };
 
     [HideInInspector] Dictionary<string, string[]> passwordsHints = new Dictionary<string, string[]>
     {
@@ -1001,6 +1006,7 @@ __/ \__
     void DisplayTimesUp()
     {
         SetScreen(Screen.TimesUp);
+        ClearPasswordAndHints();
         Terminal.ClearScreen();
         Terminal.WriteLine(string.Format(timesUpMessage, level));
     }
