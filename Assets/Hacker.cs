@@ -20,17 +20,15 @@ public class Hacker : MonoBehaviour
 
     // Level passwords and passwords hints
     #region Level 1 passwords and hints
-    [HideInInspector] string[] level1Passwords = {"beer", "icecream", "drink", "fruits", "food"};
-    /*
-     * 
-     */
+    [HideInInspector] string[] level1Passwords = {"beer", "icecream", "drink", "fruits", "food", "candy", "jelly", "cookie", "rice", "cigarettes", "bread", "money", "specie", "vegetables", "meat"};
 
-    [HideInInspector] string[] level2Passwords = { "functional", "backsquat", "barbell", "dumbbell", "exercise" };
+    [HideInInspector] string[] level2Passwords = { "functional", "backsquat", "barbell", "dumbbell", "exercise", "isolation", "streching", "cutting", "powerlifting", "conditioning", "gymnastics", "steroids", "bodybuilding", "repeats", "compete"};
 
-    [HideInInspector] string[] level3Passwords = { "handcuffs", "officer", "suspect", "pistol", "prison" };
+    [HideInInspector] string[] level3Passwords = { "handcuffs", "officer", "suspect", "pistol", "prison", "detective", "evidence", "radiostation", "badge", "taser", "drugs", "deposit", "chase", "felony", "bulletproof"};
 
-    [HideInInspector] string[] level4Passwords = { "quidditch", "blackmagic", "slytherin", "sectumsempra", "buckbeak" };
-    [HideInInspector] string[] level5Passwords = { "apollo", "astronaut", "research", "asteroid", "spacecraft" };
+    [HideInInspector] string[] level4Passwords = { "quidditch", "blackmagic", "slytherin", "sectumsempra", "buckbeak", "gryffindor", "hufflepuff", "ravenclav", "polyjuice", "muggles", "phoenix", "dumbledore", "horcrux", "dudley", "basilisk" };
+
+    [HideInInspector] string[] level5Passwords = { "apollo", "astronaut", "research", "asteroid", "spacecraft", "eisenhower", "explorer", "skylab", "telescope", "armstrong", "columbia", "satellite", "planet", "comet" };
 
     [HideInInspector] Dictionary<string, string[]> passwordsHints = new Dictionary<string, string[]>
     {
@@ -40,6 +38,16 @@ public class Hacker : MonoBehaviour
         { "drink", new string[] {"liquid", "thirst", "refreshing"}},
         { "fruits", new string[] {"vitamins", "sweet", "sour"}},
         { "food", new string[] {"hot-dog", "bread", "eat"}},
+        { "candy", new string[] {"sweet", "sugar", "colorful"}},
+        { "jelly", new string[] {"sweet", "gummy", "colorful"}},
+        { "cookie", new string[] {"sweet", "brown", "jar"}},
+        { "rice", new string[] {"china", "sushi", "chicken"}},
+        { "cigarettes", new string[] {"addiction", "smoke", ""}},
+        { "bread", new string[] {"flour", "loaf", "baker"}},
+        { "money", new string[] {"bank", "dolar", "euro"}},
+        { "specie", new string[] {"silver", "copper", "coin"}},
+        { "vegetables", new string[] {"green", "farmer", "garden"}},
+        { "meat", new string[] {"chicken", "fish", "beef"}},
         
         // Level 2
         {"functional", new string[] {"type of training", "daily movements", "versatile"}},
@@ -47,6 +55,16 @@ public class Hacker : MonoBehaviour
         {"barbell", new string[] {"long", "heavy", "steel" }},
         {"dumbbell", new string[] {"can be heavy", "for one hand mostly", "use to exercise" }},
         {"exercise", new string[] {"home", "gym", "body activity" }},
+        { "isolation", new string[] {"single", "exercises", "part"}},
+        { "streching", new string[] {"body", "gymnastics", "motion"}},
+        { "cutting", new string[] {"diet", "weight", "austerity"}},
+        { "powerlifting", new string[] {"heavy", "olympiad", "strength"}},
+        { "conditioning", new string[] {"run", "bike", "oxygen"}},
+        { "gymnastics", new string[] {"olympiad", "strength", "bodyweight"}},
+        { "steroids", new string[] {"forbidden", "needle", "strenght"}},
+        { "repeats", new string[] {"exercise", "max", "amount"}},
+        { "compete", new string[] {"athlete", "lose", "win"}},
+        { "bodybuilding", new string[] {"strenght", "goodlooking", "arnold"}},
 
         // Level 3
         {"quidditch", new string[] {"game", "golden snitch", "broom"}},
@@ -54,6 +72,16 @@ public class Hacker : MonoBehaviour
         {"slytherin", new string[] {"cunning", "snake", "salazar"}},
         {"sectumsempra", new string[] {"deep", "bleed", "spell"}},
         {"buckbeak", new string[] {"animal", "flying", "magic"}},
+        { "gryffindor", new string[] {"lion", "harry", "godric"}},
+        { "hufflepuff", new string[] {"helga", "badger", "cedrik"}},
+        { "ravenclaw", new string[] {"rowena", "eagle", "luna"}},
+        { "polyjuice", new string[] {"potion", "advanced", "shift"}},
+        { "muggles", new string[] {"people", "usual", "artur weasley"}},
+        { "phoenix", new string[] {"magic", "animal", "fire"}},
+        { "dumbledore", new string[] {"school", "wizard", "powerful"}},
+        { "horcrux", new string[] {"part", "soul", "items"}},
+        { "dudley", new string[] {"cousin", "harry", "fat"}},
+        { "basilisk", new string[] {"eyes", "stone", "fang"}},
 
         // Level 4
         {"handcuffs", new string[] {"metal", "arrested", "aggressive"}},
@@ -61,6 +89,16 @@ public class Hacker : MonoBehaviour
         {"suspect", new string[] {"charge", "felony", "crime"}},
         {"pistol", new string[] {"bullet", "cop", "dangerous"}},
         {"prison", new string[] {"liberty", "building", "suspect"}},
+        {"detective", new string[] {"case", "suspect", "solved"}},
+        {"evidence", new string[] {"crime", "suspect", "in case"}},
+        {"radiostation", new string[] {"between", "talk", "waves"}},
+        {"badge", new string[] {"shield", "sign", "star"}},
+        {"taser", new string[] {"weapon", "electricity", "shoot"}},
+        {"drugs", new string[] {"gang", "cartel", "substance"}},
+        {"deposit", new string[] {"items", "lost", "airport"}},
+        {"chase", new string[] {"traffic", "car", "street"}},
+        {"felony", new string[] {"guilt", "crime", "level"}},
+        {"bulletproof", new string[] {"vest", "guns", "deadly"}},
 
         // Level 5
         {"apollo", new string[] {"program", "astronauts", "moon"}},
@@ -68,6 +106,16 @@ public class Hacker : MonoBehaviour
         {"research", new string[] {"science", "scientis", "instruments"}},
         {"asteroid", new string[] {"rock", "ice", "atmosphere"}},
         {"spacecraft", new string[] {"crew", "ignition", "fuel"}},
+        {"eisenhower", new string[] {"last name", "president", "founder"}},
+        {"explorer", new string[] {"first", "satelite", "atificial"}},
+        {"skylab", new string[] {"first", "station", "space"}},
+        {"telescope", new string[] {"hubble", "orbit", "high resolution"}},
+        {"armstrong", new string[] {"last name", "moon", "first"}},
+        {"columbia", new string[] {"name", "first", "space shuttle"}},
+        {"satellite", new string[] {"orbit", "body", "skirting"}},
+        {"planet", new string[] {"earth", "mercury", "venus"}},
+        {"comet", new string[] {"gas", "solar system", "body"}},
+        {"solar", new string[] {"system", "sun", "planets"}},
     };
     #endregion
 
