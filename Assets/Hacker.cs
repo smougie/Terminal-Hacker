@@ -21,6 +21,9 @@ public class Hacker : MonoBehaviour
     // Level passwords and passwords hints
     #region Level 1 passwords and hints
     [HideInInspector] string[] level1Passwords = {"beer", "icecream", "drink", "fruits", "food"};
+    /*
+     * 
+     */
 
     [HideInInspector] string[] level2Passwords = { "functional", "backsquat", "barbell", "dumbbell", "exercise" };
 
