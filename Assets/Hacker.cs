@@ -597,9 +597,12 @@ __/ \__
     [SerializeField] GameObject progressBar = null;
     [SerializeField] Text counterText = null;
     #endregion
+    public GameObject winScreenObject;  // delete
+    WinScreen winScreenRef; // delete
 
     void Start()
     {
+        winScreenRef = winScreenObject.GetComponent<WinScreen>();  // delete
         slider = gameObject.GetComponentInChildren<Slider>();
         progressBar.SetActive(false);
         counterText.gameObject.SetActive(false);
@@ -691,6 +694,10 @@ __/ \__
         else if (input == "/felony")
         {
             ShowFelonyLevel();
+        }
+        else if (input == "/done")  // delete
+        {
+            winScreenRef.gameFinished = true;
         }
         else switch (currentScreen)
             {
