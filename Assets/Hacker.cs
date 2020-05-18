@@ -19,7 +19,7 @@ public class Hacker : MonoBehaviour
 
 
     // Level passwords and passwords hints
-    #region Level 1 passwords and hints
+    #region Passwords and Passwords Hints
     [HideInInspector] string[] level1Passwords = {"beer", "icecream", "drink", "fruits", "food", "candy", "jelly", "cookie", "rice", "cigarettes", "bread", "money", "specie",
         "vegetables", "meat"};
 
@@ -490,7 +490,7 @@ __/ \__
             "12",
             "18",
             "6",
-            "Reduces time penalty after not guessing\npassword",
+            "Reduces time penalty after not\nguessing password",
         }
         },
         {"bribe", new string[]
@@ -554,7 +554,7 @@ __/ \__
     int felonyLevel = 0;
     string password;
     string previousPassword;
-    enum Screen { MainMenu, Password, Win, WinAdditional, Inventory, Shop, BuyMenu, Sell, Sold, Back, ItemBuyConfirm, Stop, ShopCrime, TimesUp, ChooseShop, Shop1, Shop2, Shop3, Shop4 };
+    enum Screen { MainMenu, Password, Win, WinAdditional, Inventory, Shop, Sell, Sold, Back, ItemBuyConfirm, Stop, ShopCrime, TimesUp, ChooseShop, Shop1, Shop2, Shop3, Shop4, BuildMenu, Build };
     Screen currentScreen;
     Dictionary<string, int> inventory = new Dictionary<string, int>();
     Dictionary<string, int> inventoryCounter = new Dictionary<string, int>();
@@ -569,7 +569,7 @@ __/ \__
     [HideInInspector] string backHint = "Type 'b' for back or 'menu' for menu";
     [HideInInspector] string forwardHint = "You found something else...\nType 'next'/'n' to check it";
     [HideInInspector] string passwordPrompt = "Please enter a password:";
-    [HideInInspector] string shopMenu = "Welcome to the DarkWeb store!\nPress 1 for Buy\nPress 2 for Sell";
+    [HideInInspector] string shopMenu = "Welcome to the DarkWeb store!\nPress 1 for Buy\nPress 2 for Sell\nPress 3 for Build";
     [HideInInspector] string sellItemQuestion = "Would you like to sell all your items?\nPress y/Yes or n/NO";
     [HideInInspector] string cantAfford = "You can't afford this item.";
     [HideInInspector] string notEnoughMoneyMsg = "Not enough money.";
@@ -599,6 +599,7 @@ __/ \__
     #endregion
     public GameObject winScreenObject;  // delete
     WinScreen winScreenRef; // delete
+    int buildingPrice = 200000;
 
     void Start()
     {
@@ -720,9 +721,9 @@ __/ \__
                 case Screen.Shop:
                     RunShopMenu(input);
                     break;
-                case Screen.BuyMenu:
-                    //ChooseBuyItem(input);
-                    break;
+                //case Screen.BuyMenu:
+                //    ChooseBuyItem(input);
+                //    break;
                 case Screen.ItemBuyConfirm:
                     ConfirmBuy(input);
                     break;
@@ -758,6 +759,12 @@ __/ \__
                     break;
                 case Screen.Shop4:
                     ChooseBuyItem(input);
+                    break;
+                case Screen.BuildMenu:
+                    RunBuildMenu(input);
+                    break;
+                case Screen.Build:
+                    //DisplayBuildOptions();
                     break;
                 default:
                     Debug.LogError("OnUserInput currentScreen switch statement Error.");
@@ -848,9 +855,9 @@ __/ \__
                 case Screen.Win:
                     AskForPassword();
                     break;
-                case Screen.BuyMenu:
-                    ShowShop();
-                    break;
+                //case Screen.BuyMenu:
+                //    ShowShop();
+                //    break;
                 case Screen.Sold:
                     ShowShop();
                     break;
@@ -862,6 +869,9 @@ __/ \__
                     break;
                 case Screen.ChooseShop:
                     ShowShop();
+                    break;
+                case Screen.Shop:
+                    ShowMainMenu();
                     break;
                 case Screen.Shop1:
                     ShowChooseShop();
@@ -875,6 +885,12 @@ __/ \__
                 case Screen.Shop4:
                     ShowChooseShop();
                     break;
+                case Screen.BuildMenu:
+                    ShowShop();
+                    break;
+                //case Screen.Build:
+                //    DisplayBuildOptions();
+                //    break;
                 default:
                     break;
                 #endregion
@@ -1456,17 +1472,119 @@ __/ \__
     {
         if (input == "1")
         {
-            //ShowBuyMenu();
             ShowChooseShop();
         }
         else if (input == "2")
         {
             CanSell();
         }
+        else if (input == "3")
+        {
+            ShowBuildMenu();
+        }
         else
         {
-            Terminal.WriteLine(validOptionHint);
+            GoBack(input);
         }
+    }
+
+    void ShowBuildMenu()
+    {
+        SetScreen(Screen.BuildMenu);
+        Terminal.ClearScreen();
+        DisplayBuildOptions();
+    }
+
+    void RunBuildMenu(string input)
+    {
+        if (input == "1")
+        {
+            BuildingAvailable();
+        }
+        else
+        {
+            GoBack(input);
+        }
+    }
+
+    void BuildingAvailable()
+    {
+        if (felonyLevel > 0)
+        {
+            Terminal.WriteLine("decrase felony level");
+        }
+        else if (money < buildingPrice)
+        {
+            Terminal.WriteLine("not enough money");
+        }
+        else if (!EnoughItemLevel())
+        {
+            Terminal.WriteLine("to low item level");
+        }
+        else
+        {
+            ShowBuildConfirm();
+        }
+    }
+
+    void ShowBuildConfirm()
+    {
+        SetScreen(Screen.Build);
+
+    }
+
+    bool EnoughItemLevel()
+    {
+        bool canBuild = false;
+        foreach (KeyValuePair<string, string[]> item in gameItems)
+        {
+            if (item.Key == "bribe" || item.Key == "ipdatabase")
+            {
+                continue;
+            }
+            else if (item.Value[itemLevel] == "3")
+            {
+                canBuild = true;
+            }
+            else
+            {
+                canBuild = false;
+            }
+        }
+        return canBuild;
+    }
+
+    void DisplayBuildOptions()
+    {
+        string chooseBuildingOption = "What would you like to build?\n1 Own Hacking Complex:\nPrice: {0}$ Requriements:\nFelony 0% current ";
+        if (felonyLevel > 0)
+        {
+            chooseBuildingOption += $"{felonyLevel}0%";
+        }
+        else
+        {
+            chooseBuildingOption += $"{felonyLevel}% √";
+        }
+
+        foreach (KeyValuePair<string, string[]> item in gameItems)
+        {
+            if (item.Key == "ipdatabase" || item.Key == "bribe")
+            {
+                continue;
+            }
+            else
+            {
+                if (item.Value[itemLevel] == "3")
+                {
+                    chooseBuildingOption += $"\n{item.Key} lvl.3 √";
+                }
+                else
+                {
+                    chooseBuildingOption += $"\n{item.Key} lvl.3 (current lvl.{item.Value[itemLevel]})";
+                }
+            }
+        }
+        Terminal.WriteLine(string.Format(chooseBuildingOption, 1000, felonyLevel));
     }
 
     void ShowChooseShop()
