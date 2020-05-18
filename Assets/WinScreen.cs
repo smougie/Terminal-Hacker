@@ -25,8 +25,8 @@ public class WinScreen : MonoBehaviour
     {
         gameFinished = false;
         Time.timeScale = 1f;
-        winScreenUI.SetActive(false);
         displayObject.SetActive(true);
+        winScreenUI.SetActive(false);
     }
 
     public void QuitGame()

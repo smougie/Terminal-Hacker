@@ -597,13 +597,16 @@ __/ \__
     [SerializeField] GameObject progressBar = null;
     [SerializeField] Text counterText = null;
     #endregion
+    public GameObject complexAnimationObject;  // delete
+    private ComplexAnimation complexAnimationRef;
     public GameObject winScreenObject;  // delete
-    WinScreen winScreenRef; // delete
+    private WinScreen winScreenRef; // delete
     int buildingPrice = 200000;
 
     void Start()
     {
         winScreenRef = winScreenObject.GetComponent<WinScreen>();  // delete
+        complexAnimationRef = complexAnimationObject.GetComponent<ComplexAnimation>();  // delete
         slider = gameObject.GetComponentInChildren<Slider>();
         progressBar.SetActive(false);
         counterText.gameObject.SetActive(false);
@@ -699,6 +702,10 @@ __/ \__
         else if (input == "/done")  // delete
         {
             winScreenRef.gameFinished = true;
+        }
+        else if (input == "/build")  // delete
+        {
+            complexAnimationRef.buildingActive = true;
         }
         else switch (currentScreen)
             {
@@ -1530,7 +1537,7 @@ __/ \__
     void ShowBuildConfirm()
     {
         SetScreen(Screen.Build);
-
+        
     }
 
     bool EnoughItemLevel()
@@ -1556,7 +1563,7 @@ __/ \__
 
     void DisplayBuildOptions()
     {
-        string chooseBuildingOption = "What would you like to build?\n1 Own Hacking Complex:\nPrice: {0}$ Requriements:\nFelony 0% current ";
+        string chooseBuildingOption = "What would you like to build?\n1 Own Hacking Complex:\nPrice: {0:n0}$ Requriements:\nFelony 0% current ";
         if (felonyLevel > 0)
         {
             chooseBuildingOption += $"{felonyLevel}0%";
@@ -1584,7 +1591,7 @@ __/ \__
                 }
             }
         }
-        Terminal.WriteLine(string.Format(chooseBuildingOption, 1000, felonyLevel));
+        Terminal.WriteLine(string.Format(chooseBuildingOption, buildingPrice, felonyLevel));
     }
 
     void ShowChooseShop()

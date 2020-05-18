@@ -1029,6 +1029,7 @@ GameObject:
   - component: {fileID: 51689715}
   - component: {fileID: 51689719}
   - component: {fileID: 51689720}
+  - component: {fileID: 51689721}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1150,6 +1151,21 @@ MonoBehaviour:
   displayObject: {fileID: 990324642}
   winScreenUI: {fileID: 526085255}
   gameFinished: 0
+--- !u!114 &51689721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 51689714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d7cabfd669e3d043a037d4ffa95eaa0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  displayObject: {fileID: 1686319360}
+  complexAnimationObject: {fileID: 115969159}
+  buildingActive: 0
 --- !u!1 &68379788
 GameObject:
   m_ObjectHideFlags: 0
@@ -6005,6 +6021,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   progressBar: {fileID: 1771175596}
   counterText: {fileID: 903844992}
+  complexAnimationObject: {fileID: 51689714}
   winScreenObject: {fileID: 51689714}
 --- !u!1 &1706107095
 GameObject:
