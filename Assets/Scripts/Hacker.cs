@@ -18,7 +18,7 @@ public class Hacker : MonoBehaviour
     [HideInInspector] string[] level5RewardsNames = {"hole", "star", "ticket", "rocket", "alien"};
 
 
-    // Level passwords and passwords hints
+    // Level passwords
     #region Passwords and Passwords Hints
     [HideInInspector] string[] level1Passwords = {"beer", "icecream", "drink", "fruits", "food", "candy", "jelly", "cookie", "rice", "cigarettes", "bread", "money", "specie",
         "vegetables", "meat"};
@@ -34,7 +34,10 @@ public class Hacker : MonoBehaviour
 
     [HideInInspector] string[] level5Passwords = { "apollo", "astronaut", "research", "asteroid", "spacecraft", "eisenhower", "explorer", "skylab", "telescope", "armstrong",
         "columbia", "satellite", "planet", "comet", "solar" };
+    #endregion
 
+    // Passwords hints
+    #region Passwords Hints
     [HideInInspector] Dictionary<string, string[]> passwordsHints = new Dictionary<string, string[]>
     {
         // Level 1
@@ -509,30 +512,58 @@ __/ \__
     };
     #endregion
 
-    // Game State
+    // Game Variables
     #region Game State variables
+    // Shop adjustables
+    int complexPrice = 200000;  // Own hacking complex building cost
+    float shopCrimeChance = .5f;  // chance to get shop crime event while selling items in shop
+    int[] timeEncoderReduceValues = { 1, 2, 3 };  // encoder item values, index matches item level - reduce time (seconds) for time penalty provided by item
+    float[] hackTimerTimeBonus = { 5f, 10f, 15f};  // hack timer time bonus values, index matches item level - value increasing level time value
+    float[] LosterAvoidChances = { .2f, .25f, .33f };  // loster avoid chance, index matches item level - chance to avoid felony level penalty after hacking fail
+    float[] auctioneerPercentageValues = { .1f, .2f, .3f};  // auctioneer item values, index matches item level - percentage value (.1f = 10%) of increased item sell value
+    int[] IPcost = { 50000, 200000, 300000, 400000};  // ip addresses cost, index matches level (index 0 = level 2 ip address)
+    int[] bribeCost = { 50000, 100000, 150000, 350000 };  // bribe cost, index: 0: -1f(felony), 1: -2f, 2: -3f, 4: set felony to 0
+    int[] bribeReduceValue = { 1, 2, 3, 10 };  // bribe reduce felony level values
+
+    // Level time values
+    int[] timePenaltyValues = { 3, 4, 5, 5, 5 };  // level time penalty value (seconds), index matches level (0 index = 1 level)
+    float[] levelTimeValues = { 20f, 30f, 40f, 40f, 40f};  // max hacking time for each level, index matches level (index 0 = level 1)
+
+    // Game Objects section
+    Slider slider;
+    [SerializeField] GameObject progressBar = null;
+    [SerializeField] Text counterText = null;
+    public GameObject complexAnimationObject;
+    public GameObject winScreenObject;
+    private ComplexAnimation complexAnimationRef;
+    private WinScreen winScreenRef;
+    public GameObject complexWindowObject;
+    private ComplexWindow complexWindowRef;
+
+    // Game State varbiables
     int shopNumber;
-    string passwordHint = "";
-    string enigmaHint = "";
-    string decoderHint = "";
     int menuCounter = 0;
     int crimeLevel = 1;
-    float shopCrimeChance = .5f;
-    private bool timerOn;
     float levelTime = 0f;
     float currentCounterTime = 0f;
-    int[] timePenaltyValues = { 3, 4, 5, 5, 5 };
-    int[] timeEncoderReduceValues = { 1, 2, 3 };
-    float[] LosterAvoidChances = { .2f, .25f, .33f };
-    float[] auctioneerPercentageValues = { .1f, .2f, .3f};
-    string[] bribeNames = { "Harry", "Nikita", "Jackarta", "'Chief Smith'" };
-    int[] IPcost = { 50000, 200000, 300000, 400000};
-    int[] bribeCost = { 50000, 100000, 150000, 350000 };
-    int[] bribeReduceValue = { 1, 2, 3, 10 };
-    float[] levelTimeValues = { 20f, 30f, 40f, 40f, 40f};
-    float[] hackTimerTimeBonus = { 5f, 10f, 15f};
+    int level;  // member variable storing current level
+    int money = 0;
+    int felonyLevel = 0;
+    string password;
+    string previousPassword;
+    enum Screen { MainMenu, Password, Win, WinAdditional, Inventory, Shop, Sell, Sold, Back, ItemBuyConfirm, Stop, ShopCrime, TimesUp, ChooseShop, Shop1, Shop2, Shop3, Shop4,
+        BuildMenu, BuildConfirm,
+        Build
+    };
+    Screen currentScreen;
+    Dictionary<string, int> inventory = new Dictionary<string, int>();
+    Dictionary<string, int> inventoryCounter = new Dictionary<string, int>();
+
+    // Flag section
+    private bool timerOn;
+    private bool complexBuild;
     bool additionalReward = false;
-    bool level1Locked = false;  // TODO check location locked property 
+    bool level1Locked = false;
     bool level2Locked = true;
     bool level3Locked = true;
     bool level4Locked = true;
@@ -549,20 +580,17 @@ __/ \__
     bool losterMaxLevel = false;
     bool timeEncoderActive = false;
     bool timeEncoderMaxLevel = false;
-    int level;  // member variable storing current level
-    int money = 0;
-    int felonyLevel = 0;
-    string password;
-    string previousPassword;
-    enum Screen { MainMenu, Password, Win, WinAdditional, Inventory, Shop, Sell, Sold, Back, ItemBuyConfirm, Stop, ShopCrime, TimesUp, ChooseShop, Shop1, Shop2, Shop3, Shop4, BuildMenu, Build };
-    Screen currentScreen;
-    Dictionary<string, int> inventory = new Dictionary<string, int>();
-    Dictionary<string, int> inventoryCounter = new Dictionary<string, int>();
-    #endregion
+
+    // String section
+    string[] bribeNames = { "Harry", "Nikita", "Jackarta", "'Chief Smith'" };
+    string passwordHint = "";
+    string enigmaHint = "";
+    string decoderHint = "";
 
     // Strings
     #region Errors, hints, prompt messagess
     [HideInInspector] string mainMenuScreen = "Press 'd' for DarkWeb shop\nPress 'i' for inventory\n\nWhat would you like to hack into?";
+    [HideInInspector] string mainMenuScreenComplex = "Press 'd' for DarkWeb shop\nPress 'i' for inventory\nPress 'c' to visit OHC\n\nWhat would you like to hack into?";
     [HideInInspector] string menuHint = "Type 'menu' for menu";
     [HideInInspector] string validOptionHint = "Please choose a valid option\nor type 'menu' for menu";
     [HideInInspector] string validOption2Hint = "Please choose a valid option";
@@ -592,19 +620,13 @@ __/ \__
     [HideInInspector] string additionalRewardMsg = "You found the '{0}'\nIP Address! You can now hack this\nlocation.";
     [HideInInspector] string levelLockedMessage = "Level locked. You need to find or buy\nIP address of this location.";
     [HideInInspector] string addressMaxLvL = "IP Address already in your DataBase.";
-
-    Slider slider;
-    [SerializeField] GameObject progressBar = null;
-    [SerializeField] Text counterText = null;
     #endregion
-    public GameObject complexAnimationObject;  // delete
-    private ComplexAnimation complexAnimationRef;
-    public GameObject winScreenObject;  // delete
-    private WinScreen winScreenRef; // delete
-    int buildingPrice = 200000;
+    #endregion
+
 
     void Start()
     {
+        complexWindowRef = complexWindowObject.GetComponent<ComplexWindow>();
         winScreenRef = winScreenObject.GetComponent<WinScreen>();  // delete
         complexAnimationRef = complexAnimationObject.GetComponent<ComplexAnimation>();  // delete
         slider = gameObject.GetComponentInChildren<Slider>();
@@ -629,7 +651,14 @@ __/ \__
     {
         Terminal.ClearScreen();
         SetScreen(Screen.MainMenu);
-        Terminal.WriteLine(string.Format(mainMenuScreen, locations[0], locations[1], locations[2]));
+        if (complexBuild)
+        {
+            Terminal.WriteLine(mainMenuScreenComplex);
+        }
+        else
+        {
+            Terminal.WriteLine(mainMenuScreen);
+        }
         ShowLocations();
     }
 
@@ -707,6 +736,20 @@ __/ \__
         {
             complexAnimationRef.buildingActive = true;
         }
+        else if (input == "/items")  // delete
+        {
+            foreach (KeyValuePair<string, string[]> item in gameItems)
+            {
+                if (item.Key == "ipdatabase" || item.Key == "bribe")
+                {
+                    continue;
+                }
+                else
+                {
+                    item.Value[itemLevel] = "3";
+                }
+            }
+        }
         else switch (currentScreen)
             {
                 #region currentScreen cases
@@ -770,8 +813,8 @@ __/ \__
                 case Screen.BuildMenu:
                     RunBuildMenu(input);
                     break;
-                case Screen.Build:
-                    //DisplayBuildOptions();
+                case Screen.BuildConfirm:
+                    BuildConfirm(input);
                     break;
                 default:
                     Debug.LogError("OnUserInput currentScreen switch statement Error.");
@@ -810,6 +853,11 @@ __/ \__
         else if (input == "d")
         {
             ShowShop();
+        }
+        else if (complexBuild && input == "c")
+        {
+            complexWindowRef.ShowComplex();
+            ShowMainMenu();
         }
         else if (input == "007")
         {
@@ -895,9 +943,6 @@ __/ \__
                 case Screen.BuildMenu:
                     ShowShop();
                     break;
-                //case Screen.Build:
-                //    DisplayBuildOptions();
-                //    break;
                 default:
                     break;
                 #endregion
@@ -1499,7 +1544,53 @@ __/ \__
     {
         SetScreen(Screen.BuildMenu);
         Terminal.ClearScreen();
-        DisplayBuildOptions();
+        if (!complexBuild)
+        {
+            DisplayBuildOptions();
+        }
+        else
+        {
+            DisplayBuildings();
+        }
+    }
+
+    void DisplayBuildings()
+    {
+        string buildings = "What would you like to build?\n1 Own Hacking Complex:\nOWNED";
+        Terminal.WriteLine(buildings);
+    }
+
+    void DisplayBuildOptions()
+    {
+        string chooseBuildingOption = "What would you like to build?\n1 Own Hacking Complex:\n  Price: {0:n0}$ Requriements:\n  Felony 0% current ";
+        if (felonyLevel > 0)
+        {
+            chooseBuildingOption += $"{felonyLevel}0%";
+        }
+        else
+        {
+            chooseBuildingOption += $"{felonyLevel}% √";
+        }
+
+        foreach (KeyValuePair<string, string[]> item in gameItems)
+        {
+            if (item.Key == "ipdatabase" || item.Key == "bribe")
+            {
+                continue;
+            }
+            else
+            {
+                if (item.Value[itemLevel] == "3")
+                {
+                    chooseBuildingOption += $"\n  {item.Key} lvl.3 √";
+                }
+                else
+                {
+                    chooseBuildingOption += $"\n  {item.Key} lvl.3 (current lvl.{item.Value[itemLevel]})";
+                }
+            }
+        }
+        Terminal.WriteLine(string.Format(chooseBuildingOption, complexPrice, felonyLevel));
     }
 
     void RunBuildMenu(string input)
@@ -1510,6 +1601,7 @@ __/ \__
         }
         else
         {
+            Terminal.WriteLine(validOption2Hint);
             GoBack(input);
         }
     }
@@ -1520,13 +1612,17 @@ __/ \__
         {
             Terminal.WriteLine("decrase felony level");
         }
-        else if (money < buildingPrice)
+        else if (money < complexPrice)
         {
             Terminal.WriteLine("not enough money");
         }
         else if (!EnoughItemLevel())
         {
             Terminal.WriteLine("to low item level");
+        }
+        else if (complexBuild)
+        {
+            Terminal.WriteLine("you already own this building");
         }
         else
         {
@@ -1536,8 +1632,37 @@ __/ \__
 
     void ShowBuildConfirm()
     {
-        SetScreen(Screen.Build);
-        
+        string buildConfirmQuestion = "Would you like to build:\nOwn Hacking Complex for {0:n0}$?\n\nPress y/Yes or n/NO";
+        SetScreen(Screen.BuildConfirm);
+        Terminal.ClearScreen();
+        Terminal.WriteLine(string.Format(buildConfirmQuestion, complexPrice));
+    }
+
+    void BuildConfirm(string input)
+    {
+        var isValidYes = (input == "y" || input == "yes" || input == "Yes" || input == "YES");
+        var isValidNo = (input == "n" || input == "no" || input == "No" || input == "NO");
+
+        if (isValidYes)
+        {
+            Build();
+        }
+        else if (isValidNo)
+        {
+            ShowBuildMenu();
+        }
+        else
+        {
+            Terminal.WriteLine(validOption2Hint);
+        }
+    }
+
+    void Build()
+    {
+        complexBuild = true;
+        money -= complexPrice;
+        complexAnimationRef.buildingActive = true;
+        ShowBuildMenu();
     }
 
     bool EnoughItemLevel()
@@ -1559,39 +1684,6 @@ __/ \__
             }
         }
         return canBuild;
-    }
-
-    void DisplayBuildOptions()
-    {
-        string chooseBuildingOption = "What would you like to build?\n1 Own Hacking Complex:\nPrice: {0:n0}$ Requriements:\nFelony 0% current ";
-        if (felonyLevel > 0)
-        {
-            chooseBuildingOption += $"{felonyLevel}0%";
-        }
-        else
-        {
-            chooseBuildingOption += $"{felonyLevel}% √";
-        }
-
-        foreach (KeyValuePair<string, string[]> item in gameItems)
-        {
-            if (item.Key == "ipdatabase" || item.Key == "bribe")
-            {
-                continue;
-            }
-            else
-            {
-                if (item.Value[itemLevel] == "3")
-                {
-                    chooseBuildingOption += $"\n{item.Key} lvl.3 √";
-                }
-                else
-                {
-                    chooseBuildingOption += $"\n{item.Key} lvl.3 (current lvl.{item.Value[itemLevel]})";
-                }
-            }
-        }
-        Terminal.WriteLine(string.Format(chooseBuildingOption, buildingPrice, felonyLevel));
     }
 
     void ShowChooseShop()

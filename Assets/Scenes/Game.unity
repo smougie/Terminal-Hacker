@@ -749,7 +749,7 @@ MonoBehaviour:
     \             .::::::|\r\n                            J              :::::::F\r\n
     \                            \\            :::::::/\r\n                              `.
     \       .:::::::'\r\n                                `-._  .::::::-'\r\n____________________________________|
-    \ \"\"\"|\"_________________________________________________________________________________________________________________\r\n
+    \ \"\"\"|\"_________________________________________________________________________________________________________________________________\r\n
     \                                   |  :::|\r\n                                    F
     \  ::J\r\n                                   /     ::\\\r\n                              __.-'
     \     :::`-.__\r\n                             (_           ::::::_)\r\n                               `\"\"\"---------\"\"\"'"
@@ -799,7 +799,7 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: 1183
+  m_firstOverflowCharacterIndex: 1199
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
@@ -823,7 +823,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: -310.1192, w: 0}
   m_textInfo:
     textComponent: {fileID: 16820854}
-    characterCount: 1283
+    characterCount: 1299
     spriteCount: 0
     spaceCount: 876
     wordCount: 18
@@ -1030,6 +1030,7 @@ GameObject:
   - component: {fileID: 51689719}
   - component: {fileID: 51689720}
   - component: {fileID: 51689721}
+  - component: {fileID: 51689722}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1068,10 +1069,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 1
+  m_ScaleFactor: 1.2
   m_ReferenceResolution: {x: 800, y: 600}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.8
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -1166,6 +1167,20 @@ MonoBehaviour:
   displayObject: {fileID: 990324642}
   complexAnimationObject: {fileID: 115969159}
   buildingActive: 0
+--- !u!114 &51689722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 51689714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f74f39a3d39036d4e93e71b48e2d65b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  displayObject: {fileID: 990324642}
+  complexWindow: {fileID: 1182566921}
 --- !u!1 &68379788
 GameObject:
   m_ObjectHideFlags: 0
@@ -1226,7 +1241,7 @@ MonoBehaviour:
   m_material: {fileID: 0}
   m_sharedMaterial: {fileID: 0}
   m_isDefaultMaterial: 0
-  m_padding: 8.5625
+  m_padding: 0
   m_canvasRenderer: {fileID: 68379791}
   m_TextComponent: {fileID: 872449862}
   m_materialReferenceIndex: 1
@@ -5225,7 +5240,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1182566922
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5368,7 +5383,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1343567385}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 058cba836c1846c3aa1c5fd2e28aea77, type: 3}
   m_Name: 
@@ -6201,6 +6216,7 @@ MonoBehaviour:
   counterText: {fileID: 903844992}
   complexAnimationObject: {fileID: 51689714}
   winScreenObject: {fileID: 51689714}
+  complexWindowObject: {fileID: 51689714}
 --- !u!1 &1706107095
 GameObject:
   m_ObjectHideFlags: 0
@@ -7308,7 +7324,7 @@ MonoBehaviour:
     \             .::::::|\r\n                            J              :::::::F\r\n
     \                            \\            :::::::/\r\n                              `.
     \       .:::::::'\r\n                                `-._  .::::::-'\r\n____________________________________|
-    \ \"\"\"|\"_________________________________________________________________________________________________________________\r\n
+    \ \"\"\"|\"____________________________s____________________________________________________________________________________________________\r\n
     \                                   |  :::|\r\n                                    F
     \  ::J\r\n                                   /     ::\\\r\n                              __.-'
     \     :::`-.__\r\n                             (_           ::::::_)\r\n                               `\"\"\"---------\"\"\"'"
@@ -7358,7 +7374,7 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: 1183
+  m_firstOverflowCharacterIndex: 1199
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
@@ -7382,10 +7398,10 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: -310.1192, w: 0}
   m_textInfo:
     textComponent: {fileID: 2076653815}
-    characterCount: 1283
+    characterCount: 1299
     spriteCount: 0
     spaceCount: 876
-    wordCount: 18
+    wordCount: 19
     linkCount: 0
     lineCount: 23
     pageCount: 1
