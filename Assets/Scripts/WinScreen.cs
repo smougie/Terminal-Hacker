@@ -4,15 +4,7 @@ public class WinScreen : MonoBehaviour
 {
     public GameObject displayObject;
     public GameObject winScreenUI;
-    public bool gameFinished = false;
-
-    void Update()
-    {
-        if (gameFinished)
-        {
-            ShowWinScreen();
-        }
-    }
+    public bool gameFinished = false;  // delete
 
     void ShowWinScreen()
     {
