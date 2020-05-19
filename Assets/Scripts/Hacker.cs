@@ -603,10 +603,10 @@ __/ \__
     [HideInInspector] string notEnoughMoneyMsg = "Not enough money.";
     [HideInInspector] string itemMaxLevelHint = "Item already in your inventory.";
     [HideInInspector] string shopCrimeMessage = "Something went wrong...\nWhen you were leaving the shop, the\npolice appeared!\nYou managed to escape but you\nlost half of your sell value" +
-        "and\nfelony level icreased by {0}0%!";
+        "and\nfelony level icreased by {0}0%!\nType '/felony' to check felony level.";
     [HideInInspector] string counterString = "{0} sec.";
     [HideInInspector] string counterBonusString = "{0} sec. ({1} sec. time bonus)";
-    [HideInInspector] string timesUpMessage = "You fail to hack in time...\nSomeone notified the police.\nFelony level increased by {0}0%!";
+    [HideInInspector] string timesUpMessage = "You fail to hack in time...\nSomeone notified the police.\nFelony level increased by {0}0%!\nType '/felony' to check felony level.";
     [HideInInspector] string losterMessage = "You fail to hack in time...\nBut fast connection provided by loster\nallows you to close hacking connection\nsoon enough to avoid raising an alarm!";
     [HideInInspector] string timePenaltyMessage = "Wrong password.\nHack time reduced by {0} sec.";
     [HideInInspector] string safeConnectionMessage = "You didn't close safe connection\nproperly when you decided to finish\nhacking. Police found your network\ntrace. Felony level " +
@@ -1610,19 +1610,19 @@ __/ \__
     {
         if (felonyLevel > 0)
         {
-            Terminal.WriteLine("decrase felony level");
+            Terminal.WriteLine("Too high felony level.");
         }
         else if (money < complexPrice)
         {
-            Terminal.WriteLine("not enough money");
+            Terminal.WriteLine("Not enough money.");
         }
         else if (!EnoughItemLevel())
         {
-            Terminal.WriteLine("to low item level");
+            Terminal.WriteLine("To low items level.");
         }
         else if (complexBuild)
         {
-            Terminal.WriteLine("you already own this building");
+            Terminal.WriteLine("You already own this building.");
         }
         else
         {
@@ -2389,7 +2389,7 @@ __/ \__
         int sellValue = sellValueItemsNumber[0];
         int itemsNumber = sellValueItemsNumber[1];
         string plural = "";
-        string sellMessage = $"You sold {itemsNumber} item{plural} for {sellValue}$.";
+        string sellMessage = $"You sold {itemsNumber} item{plural} for {sellValue}$.\nType '/saldo' to check money balance.";
 
         AddMoney(sellValue);
 
