@@ -590,7 +590,7 @@ __/ \__
     // Strings
     #region Errors, hints, prompt messagess
     [HideInInspector] string mainMenuScreen = "Press 'd' for DarkWeb shop\nPress 'i' for inventory\n\nWhat would you like to hack into?";
-    [HideInInspector] string mainMenuScreenComplex = "Press 'd' for DarkWeb shop\nPress 'i' for inventory\nPress 'c' to visit OHC\n\nWhat would you like to hack into?";
+    [HideInInspector] string mainMenuScreenComplex = "Press 'd' for DarkWeb shop\nPress 'i' for inventory\nPress 'c' to visit your OHC\n\nWhat would you like to hack into?";
     [HideInInspector] string menuHint = "Type 'menu' for menu";
     [HideInInspector] string validOptionHint = "Please choose a valid option\nor type 'menu' for menu";
     [HideInInspector] string validOption2Hint = "Please choose a valid option";
