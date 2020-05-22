@@ -9,17 +9,17 @@ The player takes the role of hacker, starting from zero, with no money. After su
 The main goal of this project is to consolidate knowledge about basic foundation of c# skills, variables, statements, etc. 
 
 ## Game Mechanics:
-###### Main Menu:
+#### Main Menu:
 Player starts in the main menu, this time created by using *canvas*. Controlling menu section by unity events. 
 
-###### Terminal Screen (main game screen):
+#### Terminal Screen (main game screen):
 Player is moved to terminal screen, there are few options at terminal main menu screen:
 -Dark Web store 
 -Inventory 
 -Location which could be hacked 
 Moving through sections by typing option number and going back using back or main input. 
 
-###### Dark Web store
+#### Dark Web store
 Store provides capability to buy unique items which can help player guess the password by displaying some hints. Items which can be bought:
 - enigma
 Shows password first letters:
@@ -58,10 +58,10 @@ Item level 1 by `1 second`
 Item level 2 by `2 seconds`
 Item level 3 by `3 seconds`
 
-###### Inventory 
+#### Inventory 
 Simple screen showing items count, items dell value and money balance. 
 
-###### Hacking locations 
+#### Hacking locations 
 Choosing unlocked location moves Player to guess password screen. Player has specified time for guessing password. Password is a word strictly linked with choosen location and Word is showed as anagram. Each wrong password input results with time penalty (-x time in seconds). 
 If Player will not guess the password or try to finish hacking before end of time using 'menu' input he will be punished with increasing felony level by x% (depends on hack location, higher more attractive locations results with higher felony level punish). 
 If Player succed in guessing the password he is moved to reward screen. 
@@ -69,7 +69,7 @@ Each level has its own reward pool divided into tiers.
 Reward chance depends on reward tier, higher tier reward has lower drop chance. 
 Reward tier specifies money value. 
 
-###### Win/Lose
+#### Win/Lose
 Win Condition is building Own Hacking Complex, which requires:
 -Felony level 0%
 -XXX XXX $
@@ -79,7 +79,7 @@ If requirements are met Player can build Own Hacking Complex, Win screen animati
 Player can also lose the game if he does not pay attention to felony level. If felony level reaches 100% player gets busted.
 
 ## Game Systems
-###### Rewards Tier
+#### Rewards Tier
 Each location has 5 unique rewards which are divided into tiers, every tier has its own drop chance:
 Tier 1 `30%` drop chance.
 Tier 2 `25%` drop chance.
@@ -87,9 +87,9 @@ Tier 3 `20%` drop chance.
 Tier 4 `15%` drop chance.
 Tier 5 `10%` drop chance.
 
-###### Shop Crime
+#### Shop Crime
 Every item sell transaction in Dark Web store may result in Shop Crime event which involves increasing felony level by `10%` and loosing `90%` of sell value.
 
-###### Felony
+#### Felony
 Felony level increases when player fails to guess the password or when Shop Crime event occurs. When felony level reaches 100% player gets busted.
 Getting busted leads to lose all money, items and fine - `5000`$.
