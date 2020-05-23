@@ -56,6 +56,16 @@ public class Hacker : MonoBehaviour
         { "specie", new string[] {"silver", "copper", "coin"}},
         { "vegetables", new string[] {"green", "farmer", "garden"}},
         { "meat", new string[] {"chicken", "fish", "beef"}},
+        { "discount", new string[] {"sale", "crowd", "products"}},
+        { "customer", new string[] {"person", "regular", "burdensome"}},
+        { "storage", new string[] {"area", "shelves", "products"}},
+        { "basket", new string[] {"handle", "shopping", "help"}},
+        { "payment", new string[] {"transaction", "receipt", "check"}},
+        { "assortment", new string[] {"products", "offer", "change"}},
+        { "stand", new string[] {"products", "assortment", "prices"}},
+        { "products", new string[] {"assortment", "items", "label"}},
+        { "cosmetics", new string[] {"soap", "deodorant", "shampoo"}},
+        { "dairy", new string[] {"milk", "cheese", "yoghurt"}},
         
         // Level 2
         {"functional", new string[] {"type of training", "daily movements", "versatile"}},
@@ -602,8 +612,8 @@ __/ \__
     [HideInInspector] string cantAfford = "You can't afford this item.";
     [HideInInspector] string notEnoughMoneyMsg = "Not enough money.";
     [HideInInspector] string itemMaxLevelHint = "Item already in your inventory.";
-    [HideInInspector] string shopCrimeMessage = "Something went wrong...\nWhen you were leaving the shop, the\npolice appeared!\nYou managed to escape but you\nlost half of your sell value" +
-        "and\nfelony level icreased by {0}0%!\nType '/felony' to check felony level.";
+    [HideInInspector] string shopCrimeMessage = "Something went wrong...\nWhen you were leaving the shop, the\npolice appeared!\nYou managed to escape but you\nlost half of your sell value\n" +
+        "and felony level icreased by {0}0%!\nType '/felony' to check felony level.";
     [HideInInspector] string counterString = "{0} sec.";
     [HideInInspector] string counterBonusString = "{0} sec. ({1} sec. time bonus)";
     [HideInInspector] string timesUpMessage = "You fail to hack in time...\nSomeone notified the police.\nFelony level increased by {0}0%!\nType '/felony' to check felony level.";
@@ -633,7 +643,7 @@ __/ \__
         progressBar.SetActive(false);
         counterText.gameObject.SetActive(false);
         ShowMainMenu();
-        money = 1000000;  // DELETE
+        //money = 1000000;  // DELETE
     }
 
     void Update()
@@ -1313,7 +1323,7 @@ __/ \__
     void RandomLocationUnlock()
     {
         float randomChance = Random.value;
-        if (randomChance <= .5f)  // TODO change value from 50% to 5% after tests
+        if (randomChance <= .05f)  // TODO change value from 50% to 5% after tests
         {
             UnlockLevel(level);
             additionalReward = true;
