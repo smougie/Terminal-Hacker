@@ -21,19 +21,19 @@ public class Hacker : MonoBehaviour
     // Level passwords
     #region Passwords and Passwords Hints
     [HideInInspector] string[] level1Passwords = {"beer", "icecream", "drink", "fruits", "food", "candy", "jelly", "cookie", "rice", "cigarettes", "bread", "money", "specie",
-        "vegetables", "meat"};
+        "vegetables", "meat", "discount", "customer", "storage", "basket", "payment", "assortment", "stand", "products", "cosmetics", "dairy"};
 
     [HideInInspector] string[] level2Passwords = { "functional", "backsquat", "barbell", "dumbbell", "exercise", "isolation", "streching", "cutting", "powerlifting",
-        "conditioning", "gymnastics", "steroids", "bodybuilding", "repeats", "compete"};
+        "conditioning", "gymnastics", "steroids", "bodybuilding", "repeats", "compete", "coach", "spinning", "suplements", "creatine", "proteins", "cloakroom", "showers", "exhaustion", "record", "atlas"};
 
     [HideInInspector] string[] level3Passwords = { "handcuffs", "officer", "suspect", "pistol", "prison", "detective", "evidence", "radiostation", "badge", "taser", "drugs",
-        "deposit", "chase", "felony", "bulletproof"};
+        "deposit", "chase", "felony", "bulletproof", "uniform", "epaulets", "distinctions", "baton", "baton", "notebook", "robbery", "violence", "aggression", "victim", "investigation"};
 
-    [HideInInspector] string[] level4Passwords = { "quidditch", "blackmagic", "slytherin", "sectumsempra", "buckbeak", "gryffindor", "hufflepuff", "ravenclav", "polyjuice",
-        "muggles", "phoenix", "dumbledore", "horcrux", "dudley", "basilisk" };
+    [HideInInspector] string[] level4Passwords = { "quidditch", "blackmagic", "slytherin", "sectumsempra", "buckbeak", "gryffindor", "hufflepuff", "ravenclaw", "polyjuice",
+        "muggles", "phoenix", "dumbledore", "horcrux", "dudley", "basilisk", "animagus", "alohomora", "philosopher", "invisibility", "centaur", "azkaban", "dementor", "nagini", "aragog", "werewolf"};
 
     [HideInInspector] string[] level5Passwords = { "apollo", "astronaut", "research", "asteroid", "spacecraft", "eisenhower", "explorer", "skylab", "telescope", "armstrong",
-        "columbia", "satellite", "planet", "comet", "solar" };
+        "columbia", "satellite", "planet", "comet", "solar", "cosmos", "budget", "alien", "radar", "secret", "weightlessness", "theory", "shuttle", "counting", "science"};
     #endregion
 
     // Passwords hints
@@ -43,29 +43,29 @@ public class Hacker : MonoBehaviour
         // Level 1
         {"beer", new string[] {"alcohol", "sprakling", "pub"}},
         {"icecream", new string[] {"cold", "summer", "refreshing"}},
-        { "drink", new string[] {"liquid", "thirst", "refreshing"}},
-        { "fruits", new string[] {"vitamins", "sweet", "sour"}},
-        { "food", new string[] {"hot-dog", "bread", "eat"}},
-        { "candy", new string[] {"sweet", "sugar", "colorful"}},
-        { "jelly", new string[] {"sweet", "gummy", "colorful"}},
-        { "cookie", new string[] {"sweet", "brown", "jar"}},
-        { "rice", new string[] {"china", "sushi", "chicken"}},
-        { "cigarettes", new string[] {"addiction", "smoke", ""}},
-        { "bread", new string[] {"flour", "loaf", "baker"}},
-        { "money", new string[] {"bank", "dolar", "euro"}},
-        { "specie", new string[] {"silver", "copper", "coin"}},
-        { "vegetables", new string[] {"green", "farmer", "garden"}},
-        { "meat", new string[] {"chicken", "fish", "beef"}},
-        { "discount", new string[] {"sale", "crowd", "products"}},
-        { "customer", new string[] {"person", "regular", "burdensome"}},
-        { "storage", new string[] {"area", "shelves", "products"}},
-        { "basket", new string[] {"handle", "shopping", "help"}},
-        { "payment", new string[] {"transaction", "receipt", "check"}},
-        { "assortment", new string[] {"products", "offer", "change"}},
-        { "stand", new string[] {"products", "assortment", "prices"}},
-        { "products", new string[] {"assortment", "items", "label"}},
-        { "cosmetics", new string[] {"soap", "deodorant", "shampoo"}},
-        { "dairy", new string[] {"milk", "cheese", "yoghurt"}},
+        {"drink", new string[] {"liquid", "thirst", "refreshing"}},
+        {"fruits", new string[] {"vitamins", "sweet", "sour"}},
+        {"food", new string[] {"hot-dog", "bread", "eat"}},
+        {"candy", new string[] {"sweet", "sugar", "colorful"}},
+        {"jelly", new string[] {"sweet", "gummy", "colorful"}},
+        {"cookie", new string[] {"sweet", "brown", "jar"}},
+        {"rice", new string[] {"china", "sushi", "chicken"}},
+        {"cigarettes", new string[] {"addiction", "smoke", ""}},
+        {"bread", new string[] {"flour", "loaf", "baker"}},
+        {"money", new string[] {"bank", "dolar", "euro"}},
+        {"specie", new string[] {"silver", "copper", "coin"}},
+        {"vegetables", new string[] {"green", "farmer", "garden"}},
+        {"meat", new string[] {"chicken", "fish", "beef"}},
+        {"discount", new string[] {"sale", "crowd", "products"}},
+        {"customer", new string[] {"person", "regular", "burdensome"}},
+        {"storage", new string[] {"area", "shelves", "products"}},
+        {"basket", new string[] {"handle", "shopping", "help"}},
+        {"payment", new string[] {"transaction", "receipt", "check"}},
+        {"assortment", new string[] {"products", "offer", "change"}},
+        {"stand", new string[] {"products", "assortment", "prices"}},
+        {"products", new string[] {"assortment", "items", "label"}},
+        {"cosmetics", new string[] {"soap", "deodorant", "shampoo"}},
+        {"dairy", new string[] {"milk", "cheese", "yoghurt"}},
         
         // Level 2
         {"functional", new string[] {"type of training", "daily movements", "versatile"}},
@@ -73,35 +73,28 @@ public class Hacker : MonoBehaviour
         {"barbell", new string[] {"long", "heavy", "steel" }},
         {"dumbbell", new string[] {"can be heavy", "for one hand mostly", "use to exercise" }},
         {"exercise", new string[] {"home", "gym", "body activity" }},
-        { "isolation", new string[] {"single", "exercises", "part"}},
-        { "streching", new string[] {"body", "gymnastics", "motion"}},
-        { "cutting", new string[] {"diet", "weight", "austerity"}},
-        { "powerlifting", new string[] {"heavy", "olympiad", "strength"}},
-        { "conditioning", new string[] {"run", "bike", "oxygen"}},
-        { "gymnastics", new string[] {"olympiad", "strength", "bodyweight"}},
-        { "steroids", new string[] {"forbidden", "needle", "strenght"}},
-        { "repeats", new string[] {"exercise", "max", "amount"}},
-        { "compete", new string[] {"athlete", "lose", "win"}},
-        { "bodybuilding", new string[] {"strenght", "goodlooking", "arnold"}},
+        {"isolation", new string[] {"single", "exercises", "part"}},
+        {"streching", new string[] {"body", "gymnastics", "motion"}},
+        {"cutting", new string[] {"diet", "weight", "austerity"}},
+        {"powerlifting", new string[] {"heavy", "olympiad", "strength"}},
+        {"conditioning", new string[] {"run", "bike", "oxygen"}},
+        {"gymnastics", new string[] {"olympiad", "strength", "bodyweight"}},
+        {"steroids", new string[] {"forbidden", "needle", "strenght"}},
+        {"repeats", new string[] {"exercise", "max", "amount"}},
+        {"compete", new string[] {"athlete", "lose", "win"}},
+        {"bodybuilding", new string[] {"strength", "goodlooking", "arnold"}},
+        {"coach", new string[] {"team", "classes", "discipline"}},
+        {"spinning", new string[] {"bike", "classes", "cycling"}},
+        {"suplements", new string[] {"creatine", "bcaa", "proteins"}},
+        {"creatine", new string[] {"suplements", "strength", "endurance"}},
+        {"proteins", new string[] {"suplements", "muscle", "build"}},
+        {"cloakroom", new string[] {"lockers", "clothes", "showers"}},
+        {"showers", new string[] {"cloakroom", "hygiene", "gel"}},
+        {"exhaustion", new string[] {"workout", "exercise", "powerless"}},
+        {"record", new string[] {"personal", "exercise", "max"}},
+        {"atlas", new string[] {"multifunctional", "exercises", "bodybuilding"}},
 
         // Level 3
-        {"quidditch", new string[] {"game", "golden snitch", "broom"}},
-        {"blackmagic", new string[] {"forbidden", "dangerous", "used by bad people"}},
-        {"slytherin", new string[] {"cunning", "snake", "salazar"}},
-        {"sectumsempra", new string[] {"deep", "bleed", "spell"}},
-        {"buckbeak", new string[] {"animal", "flying", "magic"}},
-        { "gryffindor", new string[] {"lion", "harry", "godric"}},
-        { "hufflepuff", new string[] {"helga", "badger", "cedrik"}},
-        { "ravenclaw", new string[] {"rowena", "eagle", "luna"}},
-        { "polyjuice", new string[] {"potion", "advanced", "shift"}},
-        { "muggles", new string[] {"people", "usual", "artur weasley"}},
-        { "phoenix", new string[] {"magic", "animal", "fire"}},
-        { "dumbledore", new string[] {"school", "wizard", "powerful"}},
-        { "horcrux", new string[] {"part", "soul", "items"}},
-        { "dudley", new string[] {"cousin", "harry", "fat"}},
-        { "basilisk", new string[] {"eyes", "stone", "fang"}},
-
-        // Level 4
         {"handcuffs", new string[] {"metal", "arrested", "aggressive"}},
         {"officer", new string[] {"superior", "person", "duty"}},
         {"suspect", new string[] {"charge", "felony", "crime"}},
@@ -117,6 +110,43 @@ public class Hacker : MonoBehaviour
         {"chase", new string[] {"traffic", "car", "street"}},
         {"felony", new string[] {"guilt", "crime", "level"}},
         {"bulletproof", new string[] {"vest", "guns", "deadly"}},
+        {"uniform", new string[] {"belt", "shoes", "shirt"}},
+        {"epaulets", new string[] {"uniform", "distinctions", "rank"}},
+        {"distinctions", new string[] {"rank", "officer", "commander"}},
+        {"baton", new string[] {"necessity", "violence", "defence"}},
+        {"notebook", new string[] {"pen", "paper", "cover"}},
+        {"robbery", new string[] {"money", "burglar", "thief"}},
+        {"violence", new string[] {"aggression", "person", "victim"}},
+        {"aggression", new string[] {"violence", "torturer", "blood"}},
+        {"victim", new string[] {"felony", "torturer", "judgment"}},
+        {"investigation", new string[] {"detective", "suspect", "evidence"}},
+
+        // Level 4
+        {"quidditch", new string[] {"game", "golden snitch", "broom"}},
+        {"blackmagic", new string[] {"forbidden", "dangerous", "used by bad people"}},
+        {"slytherin", new string[] {"cunning", "snake", "salazar"}},
+        {"sectumsempra", new string[] {"deep", "bleed", "spell"}},
+        {"buckbeak", new string[] {"animal", "flying", "magic"}},
+        {"gryffindor", new string[] {"lion", "harry", "godric"}},
+        {"hufflepuff", new string[] {"helga", "badger", "cedrik"}},
+        {"ravenclaw", new string[] {"rowena", "eagle", "luna"}},
+        {"polyjuice", new string[] {"potion", "advanced", "shift"}},
+        {"muggles", new string[] {"people", "usual", "artur weasley"}},
+        {"phoenix", new string[] {"magic", "animal", "fire"}},
+        {"dumbledore", new string[] {"school", "wizard", "powerful"}},
+        {"horcrux", new string[] {"part", "soul", "items"}},
+        {"dudley", new string[] {"cousin", "harry", "fat"}},
+        {"basilisk", new string[] {"eyes", "stone", "fang"}},
+        {"animagus", new string[] {"animal", "wizard", "transform"}},
+        {"alohomora", new string[] {"spell", "lock", "unlock"}},
+        {"philosopher", new string[] {"stone", "first", "immortal"}},
+        {"invisibility", new string[] {"cloak", "hide", "sneak"}},
+        {"centaur", new string[] {"firenze", "hagrid", "forest"}},
+        {"azkaban", new string[] {"prison", "dementors", "syrius"}},
+        {"demetor", new string[] {"guard", "kiss", "soul"}},
+        {"nagini", new string[] {"snake", "riddle", "horcrux"}},
+        {"aragog", new string[] {"spider", "hagrid", "forest"}},
+        {"werewolf", new string[] {"animal", "lupin", "moon"}},
 
         // Level 5
         {"apollo", new string[] {"program", "astronauts", "moon"}},
@@ -134,6 +164,16 @@ public class Hacker : MonoBehaviour
         {"planet", new string[] {"earth", "mercury", "venus"}},
         {"comet", new string[] {"gas", "solar system", "body"}},
         {"solar", new string[] {"system", "sun", "planets"}},
+        {"cosmos", new string[] {"stars", "planets", "asteroids"}},
+        {"budget", new string[] {"millions", "money", "government"}},
+        {"alien", new string[] {"ufo", "space", "ship"}},
+        {"radar", new string[] {"data", "co-ordinates", "visibility"}},
+        {"secret", new string[] {"mission", "data", "information"}},
+        {"weightlessness", new string[] {"state", "gravity", "space"}},
+        {"theory", new string[] {"big", "bang", "beginning"}},
+        {"shuttle", new string[] {"discovery", "columbia", "ignition"}},
+        {"counting", new string[] {"down", "start", "ignition"}},
+        {"science", new string[] {"research", "laboratory", "instruments"}},
     };
     #endregion
 
@@ -437,72 +477,72 @@ __/ \__
         {"enigma", new string[]
         {
             "enigma",  // itemName 0
-            "1",  // itemPrice 1
+            "12500",  // itemPrice 1
             "0",  // itemLevel 2
             "1",  // itemShopLevel 3
-            "2",  // LvL 2 upgrade cost 4
-            "3",  // LvL 3 upgrade cost 5
-            "1",  // starting price 6 - must be the same as item price 1
+            "37500",  // LvL 2 upgrade cost 4
+            "50000",  // LvL 3 upgrade cost 5
+            "12500",  // starting price 6 - must be the same as item price 1
             "Shows first letters of password",
         }
         },
         {"decoder", new string[]
         {
             "decoder",
-            "2",
+            "12500",
             "0",
             "1",
-            "4",
-            "6",
-            "2",
+            "37500",
+            "50000",
+            "12500",
             "Shows word hints about password",
         }
         },
         {"hacktimer", new string[]
         {
             "hacking timer",
-            "3",
+            "12500",
             "0",
             "1",
-            "6",
-            "9",
-            "3",
+            "37500",
+            "50000",
+            "12500",
             "Increases location hacking time",
         }
         },
         {"auctioneer", new string[]
         {
             "auctioneer",
-            "4",
+            "12500",
             "0",
             "1",
-            "5",
-            "6",
-            "4",
+            "40000",
+            "70000",
+            "12500",
             "Icreases items sell value",
         }
         },
         {"loster", new string[]
         {
             "loster",
-            "5",
+            "37500",
             "0",
             "1",
-            "10",
-            "15",
-            "5",
+            "50000",
+            "70000",
+            "37500",
             "Chance to avoid felony level increase",
         }
         },
         {"timeencoder", new string[]
         {
             "time encoder",
-            "6",
+            "37500",
             "0",
             "1",
-            "12",
-            "18",
-            "6",
+            "45000",
+            "60000",
+            "37500",
             "Reduces time penalty after not\nguessing password",
         }
         },
@@ -525,14 +565,14 @@ __/ \__
     // Game Variables
     #region Game State variables
     // Shop adjustables
-    int complexPrice = 200000;  // Own hacking complex building cost
+    int complexPrice = 400000;  // Own hacking complex building cost
     float shopCrimeChance = .5f;  // chance to get shop crime event while selling items in shop
     int[] timeEncoderReduceValues = { 1, 2, 3 };  // encoder item values, index matches item level - reduce time (seconds) for time penalty provided by item
     float[] hackTimerTimeBonus = { 5f, 10f, 15f};  // hack timer time bonus values, index matches item level - value increasing level time value
     float[] LosterAvoidChances = { .2f, .25f, .33f };  // loster avoid chance, index matches item level - chance to avoid felony level penalty after hacking fail
     float[] auctioneerPercentageValues = { .1f, .2f, .3f};  // auctioneer item values, index matches item level - percentage value (.1f = 10%) of increased item sell value
-    int[] IPcost = { 50000, 200000, 300000, 400000};  // ip addresses cost, index matches level (index 0 = level 2 ip address)
-    int[] bribeCost = { 50000, 100000, 150000, 350000 };  // bribe cost, index: 0: -1f(felony), 1: -2f, 2: -3f, 4: set felony to 0
+    int[] IPcost = { 12500, 20000, 125000, 150000};  // ip addresses cost, index matches level (index 0 = level 2 ip address)
+    int[] bribeCost = { 5000, 10000, 15000, 35000 };  // bribe cost, index: 0: -1f(felony), 1: -2f, 2: -3f, 4: set felony to 0
     int[] bribeReduceValue = { 1, 2, 3, 10 };  // bribe reduce felony level values
 
     // Level time values
@@ -612,11 +652,10 @@ __/ \__
     [HideInInspector] string cantAfford = "You can't afford this item.";
     [HideInInspector] string notEnoughMoneyMsg = "Not enough money.";
     [HideInInspector] string itemMaxLevelHint = "Item already in your inventory.";
-    [HideInInspector] string shopCrimeMessage = "Something went wrong...\nWhen you were leaving the shop, the\npolice appeared!\nYou managed to escape but you\nlost half of your sell value\n" +
-        "and felony level icreased by {0}0%!\nType '/felony' to check felony level.";
+    [HideInInspector] string shopCrimeMessage = "Something went wrong...\nWhen you were leaving the shop, the\npolice appeared!\nYou managed to escape but you lost\nhalf of your sell value and felony\nlevel icreased by {0}0%!\nType '/felony' to check felony level.";
     [HideInInspector] string counterString = "{0} sec.";
     [HideInInspector] string counterBonusString = "{0} sec. ({1} sec. time bonus)";
-    [HideInInspector] string timesUpMessage = "You fail to hack in time...\nSomeone notified the police.\nFelony level increased by {0}0%!\nType '/felony' to check felony level.";
+    [HideInInspector] string timesUpMessage = "You fail to hack in time...\nSomeone notified the police.\nFelony level increased by {0}0%!\nType '/felony' to check felony level.\nType '/saldo' to check money balance.";
     [HideInInspector] string losterMessage = "You fail to hack in time...\nBut fast connection provided by loster\nallows you to close hacking connection\nsoon enough to avoid raising an alarm!";
     [HideInInspector] string timePenaltyMessage = "Wrong password.\nHack time reduced by {0} sec.";
     [HideInInspector] string safeConnectionMessage = "You didn't close safe connection\nproperly when you decided to finish\nhacking. Police found your network\ntrace. Felony level " +
@@ -630,6 +669,8 @@ __/ \__
     [HideInInspector] string additionalRewardMsg = "You found the '{0}'\nIP Address! You can now hack this\nlocation.";
     [HideInInspector] string levelLockedMessage = "Level locked. You need to find or buy\nIP address of this location.";
     [HideInInspector] string addressMaxLvL = "IP Address already in your DataBase.";
+    [HideInInspector] string saldoMessage = "\nType '/saldo' to check money balance.";
+
     #endregion
     #endregion
 
@@ -643,7 +684,7 @@ __/ \__
         progressBar.SetActive(false);
         counterText.gameObject.SetActive(false);
         ShowMainMenu();
-        //money = 1000000;  // DELETE
+        money = 125000;  // DELETE
     }
 
     void Update()
@@ -1216,10 +1257,10 @@ __/ \__
                 password = level3Passwords[Random.Range(0, level3Passwords.Length)];
                 break;
             case 4:
-                password = level4Passwords[Random.Range(0, level3Passwords.Length)];
+                password = level4Passwords[Random.Range(0, level4Passwords.Length)];
                 break;
             case 5:
-                password = level5Passwords[Random.Range(0, level3Passwords.Length)];
+                password = level5Passwords[Random.Range(0, level5Passwords.Length)];
                 break;
             default:
                 Debug.LogError("Invalid level number.");
@@ -1302,14 +1343,12 @@ __/ \__
                     RandomLocationUnlock();
                 }
                 selectedReward = DrawReward(level4RewardsNames);
-                print(selectedReward);
                 selectedRewardValue = SetRewardValue(selectedReward);
                 InventoryAddReward(selectedReward, selectedRewardValue);
                 DisplayReward(selectedReward, selectedRewardValue, level4Rewards);
                 break;
             case 5:
                 selectedReward = DrawReward(level5RewardsNames);
-                print(selectedReward);
                 selectedRewardValue = SetRewardValue(selectedReward);
                 InventoryAddReward(selectedReward, selectedRewardValue);
                 DisplayReward(selectedReward, selectedRewardValue, level5Rewards);
@@ -1323,7 +1362,7 @@ __/ \__
     void RandomLocationUnlock()
     {
         float randomChance = Random.value;
-        if (randomChance <= .05f)  // TODO change value from 50% to 5% after tests
+        if (randomChance <= .01f) 
         {
             UnlockLevel(level);
             additionalReward = true;
@@ -2379,7 +2418,7 @@ __/ \__
     {
         SetScreen(Screen.ShopCrime);
         Terminal.ClearScreen();
-        Terminal.WriteLine(string.Format(shopCrimeMessage, crimeLevel));
+        Terminal.WriteLine(string.Format(shopCrimeMessage + saldoMessage, crimeLevel));
     }
 
     void ShopCrime()
@@ -2399,7 +2438,7 @@ __/ \__
         int sellValue = sellValueItemsNumber[0];
         int itemsNumber = sellValueItemsNumber[1];
         string plural = "";
-        string sellMessage = $"You sold {itemsNumber} item{plural} for {sellValue}$.\nType '/saldo' to check money balance.";
+        string sellMessage = $"You sold {itemsNumber} item{plural} for {string.Format("{0:n0}", sellValue)}$.";
 
         AddMoney(sellValue);
 
@@ -2407,12 +2446,12 @@ __/ \__
         {
             plural = "s";
         }
-        else if (auctioneerActive)
+        if (auctioneerActive)
         {
-            sellMessage += string.Format("\n(+{0}% bonus)", auctioneerPercentageValues[int.Parse(gameItems["auctioneer"][itemLevel]) - 1] * 100);
+            sellMessage += string.Format("\n(+{0}% auctioneer bonus)", auctioneerPercentageValues[int.Parse(gameItems["auctioneer"][itemLevel]) - 1] * 100);
         }
         Terminal.ClearScreen();
-        Terminal.WriteLine(sellMessage);
+        Terminal.WriteLine(sellMessage + saldoMessage);
     }
 
     void AddMoney(int value)
