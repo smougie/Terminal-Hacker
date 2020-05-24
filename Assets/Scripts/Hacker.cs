@@ -151,7 +151,7 @@ public class Hacker : MonoBehaviour
         // Level 5
         {"apollo", new string[] {"program", "astronauts", "moon"}},
         {"astronaut", new string[] {"person", "space", "station"}},
-        {"research", new string[] {"science", "scientis", "instruments"}},
+        {"research", new string[] {"science", "scientist", "lab"}},
         {"asteroid", new string[] {"rock", "ice", "atmosphere"}},
         {"spacecraft", new string[] {"crew", "ignition", "fuel"}},
         {"eisenhower", new string[] {"last name", "president", "founder"}},
@@ -182,7 +182,7 @@ public class Hacker : MonoBehaviour
     Dictionary<string, string> level1Rewards = new Dictionary<string, string>
     {
         {
-            "icecream", @"You received icecream!
+            "icecream", @"You received an icecream!
         _.-.
      ,'  /  \
     /// //  /)
@@ -206,7 +206,7 @@ public class Hacker : MonoBehaviour
 "
         },
         {
-            "tape", @"You received monitoring tape!
+            "tape", @"You received a monitoring tape!
  _________
 |   ___   |
 |  o___o  | Value: {0}$
@@ -230,10 +230,10 @@ You received shop owner's laptop!
 "
         },
         {
-            "revenue", @"You received daily revenue!
+            "revenue", @"You received the daily revenue!
           \`\/\/\/`/
            )======(
-         .'        '. Value: {0}$
+         .'        '. Value: {0:n0}$
         /    _||__   \
        /    (_||_     \
       |     __||_)     |
@@ -250,13 +250,13 @@ You received shop owner's laptop!
     {
         {
             "dumbbell", @"
-You received the dumbbell!
+You received a dumbbell!
 
 ❚█══█❚ Value: {0}$
 "
         },
         {
-            "plate", @"You received 25kg plate!
+            "plate", @"You received a 25kg plate!
           .-""-.
          / 25kg \  
         ;  { }   ; Value: {0}$
@@ -266,28 +266,28 @@ You received the dumbbell!
         },
         {
             "barbell", @"
-You received the barbell!
+You received a barbell!
 
-❚██════════════██❚ Value: {0}$
+❚██════════════██❚ Value: {0:n0}$
 "
         },
         {
-            "picture", @"You received the owner's
+            "picture", @"You received owner's
  __________nude picture!
 |  _______ |
 | |       ||
-| |    _O || Value: {0}$
+| |    _O || Value: {0:n0}$
 | |______\||
 |__________|
 "
         },
         {
-            "cashRegister", @"You received the cash register!
+            "cashRegister", @"You received a cash register!
    _____
   | ___ |
   ||   ||
   ||___||
-  |   _ | Value: {0}$
+  |   _ | Value: {0:n0}$
   |_____|
  /_/_|_\_\
 /_/__|__\_\
@@ -300,20 +300,20 @@ You received the barbell!
     Dictionary<string, string> level4Rewards = new Dictionary<string, string>
     {
         {
-            "broom", @"You received firebolt!
+            "broom", @"You received the Firebolt!
   |
   |
-  | Value: {0}$
+  | Value: {0:n0}$
   | 
  /X\
 //X\\
 "
         },
         {
-            "book", @"You received book!
+            "book", @"You received a book!
     _______
    /      /,
-  /      // Value: {0}$
+  /      // Value: {0:n0}$
  /______//
 (______(/
 'This Book is the Property 
@@ -324,25 +324,25 @@ of the Half-Blood Prince'
             "map", @"You received Marauder's Map!
 _________
 \ x  |  o\
- \   | x  \ Value: {0}$
+ \   | x  \ Value: {0:n0}$
   \.,..,.,.\
 "
         },
         {
-            "key", @"You received key to Gringott's vault!
+            "key", @"You received the key to Gringott's vault!
 
  ,o.          8 8
 d   bzzzzzzzza8o8b 
  `o'
-Value: {0}$
+Value: {0:n0}$
 "
         },
         {
-            "wand", @"You received Blackwand!
+            "wand", @"You received the Blackwand!
 ( ͡° ͜ʖ ͡°)⊃―━━☆⌒*・。.
 'Avada Kedavra!'
 
-Value: {0}$
+Value: {0:n0}$
 "
         }
     };
@@ -352,16 +352,16 @@ Value: {0}$
     Dictionary<string, string> level3Rewards = new Dictionary<string, string>
     {
         {
-            "handcuff", @"You received handcuff!
+            "handcuff", @"You received a handcuff!
            /`  `\
-          |      | Value: {0}$
+          |      | Value: {0:n0}$
 [___]>=-=' \____/
 "
         },
         {
-            "gun", @"You received gun!
+            "gun", @"You received a gun!
       __,_____
-     / __.==--' Value: {0}$
+     / __.==--' Value: {0:n0}$
     /#(-'
     `-'
 "
@@ -372,7 +372,7 @@ You received murder weapon!
  ______
 |_,.,--\
    ||
-   || Value: {0}$
+   || Value: {0:n0}$
    ##
    ##
 "
@@ -381,9 +381,9 @@ You received murder weapon!
             "badge", @"
    ,   /\   ,
   / '-'  '-' \
-  |  POLICE  | You received police
+  |  POLICE  | You received a police
   |   .--.   | badge!
-  |  ( 19 )  | Value: {0}$
+  |  ( 19 )  | Value: {0:n0}$
   \   '--'   /
    '--.  .--'
        \/
@@ -392,7 +392,7 @@ You received murder weapon!
         {
             "dna", @"You received DNA!
 -. .-.   .-. 
-  \   \ /   \  Value: {0}$
+  \   \ /   \  Value: {0:n0}$
  / \   \   / \ 
 ~   `-~ `-`   `
 "
@@ -408,26 +408,26 @@ You received murder weapon!
 You found a hole in NASA fence!
 =|===|===|/\=|===|===
 =|===|===|\/=|===|===
-    Value: {0}$
+    Value: {0:n0}$
 "
         },
         {
-            "star", @"You received star!
+            "star", @"You received a star!
    ,
 __/ \__
-\     / Value: {0}$
+\     / Value: {0:n0}$
 /_   _\
   \ /
    '
 "
         },
         {
-            "ticket", @"You received ticket to the moon!
+            "ticket", @"You received a ticket to the moon!
      _..,
    .' .-'`_______
   /  /    |TICKET|
   |  |     ------
-  \  '.___.; Value: {0}$
+  \  '.___.; Value: {0:n0}$
    '._  _.'
       ``
 "
@@ -436,7 +436,7 @@ __/ \__
             "rocket", @"
      | You are now owner of rocket!
     / \
-   |--o| Value: {0}$
+   |--o| Value: {0:n0}$
   /     \
  |       |
  |       |
@@ -446,10 +446,10 @@ __/ \__
 "
         },
         {
-            "alien", @"You received alien dead body!
+            "alien", @"You received an alien dead body!
   .-.
  (@ @)
-  \-/ Value: {0}$
+  \-/ Value: {0:n0}$
   / \
  /\ /\
 / _H_ \
@@ -652,7 +652,7 @@ __/ \__
     [HideInInspector] string cantAfford = "You can't afford this item.";
     [HideInInspector] string notEnoughMoneyMsg = "Not enough money.";
     [HideInInspector] string itemMaxLevelHint = "Item already in your inventory.";
-    [HideInInspector] string shopCrimeMessage = "Something went wrong...\nWhen you were leaving the shop, the\npolice appeared!\nYou managed to escape but you lost\nhalf of your sell value and felony\nlevel icreased by {0}0%!\nType '/felony' to check felony level.";
+    [HideInInspector] string shopCrimeMessage = "Something went wrong...\nWhen you were leaving the shop, the\npolice appeared!\nYou managed to escape but you lost\n75% of your sell value and felony\nlevel icreased by {0}0%!\nType '/felony' to check felony level.";
     [HideInInspector] string counterString = "{0} sec.";
     [HideInInspector] string counterBonusString = "{0} sec. ({1} sec. time bonus)";
     [HideInInspector] string timesUpMessage = "You fail to hack in time...\nSomeone notified the police.\nFelony level increased by {0}0%!\nType '/felony' to check felony level.\nType '/saldo' to check money balance.";
@@ -661,7 +661,7 @@ __/ \__
     [HideInInspector] string safeConnectionMessage = "You didn't close safe connection\nproperly when you decided to finish\nhacking. Police found your network\ntrace. Felony level " +
         "increased by\n{0}0%!";
     [HideInInspector] string leavingPasswordMessage = "\nRepeat 'menu' if you want to quit\nhacking - this action will cause you\npenalty.";
-    [HideInInspector] string itemLabel = "\n{0} Name: {1} Level: {2}\nPrice: {3}$\n{4}";
+    [HideInInspector] string itemLabel = "\n{0} Name: {1} Level: {2}\nPrice: {3:n0}$\n{4}";
     [HideInInspector] string itemLabelMax = "\n{0} Name: {1}, Level: \nMAX LEVEL\n{2}";
     [HideInInspector] string notEnoughFelonyLevel = "You are not under police eye.";
     [HideInInspector] string bribeSuccessfulMsg = "Bribe successful";
@@ -684,7 +684,7 @@ __/ \__
         progressBar.SetActive(false);
         counterText.gameObject.SetActive(false);
         ShowMainMenu();
-        money = 125000;  // DELETE
+        money = 1000000;  // DELETE
     }
 
     void Update()
@@ -961,9 +961,6 @@ __/ \__
                 case Screen.Win:
                     AskForPassword();
                     break;
-                //case Screen.BuyMenu:
-                //    ShowShop();
-                //    break;
                 case Screen.Sold:
                     ShowShop();
                     break;
@@ -1847,7 +1844,7 @@ __/ \__
                 }
                 else
                 {
-                    buyMenu += string.Format(itemLabel, ordinalNumber, item.Value[itemName], item.Value[itemShopLevel], item.Value[itemPrice], item.Value[itemDescription]);
+                    buyMenu += string.Format(itemLabel, ordinalNumber, item.Value[itemName], item.Value[itemShopLevel], int.Parse(item.Value[itemPrice]), item.Value[itemDescription]);
                 }
                 ordinalNumber++;
             }
@@ -2423,7 +2420,7 @@ __/ \__
 
     void ShopCrime()
     {
-        float percentageTaken = .9f;  // maybe move it to variable section as public var not local
+        float percentageTaken = .75f;  // maybe move it to variable section as public var not local
         int sellValue = CalculateSellValueItems()[0];
         int newMoneyValue = (int) (sellValue - (sellValue * percentageTaken));  // int number representation e.x. sell value 100, ShopCrime(), 100 - 90% = (100 - (100 * .9f))
 
@@ -2490,7 +2487,7 @@ __/ \__
         string plural = "";
         var itemsValue = 0;
         var itemsAmount = 0;
-        string inventoryString = "Money: {0}$\nYou've got {1} item{2} worth {3}$.";
+        string inventoryString = "Money: {0:n0}$\nYou've got {1} item{2} worth:\n{3:n0}$";
 
         foreach (KeyValuePair<string, int> item in inventory)
         {
@@ -2500,7 +2497,7 @@ __/ \__
 
         if (itemsAmount == 0)
         {
-            Terminal.WriteLine($"Money: {money}$\nThere are no items in your inventory.");
+            Terminal.WriteLine(string.Format("Money: {0:n0}$\nThere are no items in your inventory.", money));
         }
         else if (itemsAmount == 1)
         {
