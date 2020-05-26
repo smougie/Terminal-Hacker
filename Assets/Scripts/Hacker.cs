@@ -50,7 +50,7 @@ public class Hacker : MonoBehaviour
         {"jelly", new string[] {"sweet", "gummy", "colorful"}},
         {"cookie", new string[] {"sweet", "brown", "jar"}},
         {"rice", new string[] {"china", "sushi", "chicken"}},
-        {"cigarettes", new string[] {"addiction", "smoke", ""}},
+        {"cigarettes", new string[] {"addiction", "smoke", "cancer"}},
         {"bread", new string[] {"flour", "loaf", "baker"}},
         {"money", new string[] {"bank", "dolar", "euro"}},
         {"specie", new string[] {"silver", "copper", "coin"}},
@@ -259,7 +259,7 @@ You received a dumbbell!
             "plate", @"You received a 25kg plate!
           .-""-.
          / 25kg \  
-        ;  { }   ; Value: {0}$
+        ;  {  }  ; Value: {0}$
          \      /
           '-..-'
 "
@@ -1493,6 +1493,7 @@ __/ \__
 
     void DisplayReward(string selectedReward, int selectedRewardValue,Dictionary<string, string> levelRewards)
     {
+        print(selectedReward);
         Terminal.WriteLine(string.Format(levelRewards[selectedReward], selectedRewardValue));
     }
 
