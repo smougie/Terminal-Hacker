@@ -3,7 +3,7 @@ This is my second project created while processing through "Complete C# Unity De
 Did I succeed? 
 
 ## Game Description:
-The player takes the role of hacker, starting from zero, with no money. After successful hacking he's getting awarded with valuable items which could be sold on Dark Web. With bigger money in background, new and more attractive places to hack are being unlocked. Hacker need to pay attention to his felony level, noone wants to spend his life in prison but no worries, Dark Web market provide a lot of capabilities like attractive deals and advanced technologies.
+The player takes the role of hacker, starting from zero, with no money. After successful hacking he's getting awarded with valuable items which could be sold on Dark Web. With bigger money in background, new and more attractive places to hack are being unlocked. Hacker need to pay attention to his felony level, no one wants to spend his life in prison but no worries, Dark Web market provide a lot of capabilities like attractive deals and advanced technologies.
 
 ## Project Description:
 The main goal of this project is to consolidate knowledge about basic foundation of c# skills, variables, statements, etc. 
