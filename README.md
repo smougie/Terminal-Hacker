@@ -100,5 +100,5 @@ Getting busted leads to lose all money, items and fine - `5000`$.
 - `SPACE` - apply thrust.
 
 ## Download link
-Download build zip, unzip package and run .exe file.
+Download build zip, unzip package and run .exe file.  
 [Google Drive Link - 19mb](https://drive.google.com/file/d/1o-TbGSCqqxlMH6LOZxCYtztj4dAId6CK/view?usp=sharing)
