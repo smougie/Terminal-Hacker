@@ -94,11 +94,6 @@ Every item sell transaction in Dark Web store may result in Shop Crime event whi
 Felony level increases when player fails to guess the password or when Shop Crime event occurs. When felony level reaches 100% player gets busted.
 Getting busted leads to lose all money, items and fine - `5000`$.
 
-## How to play
-- `A`/`Left Arrow` - rotate rocket left.
-- `D`/`Right Arrow` - rotate rocket right.
-- `SPACE` - apply thrust.
-
 ## Download link
 Download build zip, unzip package and run .exe file.  
 [Google Drive Link - 19mb](https://drive.google.com/file/d/1o-TbGSCqqxlMH6LOZxCYtztj4dAId6CK/view?usp=sharing)
