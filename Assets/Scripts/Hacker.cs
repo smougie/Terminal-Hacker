@@ -56,7 +56,7 @@ public class Hacker : MonoBehaviour
         {"specie", new string[] {"silver", "copper", "coin"}},
         {"vegetables", new string[] {"green", "farmer", "garden"}},
         {"meat", new string[] {"chicken", "fish", "beef"}},
-        {"discount", new string[] {"sale", "crowd", "products"}},
+        {"discount", new string[] {"sale", "bargain", "products"}},
         {"customer", new string[] {"person", "regular", "burdensome"}},
         {"storage", new string[] {"area", "shelves", "products"}},
         {"basket", new string[] {"handle", "shopping", "help"}},
@@ -678,13 +678,13 @@ __/ \__
     void Start()
     {
         complexWindowRef = complexWindowObject.GetComponent<ComplexWindow>();
-        winScreenRef = winScreenObject.GetComponent<WinScreen>();  // delete
-        complexAnimationRef = complexAnimationObject.GetComponent<ComplexAnimation>();  // delete
+        winScreenRef = winScreenObject.GetComponent<WinScreen>();
+        complexAnimationRef = complexAnimationObject.GetComponent<ComplexAnimation>(); 
         slider = gameObject.GetComponentInChildren<Slider>();
         progressBar.SetActive(false);
         counterText.gameObject.SetActive(false);
         ShowMainMenu();
-        money = 1000000;  // DELETE
+        money = 1000000;
     }
 
     void Update()
@@ -779,28 +779,6 @@ __/ \__
         {
             ShowFelonyLevel();
         }
-        else if (input == "/done")  // delete
-        {
-            winScreenRef.gameFinished = true;
-        }
-        else if (input == "/build")  // delete
-        {
-            complexAnimationRef.buildingActive = true;
-        }
-        else if (input == "/items")  // delete
-        {
-            foreach (KeyValuePair<string, string[]> item in gameItems)
-            {
-                if (item.Key == "ipdatabase" || item.Key == "bribe")
-                {
-                    continue;
-                }
-                else
-                {
-                    item.Value[itemLevel] = "3";
-                }
-            }
-        }
         else switch (currentScreen)
             {
                 #region currentScreen cases
@@ -822,9 +800,6 @@ __/ \__
                 case Screen.Shop:
                     RunShopMenu(input);
                     break;
-                //case Screen.BuyMenu:
-                //    ChooseBuyItem(input);
-                //    break;
                 case Screen.ItemBuyConfirm:
                     ConfirmBuy(input);
                     break;
@@ -1493,7 +1468,6 @@ __/ \__
 
     void DisplayReward(string selectedReward, int selectedRewardValue,Dictionary<string, string> levelRewards)
     {
-        print(selectedReward);
         Terminal.WriteLine(string.Format(levelRewards[selectedReward], selectedRewardValue));
     }
 
