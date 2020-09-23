@@ -95,5 +95,5 @@ Felony level increases when player fails to guess the password or when Shop Crim
 Getting busted leads to lose all money, items and fine - `5000`$.
 
 ## Download link
-Download build zip, unzip package and run .exe file.  
+Download zip file from google drive, unzip package and run .exe file.  
 [Google Drive Link - 19mb](https://drive.google.com/file/d/1o-TbGSCqqxlMH6LOZxCYtztj4dAId6CK/view?usp=sharing)
